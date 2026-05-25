@@ -112,7 +112,7 @@ class ClassroomController extends Controller
 
         $filePath = null;
         if ($request->hasFile('file')) {
-            $filePath = $request->file('file')->store('classroom_files', 'public');
+            $filePath = $request->file('file')->store('classroom_files');
         }
 
         $post = \App\Models\ClassroomPost::create([
@@ -181,5 +181,16 @@ class ClassroomController extends Controller
         if (!$isAuthorizedStudent && !$isAuthorizedProfessor) {
             abort(403, 'Vous n\'êtes pas autorisé à accéder à cette classe ou publier/commenter.');
         }
+    }
+
+    public function downloadFile(\App\Models\ClassroomPost $post)
+    {
+        $this->authorizeClassroomAccess($post->group_id, $post->module_id);
+        
+        if (!$post->file_path || !\Illuminate\Support\Facades\Storage::exists($post->file_path)) {
+            abort(404, 'Fichier introuvable.');
+        }
+
+        return \Illuminate\Support\Facades\Storage::download($post->file_path);
     }
 }

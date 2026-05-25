@@ -152,7 +152,7 @@
 
                                 {{-- File Download Button --}}
                                 @if($post->file_path)
-                                <a href="{{ Storage::url($post->file_path) }}" target="_blank"
+                                <a href="{{ route('classroom.download_file', $post) }}" target="_blank"
                                    class="inline-flex items-center gap-2 text-xs font-black text-upf-magenta bg-pink-50 border border-pink-100 px-4 py-2.5 rounded-xl hover:bg-upf-magenta hover:text-white transition-all uppercase tracking-widest shadow-sm">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                                     Télécharger
@@ -264,7 +264,7 @@
                                     <p class="text-xs font-black text-gray-900 truncate">{{ basename($material->file_path) }}</p>
                                     <p class="text-[9px] text-gray-400 font-bold uppercase">{{ strtoupper($ext) }} · {{ $material->created_at->format('d/m/Y') }}</p>
                                 </div>
-                                <a href="{{ Storage::url($material->file_path) }}" target="_blank"
+                                <a href="{{ route('classroom.download_file', $material) }}" target="_blank"
                                    class="w-8 h-8 bg-upf-blue/10 text-upf-blue rounded-lg hover:bg-upf-blue hover:text-white transition-all flex items-center justify-center flex-shrink-0 shadow-sm">
                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3"></path></svg>
                                 </a>

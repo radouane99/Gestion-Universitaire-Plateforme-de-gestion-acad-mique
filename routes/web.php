@@ -189,6 +189,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/classroom/show/{group}/{module}', [\App\Http\Controllers\ClassroomController::class, 'showClassroom'])->name('classroom.show');
     Route::post('/classroom/post/{group}/{module}', [\App\Http\Controllers\ClassroomController::class, 'storePost'])->name('classroom.post');
     Route::post('/classroom/comment/{post}', [\App\Http\Controllers\ClassroomController::class, 'storeComment'])->name('classroom.comment');
+    Route::get('/classroom/file/{post}', [\App\Http\Controllers\ClassroomController::class, 'downloadFile'])->name('classroom.download_file');
 });
 
 Route::middleware('auth')->group(function () {
