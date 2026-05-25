@@ -1,87 +1,140 @@
-# Gestion Universitaire — Plateforme de gestion académique
+<div align="center">
+  <h1>🎓 Gestion Universitaire (UPF)</h1>
+  <p>Une plateforme moderne et complète de gestion académique construite avec Laravel.</p>
+</div>
 
-Application web Laravel pour la gestion complète d'un établissement universitaire : emplois du temps, notes, absences, salles de classe virtuelles, examens, et communication.
+---
 
-## Fonctionnalités principales
+## 📖 Présentation du Projet
 
-| Module | Description |
-|---|---|
-| **Emplois du temps** | Planification des cours par groupe, module, professeur et salle |
-| **Notes** | Saisie et calcul automatique des notes (CC1, CC2, Examen) par module |
-| **Absences** | Suivi des présences, dépôt et validation de justificatifs |
-| **Salles virtuelles** | Espace classe avec publications, commentaires et fichiers |
-| **Examens** | Planification des examens, convocations, sessions |
-| **Réservations** | Réservation de salles avec vérification de conflits |
-| **Messagerie** | Conversations directes entre utilisateurs |
-| **Notifications** | Notifications académiques en temps réel |
-| **Administration** | Gestion complète des utilisateurs, filières, groupes, modules |
+**Gestion Universitaire** est une application web performante conçue pour digitaliser et simplifier la gestion quotidienne d'un établissement d'enseignement supérieur (type Université ou École d'Ingénieurs). 
 
-## Rôles et Comptes de Démonstration
+Elle connecte l'administration, le corps professoral et les étudiants via des espaces de travail unifiés et sécurisés. L'objectif est d'automatiser les processus lourds (notes, absences, emplois du temps) tout en offrant une expérience utilisateur fluide et moderne.
 
-Le système intègre trois rôles avec les comptes de démonstration pré-générés suivants (mot de passe : `password`) :
+---
 
-- **Admin** — `admin@university.com` : gestion complète de la plateforme
-- **Professeur** — `prof@university.com` : saisie des notes/absences, publications dans les classes
-- **Étudiant** — `student@university.com` : consultation des notes/absences, dépôt de justificatifs, participation aux classes
+## ✨ Fonctionnalités Détaillées
 
-## Prérequis
+### 👮 Espace Administration
+- **Gestion des Utilisateurs :** Création, modification et import (CSV) d'étudiants, professeurs et membres du staff.
+- **Ingénierie Pédagogique :** Configuration des filières, niveaux, groupes, et modules d'enseignement.
+- **Logistique :** Gestion du parc des salles (Amphis, Salles de TP/TD) et validation des réservations.
+- **Emplois du temps :** Interface de conception des plannings (affectation des profs, salles, et modules aux groupes).
+- **Examens :** Planification des épreuves, assignation des salles et génération en masse des convocations PDF.
+- **Guichet Étudiant :** Traitement des demandes administratives (Attestations de scolarité, relevés de notes) et validation des justificatifs d'absence.
 
-- PHP 8.2+
+### 👨‍🏫 Espace Professeur
+- **Saisie des Notes :** Interface sécurisée pour la saisie des notes (CC1, CC2, Examen) avec calcul automatique de la moyenne.
+- **Suivi des Absences :** Appel en classe et enregistrement direct des absences.
+- **Classes Virtuelles :** Espaces collaboratifs par groupe pour publier des annonces, des supports de cours et échanger avec les étudiants.
+- **Réservations :** Demandes de réservation de salles pour des séances de rattrapage ou des examens.
+- **Tableau de Bord :** Statistiques de réussite, taux d'assiduité, et top étudiants.
+
+### 👨‍🎓 Espace Étudiant
+- **Suivi Pédagogique :** Consultation en temps réel des notes et des moyennes par module.
+- **Emploi du temps :** Planning hebdomadaire personnalisé avec informations sur les salles et les enseignants.
+- **Assiduité :** Historique des absences et module de téléversement des justificatifs médicaux.
+- **Classes Virtuelles :** Accès aux supports de cours partagés par les professeurs et espace de discussion (commentaires).
+- **Démarches :** Demandes de documents administratifs en un clic.
+
+---
+
+## 🏗️ Architecture du Projet
+
+Le projet repose sur l'architecture robuste de **Laravel 12** en suivant scrupuleusement le design pattern **MVC (Modèle-Vue-Contrôleur)**.
+
+### Stack Technique
+- **Backend :** PHP 8.2+, Laravel 12
+- **Frontend :** Moteur de templates Blade, Tailwind CSS (Design System), Alpine.js (Interactivité)
+- **Base de données :** SQLite (pour le développement local) / Compatible MySQL & PostgreSQL (Production)
+- **Outils :** Vite (Compilation des assets), FullCalendar (Plannings)
+
+### Structure de la Base de Données (Relations clés)
+- `Users` -> `Roles` (1:N)
+- `Students` -> `Groups` (N:1), `Users` (1:1)
+- `Professors` -> `Users` (1:1)
+- `Modules`, `Groups` -> `Filieres` (N:1)
+- `Schedules` -> `Groups`, `Modules`, `Rooms`, `Professors` (Table Pivot)
+- `Grades` -> `Students`, `Modules` (Table de jointure complexe)
+
+### Sécurité & Flux
+- **Authentification :** Gestion des sessions via Laravel Breeze/Auth.
+- **Autorisation (Middlewares) :**
+  - Accès protégé par des alias de routes (`role:admin`, `role:professor`, `role:student`).
+  - Politiques d'accès strictes au niveau des contrôleurs (ex: un professeur ne modifie que les notes de ses propres modules/groupes).
+- **Protection des données :** Les justificatifs et documents sensibles sont stockés dans `storage/app/private` et servis via des routes contrôlées (aucun accès public direct).
+- **Transactions :** Utilisation intensive de `DB::transaction()` lors des opérations groupées (ex: saisie de notes) pour garantir l'intégrité de la base.
+
+### API REST
+Une API JSON est disponible pour une potentielle application mobile :
+- Génération et validation de jetons via Laravel Sanctum.
+- Endpoints : Authentification, consultation de l'emploi du temps (`/api/schedule`), des notes (`/api/grades`) et des absences (`/api/absences`).
+
+---
+
+## 🚀 Installation & Déploiement
+
+### Prérequis
+- PHP 8.2 ou supérieur
 - Composer
-- Node.js 18+ & NPM
-- SQLite (par défaut) ou MySQL/MariaDB
+- Node.js (v18+) & NPM
 
-## Installation
+### Instructions pas-à-pas
 
-```bash
-# 1. Cloner le projet
-git clone <url> && cd <dossier>
+1. **Cloner le projet**
+   ```bash
+   git clone https://github.com/radouane99/Gestion-Universitaire-Plateforme-de-gestion-acad-mique.git
+   cd Gestion-Universitaire-Plateforme-de-gestion-acad-mique
+   ```
 
-# 2. Installer les dépendances
-composer install
-npm install
+2. **Installer les dépendances PHP et JS**
+   ```bash
+   composer install
+   npm install
+   ```
 
-# 3. Configurer l'environnement
-cp .env.example .env
-php artisan key:generate
+3. **Configuration de l'environnement**
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
+   *(Si vous utilisez MySQL, modifiez les accès `DB_*` dans le fichier `.env`)*.
 
-# 4. Créer la base de données
-touch database/database.sqlite    # SQLite uniquement
-php artisan migrate --seed
+4. **Initialisation de la base de données**
+   ```bash
+   # Création du fichier SQLite (si environnement de dev par défaut)
+   touch database/database.sqlite
+   
+   # Lancement des migrations avec insertion des données de démonstration
+   php artisan migrate --seed
+   ```
 
-# 5. Compiler les assets
-npm run build
+5. **Compilation des assets**
+   ```bash
+   npm run build
+   ```
 
-# 6. Lancer le serveur
-php artisan serve
-```
+6. **Démarrer le serveur local**
+   ```bash
+   php artisan serve
+   ```
+   *Accédez à l'application via `http://localhost:8000`*.
 
-## Migration des justificatifs (une seule fois)
+---
 
-Si d'anciens justificatifs se trouvent dans `public/justifications`, exécutez :
+## 🔑 Rôles et Comptes de Démonstration
 
-```bash
-php scripts/migrate_justifications.php
-```
+L'application est pré-configurée avec des données réalistes grâce aux seeders. Voici les comptes par défaut pour tester les différents rôles (le mot de passe est identique pour tous) :
 
-Ce script déplace les fichiers vers `storage/app/justifications` (privé), met à jour la base de données, et supprime le dossier public.
+| Rôle | Adresse Email | Mot de passe |
+|---|---|---|
+| **Administrateur** | `admin@university.com` | `password` |
+| **Professeur** | `prof@university.com` | `password` |
+| **Étudiant** | `student@university.com` | `password` |
 
-## Architecture sécurité
+*(Note : D'autres comptes sont générés aléatoirement, vérifiez le fichier `DatabaseSeeder.php` pour plus de détails).*
 
-- **Middleware global** : `SetLocale` uniquement
-- **Middleware par route** : `role:admin`, `check.admin`, `protect.sensitive` appliqués via alias dans `routes/web.php`
-- **Justificatifs** : stockés sur le disque `local` (privé), téléchargement via route protégée avec vérification admin/propriétaire
-- **Notes** : opérations en transaction DB pour garantir l'atomicité
-- **Absences** : validation que les `student_id` appartiennent au groupe du schedule
-- **Classes virtuelles** : autorisation par rôle (étudiant du groupe OU professeur du module OU admin)
+---
 
-## Stack technique
-
-- **Backend** : Laravel 12
-- **Frontend** : Blade + Vite + JavaScript
-- **Base de données** : SQLite (dev) / MySQL (prod)
-- **Authentification** : Laravel built-in auth
-
-## Licence
-
-Projet académique — Examen final.
+## 📄 Licence
+Ce projet a été développé dans le cadre d'un examen final académique. Usage pédagogique privilégié.
