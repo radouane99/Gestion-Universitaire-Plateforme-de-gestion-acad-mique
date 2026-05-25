@@ -1,0 +1,32 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    body {
+        @apply font-sans text-gray-900 bg-[#F8FAFC];
+    }
+    h1, h2, h3, h4, h5, h6 {
+        @apply font-heading tracking-tight;
+    }
+}
+
+@layer components {
+    .glass-card {
+        @apply bg-white/80 backdrop-blur-md border border-white/20 shadow-xl;
+    }
+    .premium-btn {
+        @apply px-6 py-3 rounded-xl font-bold transition-all duration-300 transform hover:-translate-y-0.5 active:scale-95 shadow-lg;
+    }
+    .btn-upf {
+        @apply premium-btn bg-upf-blue text-white hover:bg-upf-navy shadow-blue-200;
+    }
+    .nav-link-premium {
+        @apply flex items-center px-4 py-3 rounded-xl transition-all duration-200 text-gray-500 hover:bg-indigo-50 hover:text-upf-blue font-medium;
+    }
+    .nav-link-premium.active {
+        @apply bg-indigo-100 text-upf-blue font-bold shadow-sm;
+    }
+}

@@ -1,0 +1,45 @@
+/* public/css/calendar.css */
+#calendar {
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 1rem;
+}
+
+/* FullCalendar dark theme tweaks */
+.fc .fc-toolbar-title {
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.fc-theme-standard .fc-scrollgrid,
+.fc-theme-standard .fc-col-header-cell,
+.fc-theme-standard .fc-daygrid-day {
+    background: #1f2937;   /* dark gray */
+    border-color: #374151;
+    color: #e5e7eb;
+}
+
+.fc-event {
+    border-radius: 4px;
+    opacity: 0.9;
+    transition: opacity .2s, transform .2s;
+    background-color: #2563eb; /* primary blue */
+    color: #fff;
+    border: none;
+}
+
+.fc-event:hover {
+    opacity: 1;
+    transform: scale(1.03);
+}
+
+/* Micro‑animation for event pop‑ins */
+.fc-event .fc-event-title {
+    transition: color .2s;
+}
+
+.fc-event:hover .fc-event-title {
+    color: #ffd700;
+}
