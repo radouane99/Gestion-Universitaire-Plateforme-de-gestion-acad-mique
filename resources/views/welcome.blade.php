@@ -3,52 +3,56 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ config('app.name', 'UPF Portal') }} - L'Université de Demain</title>
+    <title>{{ config('app.name', 'UPF Portal') }} - Université Privée de Fès</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     
     <!-- PWA -->
     <link rel="manifest" href="/manifest.json">
-    <meta name="theme-color" content="#4f46e5">
+    <meta name="theme-color" content="#003893">
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js" defer></script>
+
+    <style>
+        body { font-family: 'Outfit', sans-serif; }
+        .bg-upf-blue { background-color: #003893; }
+        .text-upf-blue { color: #003893; }
+        .bg-upf-pink { background-color: #b50060; }
+        .text-upf-pink { color: #b50060; }
+        .gradient-upf { background: linear-gradient(135deg, #003893 0%, #001f54 100%); }
+    </style>
 </head>
-<body class="font-sans antialiased bg-slate-50 text-slate-900 selection:bg-indigo-500 selection:text-white" x-data="landingPage()">
+<body class="font-sans antialiased bg-slate-50 text-slate-900 selection:bg-upf-pink selection:text-white" x-data="landingPage()">
 
     <!-- Navbar -->
-    <nav class="fixed w-full z-50 transition-all duration-300" :class="scrolled ? 'bg-white/80 backdrop-blur-lg shadow-sm py-3' : 'bg-transparent py-5'">
+    <nav class="fixed w-full z-50 transition-all duration-300" :class="scrolled ? 'bg-white/90 backdrop-blur-md shadow-sm py-3' : 'bg-transparent py-5'">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center">
                 <!-- Logo -->
-                <div class="flex-shrink-0 flex items-center gap-2">
-                    <div class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white font-black text-xl shadow-lg shadow-indigo-500/30">
-                        U
+                <div class="flex-shrink-0 flex items-center gap-3">
+                    <div class="h-14 w-auto flex items-center justify-center bg-white rounded-xl p-2 shadow-sm transition transform hover:scale-105">
+                        <img src="https://www.upf.ac.ma/wp-content/uploads/2020/07/logo-upf.png" alt="UPF Logo" class="h-10 object-contain" onerror="this.outerHTML='<div class=\'font-black text-2xl text-[#003893]\'>UPF<span class=\'text-[#b50060]\'>.</span></div>'">
                     </div>
-                    <span class="font-black text-2xl tracking-tighter text-slate-800">UPF<span class="text-indigo-600">.</span></span>
                 </div>
 
                 <!-- Desktop Menu -->
-                <div class="hidden md:flex items-center space-x-8">
-                    <a href="#features" class="text-sm font-bold text-slate-600 hover:text-indigo-600 transition-colors">Fonctionnalités</a>
-                    <a href="#ai" class="text-sm font-bold text-slate-600 hover:text-indigo-600 transition-colors">Intelligence Artificielle</a>
-                    <a href="#pwa" class="text-sm font-bold text-slate-600 hover:text-indigo-600 transition-colors">Application Mobile</a>
+                <div class="hidden md:flex items-center space-x-8 bg-white/50 backdrop-blur-sm px-6 py-2.5 rounded-full border border-white/20 shadow-sm">
+                    <a href="#features" class="text-sm font-semibold text-slate-800 hover:text-upf-pink transition-colors">Notre Plateforme</a>
+                    <a href="#ai" class="text-sm font-semibold text-slate-800 hover:text-upf-pink transition-colors">Intelligence Artificielle</a>
                 </div>
 
-                <!-- Auth / Install Buttons -->
+                <!-- Auth Buttons -->
                 <div class="hidden md:flex items-center space-x-4">
-                    <button x-show="showInstallBtn" @click="installPwa()" class="text-sm font-bold text-indigo-600 bg-indigo-50 px-4 py-2 rounded-xl hover:bg-indigo-100 transition">
-                        Installer l'App
-                    </button>
                     @if (Route::has('login'))
                         @auth
-                            <a href="{{ url('/dashboard') }}" class="text-sm font-black text-white bg-slate-900 hover:bg-slate-800 px-6 py-2.5 rounded-xl transition shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">Mon Portail</a>
+                            <a href="{{ url('/dashboard') }}" class="text-sm font-bold text-white bg-upf-blue hover:bg-blue-900 px-6 py-3 rounded-full transition shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 border border-blue-800">Mon Espace Académique</a>
                         @else
-                            <a href="{{ route('login') }}" class="text-sm font-black text-white bg-indigo-600 hover:bg-indigo-700 px-6 py-2.5 rounded-xl transition shadow-lg shadow-indigo-500/30 hover:shadow-xl hover:shadow-indigo-500/40 transform hover:-translate-y-0.5">Connexion</a>
+                            <a href="{{ route('login') }}" class="text-sm font-bold text-white bg-upf-pink hover:bg-pink-700 px-6 py-3 rounded-full transition shadow-lg shadow-pink-500/30 hover:shadow-xl transform hover:-translate-y-0.5 border border-pink-600">Connexion au Portail</a>
                         @endauth
                     @endif
                 </div>
@@ -57,198 +61,207 @@
     </nav>
 
     <!-- Hero Section -->
-    <div class="relative pt-32 pb-20 sm:pt-40 sm:pb-24 overflow-hidden">
-        <div class="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-50 via-slate-50 to-white"></div>
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 text-indigo-700 font-black text-xs uppercase tracking-widest mb-8 border border-indigo-100">
+    <div class="relative pt-32 pb-20 sm:pt-40 sm:pb-32 overflow-hidden gradient-upf">
+        <!-- Background Image overlay for UPF campus feeling -->
+        <div class="absolute inset-0 bg-[url('https://www.upf.ac.ma/wp-content/uploads/2020/07/upf-campus.jpg')] bg-cover bg-center opacity-10 mix-blend-overlay"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-transparent to-[#001f54]/90"></div>
+        
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white">
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md text-white font-bold text-xs uppercase tracking-widest mb-8 border border-white/20 shadow-xl">
                 <span class="relative flex h-2 w-2">
-                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
-                  <span class="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span>
+                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                  <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
                 </span>
-                Soutenance PFE 2026
+                Université Reconnue par l'État
             </div>
             
-            <h1 class="text-5xl sm:text-7xl font-black tracking-tighter text-slate-900 mb-6 leading-tight">
-                L'Université de Demain, <br>
-                <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600 italic">Dès Aujourd'hui.</span>
+            <h1 class="text-5xl sm:text-7xl font-black tracking-tight mb-6 leading-tight drop-shadow-2xl">
+                Université Privée de Fès <br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-rose-200">L'Excellence au Quotidien.</span>
             </h1>
             
-            <p class="mt-4 text-lg sm:text-xl text-slate-500 max-w-2xl mx-auto font-medium mb-10">
-                La première plateforme académique au Maroc pilotée par l'Intelligence Artificielle. Gestion des notes, rattrapages automatiques, et relevés de notes sécurisés.
+            <p class="mt-6 text-lg sm:text-xl text-blue-100 max-w-3xl mx-auto font-light mb-12 leading-relaxed drop-shadow-md">
+                Découvrez la nouvelle plateforme académique intelligente de l'UPF. Gérée par l'Intelligence Artificielle pour vous offrir une expérience universitaire moderne, fluide et connectée.
             </p>
             
-            <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
+            <div class="flex flex-col sm:flex-row justify-center items-center gap-6">
                 @if (Route::has('login'))
                     @auth
-                        <a href="{{ url('/dashboard') }}" class="w-full sm:w-auto px-8 py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-black rounded-2xl shadow-lg shadow-indigo-500/30 transition transform hover:-translate-y-1 text-lg flex justify-center items-center gap-2">
-                            Accéder à l'Espace <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                        <a href="{{ url('/dashboard') }}" class="w-full sm:w-auto px-8 py-4 bg-white text-upf-blue hover:bg-blue-50 font-black rounded-full shadow-2xl transition transform hover:-translate-y-1 text-lg flex justify-center items-center gap-2">
+                            Accéder au Tableau de Bord <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                         </a>
                     @else
-                        <a href="{{ route('login') }}" class="w-full sm:w-auto px-8 py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-black rounded-2xl shadow-lg shadow-indigo-500/30 transition transform hover:-translate-y-1 text-lg flex justify-center items-center gap-2">
-                            Se connecter au Portail <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                        <a href="{{ route('login') }}" class="w-full sm:w-auto px-8 py-4 bg-upf-pink hover:bg-pink-600 text-white font-black rounded-full shadow-2xl shadow-pink-500/40 transition transform hover:-translate-y-1 text-lg flex justify-center items-center gap-2 border border-pink-500">
+                            Accéder au Portail Étudiant / Professeur <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                         </a>
                     @endauth
                 @endif
-                <button x-show="showInstallBtn" @click="installPwa()" class="w-full sm:w-auto px-8 py-4 bg-white hover:bg-slate-50 text-slate-800 border border-slate-200 font-black rounded-2xl shadow-sm transition flex justify-center items-center gap-2 text-lg">
-                    📱 Installer l'App
-                </button>
             </div>
-            
-            <!-- Dashboard Mockup Image (CSS styled div for safety) -->
-            <div class="mt-20 relative max-w-5xl mx-auto">
-                <div class="absolute inset-0 bg-gradient-to-t from-slate-50 via-transparent to-transparent z-10 bottom-0 h-32"></div>
-                <div class="rounded-3xl shadow-2xl border border-slate-200/60 bg-white overflow-hidden transform perspective-1000 rotate-x-12 scale-95 transition hover:rotate-0 hover:scale-100 duration-700">
-                    <!-- Fake browser bar -->
-                    <div class="bg-slate-100 px-4 py-3 flex items-center gap-2 border-b border-slate-200">
-                        <div class="w-3 h-3 rounded-full bg-red-400"></div>
-                        <div class="w-3 h-3 rounded-full bg-amber-400"></div>
-                        <div class="w-3 h-3 rounded-full bg-emerald-400"></div>
-                        <div class="mx-auto bg-white rounded-md px-32 py-1 shadow-sm text-[10px] text-slate-400 font-mono">upf.ac.ma/dashboard</div>
-                    </div>
-                    <!-- Fake content -->
-                    <div class="p-8 bg-slate-50 grid grid-cols-4 gap-6 opacity-80 h-96">
-                        <div class="col-span-1 space-y-4">
-                            <div class="h-8 bg-slate-200 rounded-lg w-3/4"></div>
-                            <div class="h-4 bg-slate-200 rounded w-1/2"></div>
-                            <div class="h-4 bg-slate-200 rounded w-full mt-8"></div>
-                            <div class="h-4 bg-slate-200 rounded w-full"></div>
-                            <div class="h-4 bg-slate-200 rounded w-5/6"></div>
-                        </div>
-                        <div class="col-span-3 space-y-6">
-                            <div class="grid grid-cols-3 gap-4">
-                                <div class="h-24 bg-indigo-100 rounded-2xl"></div>
-                                <div class="h-24 bg-white border border-slate-200 rounded-2xl"></div>
-                                <div class="h-24 bg-white border border-slate-200 rounded-2xl"></div>
-                            </div>
-                            <div class="h-64 bg-white border border-slate-200 rounded-3xl"></div>
-                        </div>
-                    </div>
+        </div>
+        
+        <!-- Elegant Wave Separator -->
+        <div class="absolute bottom-0 left-0 right-0">
+            <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full h-auto text-slate-50 drop-shadow-sm">
+                <path d="M0 120L60 105C120 90 240 60 360 45C480 30 600 30 720 37.5C840 45 960 60 1080 60C1200 60 1320 45 1380 37.5L1440 30V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z" fill="currentColor"/>
+            </svg>
+        </div>
+    </div>
+
+    <!-- UPF Statistics Section -->
+    <div class="py-12 bg-slate-50 relative z-20 -mt-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-white rounded-[2.5rem] shadow-xl shadow-slate-200/50 p-8 sm:p-12 border border-slate-100 flex flex-col sm:flex-row justify-around items-center gap-8">
+                <div class="text-center group">
+                    <div class="text-5xl font-black text-upf-blue mb-2 group-hover:scale-110 transition-transform">Reconnue</div>
+                    <div class="text-sm font-bold text-slate-500 uppercase tracking-widest">Par l'État Marocain</div>
+                </div>
+                <div class="w-px h-20 bg-slate-200 hidden sm:block"></div>
+                <div class="text-center group">
+                    <div class="text-5xl font-black text-upf-blue mb-2 group-hover:scale-110 transition-transform">100%</div>
+                    <div class="text-sm font-bold text-slate-500 uppercase tracking-widest">Plateforme Numérisée</div>
+                </div>
+                <div class="w-px h-20 bg-slate-200 hidden sm:block"></div>
+                <div class="text-center group">
+                    <div class="text-5xl font-black text-upf-pink mb-2 group-hover:scale-110 transition-transform">IA</div>
+                    <div class="text-sm font-bold text-slate-500 uppercase tracking-widest">Intégration LLaMA 3</div>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Features Section -->
-    <div id="features" class="py-24 bg-white">
+    <div id="features" class="py-24 bg-slate-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center max-w-3xl mx-auto mb-16">
-                <h2 class="text-3xl font-black tracking-tighter text-slate-900 sm:text-4xl">Une plateforme complète, de l'inscription à la diplomation.</h2>
-                <p class="mt-4 text-lg text-slate-500">Tout ce dont l'administration, les professeurs et les étudiants ont besoin, réuni au même endroit.</p>
+            <div class="text-center max-w-3xl mx-auto mb-20">
+                <h2 class="text-4xl font-black tracking-tight text-slate-900 sm:text-5xl mb-6">Une gestion académique d'excellence</h2>
+                <p class="text-lg text-slate-600 font-light">L'UPF s'engage à offrir la meilleure expérience numérique à ses étudiants et son corps professoral grâce à des outils de pointe.</p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
                 <!-- Feature 1 -->
-                <div class="bg-slate-50 rounded-3xl p-8 border border-slate-100 hover:border-indigo-100 hover:shadow-xl transition-all duration-300">
-                    <div class="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center text-2xl mb-6">📄</div>
-                    <h3 class="text-xl font-black text-slate-900 mb-3">Documents Officiels Sécurisés</h3>
-                    <p class="text-slate-500 text-sm leading-relaxed">Génération automatique des relevés de notes et attestations de réussite en format PDF, authentifiés par un Code QR unique anti-fraude.</p>
+                <div class="bg-white rounded-[2rem] p-10 border border-slate-100 hover:border-upf-blue hover:shadow-2xl transition-all duration-300 group relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-blue-50 rounded-bl-[100px] -z-10 transition-all group-hover:scale-150"></div>
+                    <div class="w-16 h-16 bg-blue-100 text-upf-blue rounded-2xl flex items-center justify-center text-3xl mb-8 group-hover:scale-110 transition-transform shadow-sm">🎓</div>
+                    <h3 class="text-2xl font-bold text-slate-900 mb-4">Scolarité Transparente</h3>
+                    <p class="text-slate-500 text-base leading-relaxed">Suivi des notes en temps réel, gestion des absences, et génération automatique de documents officiels (Attestations, Relevés) sécurisés par Code QR anti-fraude.</p>
                 </div>
                 <!-- Feature 2 -->
-                <div class="bg-slate-50 rounded-3xl p-8 border border-slate-100 hover:border-emerald-100 hover:shadow-xl transition-all duration-300">
-                    <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center text-2xl mb-6">⚙️</div>
-                    <h3 class="text-xl font-black text-slate-900 mb-3">Délibérations Automatisées</h3>
-                    <p class="text-slate-500 text-sm leading-relaxed">Un moteur de règles puissant qui calcule la compensation, les crédits, et l'éligibilité aux rattrapages selon le strict règlement universitaire.</p>
+                <div class="bg-white rounded-[2rem] p-10 border border-slate-100 hover:border-upf-pink hover:shadow-2xl transition-all duration-300 group relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-pink-50 rounded-bl-[100px] -z-10 transition-all group-hover:scale-150"></div>
+                    <div class="w-16 h-16 bg-pink-100 text-upf-pink rounded-2xl flex items-center justify-center text-3xl mb-8 group-hover:scale-110 transition-transform shadow-sm">⚙️</div>
+                    <h3 class="text-2xl font-bold text-slate-900 mb-4">Délibérations Automatisées</h3>
+                    <p class="text-slate-500 text-base leading-relaxed">Le système calcule automatiquement la validation des modules, des semestres, et l'éligibilité aux rattrapages en respectant strictement le règlement de l'UPF.</p>
                 </div>
                 <!-- Feature 3 -->
-                <div class="bg-slate-50 rounded-3xl p-8 border border-slate-100 hover:border-amber-100 hover:shadow-xl transition-all duration-300">
-                    <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-2xl flex items-center justify-center text-2xl mb-6">📊</div>
-                    <h3 class="text-xl font-black text-slate-900 mb-3">Analyses & Pilotage</h3>
-                    <p class="text-slate-500 text-sm leading-relaxed">Un tableau de bord complet avec des graphiques en temps réel (Chart.js) pour détecter les étudiants à risque et les modules difficiles.</p>
+                <div class="bg-white rounded-[2rem] p-10 border border-slate-100 hover:border-blue-400 hover:shadow-2xl transition-all duration-300 group relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-blue-50 rounded-bl-[100px] -z-10 transition-all group-hover:scale-150"></div>
+                    <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center text-3xl mb-8 group-hover:scale-110 transition-transform shadow-sm">📅</div>
+                    <h3 class="text-2xl font-bold text-slate-900 mb-4">Espace Professeur</h3>
+                    <p class="text-slate-500 text-base leading-relaxed">Cahier de textes numérique, saisie des notes simplifiée, gestion de la classe interactive et communication directe avec les groupes d'étudiants.</p>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- AI Section -->
-    <div id="ai" class="py-24 bg-slate-900 text-white relative overflow-hidden">
-        <div class="absolute top-0 right-0 -mt-20 -mr-20 w-96 h-96 bg-indigo-500 rounded-full blur-3xl opacity-20"></div>
+    <div id="ai" class="py-24 bg-white relative overflow-hidden">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-                <div>
-                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/20 text-purple-300 font-black text-xs uppercase tracking-widest mb-6 border border-purple-500/30">
-                        ✨ Next-Gen
-                    </div>
-                    <h2 class="text-4xl font-black tracking-tighter sm:text-5xl mb-6">Propulsé par <span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-indigo-400 italic">LLaMA 3.3</span></h2>
-                    <p class="text-lg text-slate-400 mb-8 leading-relaxed">
-                        L'intelligence artificielle n'est plus le futur, c'est aujourd'hui. Notre plateforme intègre nativement un assistant virtuel surpuissant.
-                    </p>
-                    
-                    <ul class="space-y-6">
-                        <li class="flex gap-4">
-                            <div class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center shrink-0">🎓</div>
-                            <div>
-                                <h4 class="font-bold text-white">Assistant Étudiant Intelligent</h4>
-                                <p class="text-sm text-slate-400 mt-1">Un chatbot qui connaît les notes et le profil de l'étudiant pour lui répondre instantanément sur sa situation.</p>
-                            </div>
-                        </li>
-                        <li class="flex gap-4">
-                            <div class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center shrink-0">✍️</div>
-                            <div>
-                                <h4 class="font-bold text-white">Aide à la Correction</h4>
-                                <p class="text-sm text-slate-400 mt-1">Génération automatique de brouillons de réponses aux réclamations étudiantes pour les professeurs.</p>
-                            </div>
-                        </li>
-                        <li class="flex gap-4">
-                            <div class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center shrink-0">📈</div>
-                            <div>
-                                <h4 class="font-bold text-white">Conseiller Pédagogique Admin</h4>
-                                <p class="text-sm text-slate-400 mt-1">L'IA analyse le dossier complet d'un étudiant et génère un bilan textuel des forces et faiblesses.</p>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
+            <div class="bg-slate-900 rounded-[3rem] p-8 sm:p-16 overflow-hidden relative shadow-2xl border border-slate-800">
+                <!-- Decorative blurred shapes -->
+                <div class="absolute top-0 right-0 -mt-20 -mr-20 w-96 h-96 bg-upf-pink rounded-full blur-[120px] opacity-40"></div>
+                <div class="absolute bottom-0 left-0 -mb-20 -ml-20 w-96 h-96 bg-upf-blue rounded-full blur-[120px] opacity-40"></div>
                 
-                <!-- Mockup Chat -->
-                <div class="bg-slate-800 rounded-3xl p-6 border border-slate-700 shadow-2xl relative">
-                    <div class="flex items-center gap-3 border-b border-slate-700 pb-4 mb-4">
-                        <div class="w-10 h-10 rounded-full bg-purple-500/20 text-xl flex items-center justify-center">🤖</div>
-                        <div>
-                            <h4 class="font-bold">Smart UPF Assistant</h4>
-                            <p class="text-xs text-green-400">En ligne</p>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center relative z-10">
+                    <div>
+                        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-pink-500/20 text-pink-300 font-bold text-xs uppercase tracking-widest mb-6 border border-pink-500/30">
+                            ✨ UPF Smart AI
                         </div>
+                        <h2 class="text-4xl font-black tracking-tight sm:text-5xl mb-6 text-white">L'Université du Futur, pilotée par <span class="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-rose-300">LLaMA 3</span></h2>
+                        <p class="text-lg text-slate-300 mb-10 leading-relaxed font-light">
+                            Nous sommes fiers d'être la première université marocaine à intégrer un assistant d'Intelligence Artificielle au cœur de sa pédagogie et de son administration.
+                        </p>
+                        
+                        <ul class="space-y-8">
+                            <li class="flex gap-5">
+                                <div class="w-14 h-14 rounded-2xl bg-white/10 flex items-center justify-center shrink-0 border border-white/10 text-2xl shadow-inner">💬</div>
+                                <div>
+                                    <h4 class="font-bold text-white text-xl mb-1">Assistant Étudiant 24/7</h4>
+                                    <p class="text-base text-slate-400">Posez des questions sur vos notes, vos absences ou le règlement. L'IA analyse votre dossier et vous répond instantanément et précisément.</p>
+                                </div>
+                            </li>
+                            <li class="flex gap-5">
+                                <div class="w-14 h-14 rounded-2xl bg-white/10 flex items-center justify-center shrink-0 border border-white/10 text-2xl shadow-inner">📝</div>
+                                <div>
+                                    <h4 class="font-bold text-white text-xl mb-1">Aide Pédagogique aux Professeurs</h4>
+                                    <p class="text-base text-slate-400">L'IA génère des brouillons de réponses aux réclamations étudiantes, faisant gagner un temps précieux au corps académique de l'UPF.</p>
+                                </div>
+                            </li>
+                        </ul>
                     </div>
-                    <div class="space-y-4">
-                        <div class="flex justify-end">
-                            <div class="bg-indigo-600 text-white p-3 rounded-2xl rounded-tr-none text-sm max-w-[80%]">
-                                Ai-je droit au rattrapage en Programmation Web ? J'ai eu 8.5/20.
+                    
+                    <!-- Mockup Chat -->
+                    <div class="bg-slate-800/80 backdrop-blur-md rounded-3xl p-6 border border-slate-700 shadow-2xl transform hover:-translate-y-2 transition duration-500">
+                        <div class="flex items-center gap-4 border-b border-slate-700 pb-5 mb-5">
+                            <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-upf-blue to-upf-pink text-white text-xl flex items-center justify-center font-bold shadow-lg ring-2 ring-white/20">IA</div>
+                            <div>
+                                <h4 class="font-bold text-white text-lg">UPF Assistant Pédagogique</h4>
+                                <p class="text-sm text-emerald-400 font-medium flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span> Connecté au système</p>
                             </div>
                         </div>
-                        <div class="flex justify-start">
-                            <div class="bg-slate-700 text-white p-3 rounded-2xl rounded-tl-none text-sm max-w-[80%]">
-                                Bonjour ! Oui, selon le règlement de l'UPF, toute note inférieure à 10/20 vous donne droit à un rattrapage. Votre demande a été signalée à l'administration.
+                        <div class="space-y-5">
+                            <div class="flex justify-end">
+                                <div class="bg-upf-blue text-white p-4 rounded-2xl rounded-tr-sm text-[15px] max-w-[85%] shadow-md leading-relaxed">
+                                    Bonjour, ai-je validé mon semestre S1 en Génie Civil ? J'ai eu 9.5 en Matériaux de Construction.
+                                </div>
+                            </div>
+                            <div class="flex justify-start">
+                                <div class="bg-slate-700 text-slate-100 p-4 rounded-2xl rounded-tl-sm text-[15px] max-w-[90%] shadow-md border border-slate-600 leading-relaxed">
+                                    Bonjour ! J'ai consulté votre dossier. Avec 9.5 en Matériaux et 14 en Résistance des Matériaux, votre moyenne du module est de 11.75/20. Vous validez le module par compensation selon l'article 12 du règlement de l'UPF. Félicitations pour votre S1 ! 🎉
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-
-    <!-- PWA Install Section -->
-    <div id="pwa" class="py-24 bg-indigo-600 text-white text-center">
-        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-5xl mb-6">📱</div>
-            <h2 class="text-3xl font-black tracking-tighter sm:text-4xl mb-4">Emportez l'Université dans votre poche</h2>
-            <p class="text-indigo-100 text-lg mb-8">
-                Installez l'application UPF sur votre smartphone. C'est rapide, léger, et ça ne prend pas de place (PWA). Vous recevrez vos alertes directement sur votre écran d'accueil.
-            </p>
-            <button x-show="showInstallBtn" @click="installPwa()" class="bg-white text-indigo-600 font-black px-8 py-4 rounded-2xl shadow-xl hover:scale-105 transition transform text-lg">
-                Installer l'application maintenant
-            </button>
-            <p x-show="!showInstallBtn" class="text-sm text-indigo-200 bg-indigo-700/50 inline-block px-4 py-2 rounded-lg">
-                L'application est déjà installée ou non supportée par votre navigateur.
-            </p>
         </div>
     </div>
 
     <!-- Footer -->
-    <footer class="bg-white border-t border-slate-100 py-12">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <div class="flex justify-center items-center gap-2 mb-4">
-                <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-black text-sm">U</div>
-                <span class="font-black tracking-tighter text-slate-800 text-xl">UPF.</span>
+    <footer class="bg-slate-900 text-slate-400 py-16 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+                <div class="col-span-1 md:col-span-2">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="h-14 w-auto bg-white rounded-xl p-2">
+                            <img src="https://www.upf.ac.ma/wp-content/uploads/2020/07/logo-upf.png" alt="UPF Logo" class="h-10">
+                        </div>
+                        <span class="font-black text-white text-2xl tracking-tight">Université Privée de Fès</span>
+                    </div>
+                    <p class="text-base leading-relaxed max-w-md">
+                        L'UPF est une institution d'enseignement supérieur reconnue par l'État marocain, offrant des formations d'excellence en ingénierie, architecture et management.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="text-white font-bold text-lg mb-6">Liens Rapides</h4>
+                    <ul class="space-y-3 text-base">
+                        <li><a href="https://www.upf.ac.ma" target="_blank" class="hover:text-upf-pink transition-colors flex items-center gap-2"><span>Site Officiel UPF</span></a></li>
+                        <li><a href="{{ route('login') }}" class="hover:text-upf-pink transition-colors">Portail Étudiant</a></li>
+                        <li><a href="{{ route('login') }}" class="hover:text-upf-pink transition-colors">Espace Professeur</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-white font-bold text-lg mb-6">Contact & Accès</h4>
+                    <ul class="space-y-3 text-base">
+                        <li class="flex items-start gap-2"><span>📍</span> <span>Lotissement Oued Fès, Route de Meknès, Fès, Maroc</span></li>
+                        <li class="flex items-center gap-2"><span>📞</span> <span>+212 535 61 03 20</span></li>
+                        <li class="flex items-center gap-2"><span>✉️</span> <span>contact@upf.ac.ma</span></li>
+                    </ul>
+                </div>
             </div>
-            <p class="text-sm text-slate-400">Projet de Fin d'Études 2026. Réalisé avec Laravel, Alpine.js et LLaMA 3.3.</p>
+            <div class="pt-8 border-t border-slate-800 text-sm flex flex-col md:flex-row justify-between items-center gap-4">
+                <p>&copy; 2026 Université Privée de Fès. Tous droits réservés.</p>
+                <p class="text-slate-500 font-medium">Plateforme conçue pour la Soutenance PFE 2026</p>
+            </div>
         </div>
     </footer>
 
@@ -256,31 +269,10 @@
         document.addEventListener('alpine:init', () => {
             Alpine.data('landingPage', () => ({
                 scrolled: false,
-                deferredPrompt: null,
-                showInstallBtn: false,
-                
                 init() {
                     window.addEventListener('scroll', () => {
                         this.scrolled = window.scrollY > 20;
                     });
-                    
-                    window.addEventListener('pwaMountPointReady', (e) => {
-                        this.deferredPrompt = e.detail.deferredPrompt;
-                        this.showInstallBtn = true;
-                    });
-                },
-                
-                installPwa() {
-                    if (this.deferredPrompt) {
-                        this.deferredPrompt.prompt();
-                        this.deferredPrompt.userChoice.then((choiceResult) => {
-                            if (choiceResult.outcome === 'accepted') {
-                                console.log('User accepted the install prompt');
-                                this.showInstallBtn = false;
-                            }
-                            this.deferredPrompt = null;
-                        });
-                    }
                 }
             }));
         });
