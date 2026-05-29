@@ -15,9 +15,7 @@
         "laravel/tinker": "^3.0",
         "maatwebsite/excel": "^1.1",
         "phpoffice/phpspreadsheet": "^5.7",
-        "simplesoftwareio/simple-qrcode": "^4.2",
-        "symfony/http-client": "*",
-        "symfony/resend-mailer": "*"
+        "simplesoftwareio/simple-qrcode": "^4.2"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
