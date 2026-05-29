@@ -40,7 +40,7 @@ class RealisticDataSeeder extends Seeder
             'IA' => ['name' => 'Intelligence Artificielle', 'prefix' => 'AI']
         ];
 
-        $password = Hash::make('password');
+        $password = Hash::make(env('SEED_USER_PASSWORD', 'ChangeMe123!'));
         
         $profRole = \App\Models\Role::firstOrCreate(['name' => 'professor']);
         $studentRole = \App\Models\Role::firstOrCreate(['name' => 'student']);

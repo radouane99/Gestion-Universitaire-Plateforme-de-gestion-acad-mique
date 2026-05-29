@@ -28,6 +28,11 @@ class ExamSession extends Model
         return $this->hasMany(Exam::class);
     }
 
+    public function professorConvocations()
+    {
+        return $this->hasManyThrough(ProfessorConvocation::class, Exam::class);
+    }
+
     public function getNameAttribute()
     {
         return match ($this->type) {

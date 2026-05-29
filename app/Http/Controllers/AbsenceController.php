@@ -6,10 +6,15 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Absence;
 use App\Models\Schedule;
+use App\Models\Student;
 use App\Models\ActivityLog;
+use App\Notifications\AbsenceRecorded;
+use App\Services\AbsenceAlertService;
 
 class AbsenceController extends Controller
 {
+    public function __construct(private AbsenceAlertService $alertService) {}
+
     public function index()
     {
         $professor = Auth::user()->professor;
@@ -33,19 +38,19 @@ class AbsenceController extends Controller
     public function store(\Illuminate\Http\Request $request)
     {
         $validated = $request->validate([
-            'schedule_id' => 'required|exists:schedules,id',
-            'absences'    => 'required|array',
-            'date'        => 'required|date',
+            'schedule_id'  => 'required|exists:schedules,id',
+            'absences'     => 'required|array',
+            'date'         => 'required|date',
             'session_type' => 'required|string',
         ]);
 
-        $schedule = Schedule::with('group.students')->findOrFail($validated['schedule_id']);
+        $schedule  = Schedule::with('group.students')->findOrFail($validated['schedule_id']);
         $professor = Auth::user()->professor;
         if (!$professor || $schedule->professor_id !== $professor->id) {
             abort(403, "Vous n'êtes pas autorisé à enregistrer des absences pour ce cours.");
         }
 
-        // Security: only accept student IDs that actually belong to this group
+        // Sécurité: uniquement les étudiants du groupe
         $authorizedStudentIds = $schedule->group->students->pluck('id')->toArray();
         foreach (array_keys($validated['absences']) as $student_id) {
             if (!in_array($student_id, $authorizedStudentIds)) {
@@ -53,8 +58,13 @@ class AbsenceController extends Controller
             }
         }
 
-        $durationHours = \Carbon\Carbon::parse($schedule->start_time)->diffInHours(\Carbon\Carbon::parse($schedule->end_time));
-        if ($durationHours <= 0) $durationHours = 1;
+        // ✅ Calcul en heures DÉCIMALES (1h30 = 1.5h)
+        $startTime    = \Carbon\Carbon::parse($schedule->start_time);
+        $endTime      = \Carbon\Carbon::parse($schedule->end_time);
+        $durationMins = max($startTime->diffInMinutes($endTime), 30); // Min 30 minutes
+        $durationHours = round($durationMins / 60, 2); // Ex: 90min → 1.5h
+
+        $affectedStudents = [];
 
         foreach ($validated['absences'] as $student_id => $isPresent) {
             $matchThese = [
@@ -64,26 +74,43 @@ class AbsenceController extends Controller
                 'session_type' => $validated['session_type'],
             ];
 
-            if ($isPresent == '0') { // Marked as absent
-                Absence::firstOrCreate($matchThese, [
+            if ($isPresent == '0') {
+                $absence = Absence::firstOrCreate($matchThese, [
+                    'schedule_id'          => $schedule->id,
                     'duration'             => $durationHours,
                     'is_justified'         => false,
                     'justification_status' => 'none',
                 ]);
-            } else { // Marked as present — remove any previously recorded absence
+
+                if ($absence->wasRecentlyCreated) {
+                    $affectedStudents[] = $student_id;
+
+                    // Notifier l'étudiant de son absence
+                    $student = Student::find($student_id);
+                    if ($student?->user) {
+                        $student->user->notify(new AbsenceRecorded(
+                            $schedule->module?->name ?? 'Module',
+                            $validated['date']
+                        ));
+
+                        // 🚨 Vérifier seuils et déclencher alertes
+                        $this->alertService->checkAndTriggerAlerts($student);
+                    }
+                }
+            } else {
                 Absence::where($matchThese)->delete();
             }
         }
 
-        ActivityLog::create([
-            'user_id'    => Auth::id(),
-            'action'     => 'created',
-            'model_type' => 'Absence',
-            'description' => "Feuille de présence enregistrée pour le module ID {$schedule->module_id}.",
-            'ip_address' => $request->ip()
-        ]);
+        ActivityLog::log(
+            'created',
+            'Absence',
+            "Feuille de présence enregistrée pour le module ID {$schedule->module_id}. "
+            . count($affectedStudents) . " absence(s) enregistrée(s)."
+        );
 
-        return redirect()->route('professor.absences.index')->with('success', 'Feuille de présence enregistrée avec succès.');
+        return redirect()->route('professor.absences.index')
+            ->with('success', 'Feuille de présence enregistrée avec succès.');
     }
 
     /**
@@ -151,18 +178,25 @@ class AbsenceController extends Controller
     {
         $query = Absence::with(['student.user', 'module']);
 
-        // Optional filtering by justification status
         if ($request->filled('status')) {
             $query->where('justification_status', $request->status);
         }
+        if ($request->filled('student_id')) {
+            $query->where('student_id', $request->student_id);
+        }
+        if ($request->filled('module_id')) {
+            $query->where('module_id', $request->module_id);
+        }
 
-        $absences = $query->orderBy('date', 'desc')->get();
+        $absences = $query->orderBy('date', 'desc')->paginate(30);
 
-        $studentsAtRisk = \App\Models\Student::with(['user', 'group'])->get()->filter(function($student) {
-            return $student->absence_score >= 120; // Example threshold
-        });
+        // Seuil configurable depuis settings
+        $threshold      = \App\Models\Setting::get('absence_discipline_threshold', 120);
+        $studentsAtRisk = \App\Models\Student::with(['user', 'group'])->get()->filter(
+            fn($s) => $s->absence_score >= $threshold
+        );
 
-        return view('admin.absences.index', compact('absences', 'studentsAtRisk'));
+        return view('admin.absences.index', compact('absences', 'studentsAtRisk', 'threshold'));
     }
 
     /**
@@ -171,17 +205,24 @@ class AbsenceController extends Controller
     public function approveJustification(Request $request, Absence $absence)
     {
         $absence->update([
-            'is_justified' => true,
+            'is_justified'         => true,
             'justification_status' => 'approved',
         ]);
 
-        ActivityLog::create([
-            'user_id' => Auth::id(),
-            'action' => 'approved',
-            'model_type' => 'Absence',
-            'description' => "Justificatif approuvé pour l'absence #{$absence->id}.",
-            'ip_address' => $request->ip()
-        ]);
+        ActivityLog::log('approved', 'Absence', "Justificatif approuvé pour l'absence #{$absence->id}.");
+
+        // Recalculer le statut discipline après justification
+        $student = $absence->student;
+        if ($student) {
+            $this->alertService->recalculateAfterJustification($student);
+
+            // Notifier l'étudiant
+            $student->user?->notify(new \App\Notifications\AcademicNotification(
+                "Votre justificatif pour l'absence du " . $absence->date?->format('d/m/Y') . ' a été accepté.',
+                'success',
+                route('student.absences')
+            ));
+        }
 
         return back()->with('success', 'Justificatif approuvé. L\'absence est désormais marquée comme justifiée.');
     }

@@ -38,6 +38,24 @@ class SearchController extends Controller
             'url' => route('admin.modules.index')
         ]);
 
-        return response()->json($students->concat($professors)->concat($modules));
+        $rooms = Room::where('name', 'like', "%$term%")
+            ->get()->map(fn($r) => [
+            'title' => $r->name,
+            'type' => 'Salle',
+            'url' => route('admin.rooms.index')
+        ]);
+
+        $requests = \App\Models\Request::where('type', 'like', "%$term%")
+            ->orWhereHas('user', function($q) use ($term) {
+                $q->where('name', 'like', "%$term%");
+            })
+            ->with('user')
+            ->get()->map(fn($req) => [
+            'title' => $req->type . ' - ' . ($req->user->name ?? ''),
+            'type' => 'Demande',
+            'url' => route('admin.requests.index')
+        ]);
+
+        return response()->json($students->concat($professors)->concat($modules)->concat($rooms)->concat($requests));
     }
 }

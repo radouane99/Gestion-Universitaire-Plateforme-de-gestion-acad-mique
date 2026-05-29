@@ -111,8 +111,8 @@
                         ? $sched->professor->user->name
                         : 'Non spécifié';
                     
-                    // Consistent seat number based on student and exam ID
-                    $seatNumber = (($student->id * 17) + ($c->exam->id * 11)) % 55 + 1;
+                    // Use actual seat number from the convocation record
+                    $seatNumberStr = $c->seat_number ? str_replace('Place ', '', $c->seat_number) : ((($student->id * 17) + ($c->exam->id * 11)) % 55 + 1);
                 @endphp
                 <tr>
                     <td style="border: 1px solid #000; padding: 7px 4px; text-align: center;">
@@ -131,7 +131,7 @@
                         {{ $c->exam->room->name ?? 'TBD' }}
                     </td>
                     <td style="border: 1px solid #000; padding: 7px 4px; text-align: center;">
-                        {{ $seatNumber }}
+                        {{ $seatNumberStr }}
                     </td>
                 </tr>
             @endforeach

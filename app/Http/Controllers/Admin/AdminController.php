@@ -25,6 +25,8 @@ class AdminController extends Controller
             'rooms_count' => Room::count(),
             'grades_avg' => Grade::avg('final_grade') ?? 0,
             'absences_total' => Absence::count(),
+            'pending_reclamations' => \App\Models\Reclamation::where('status', 'pending')->count(),
+            'pending_justifications' => \App\Models\ExamJustification::where('status', 'pending')->count(),
         ];
 
         // Chart Data: Grades distribution

@@ -51,6 +51,8 @@ class DatabaseSeeder extends Seeder
         
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
+        $seedPassword = Hash::make(env('SEED_USER_PASSWORD', 'ChangeMe123!'));
+
         // 2. Roles (Admin, Professor, Student)
         $adminRole = Role::create(['name' => 'admin']);
         $professorRole = Role::create(['name' => 'professor']);
@@ -87,15 +89,15 @@ class DatabaseSeeder extends Seeder
         $adminUser = User::create([
             'name' => 'Youssef Alami',
             'email' => 'admin@university.com',
-            'password' => Hash::make('password'),
+            'password' => $seedPassword,
             'role_id' => $adminRole->id,
         ]);
         
         $adminStaff = [
-            User::create(['name' => 'Amine Bennani', 'email' => 'amine@university.com', 'password' => Hash::make('password'), 'role_id' => $adminRole->id]),
-            User::create(['name' => 'Khadija El Idrissi', 'email' => 'khadija@university.com', 'password' => Hash::make('password'), 'role_id' => $adminRole->id]),
-            User::create(['name' => 'Rachid Mansouri', 'email' => 'rachid@university.com', 'password' => Hash::make('password'), 'role_id' => $adminRole->id]),
-            User::create(['name' => 'Fatima Zahra Tazi', 'email' => 'fatima@university.com', 'password' => Hash::make('password'), 'role_id' => $adminRole->id]),
+            User::create(['name' => 'Amine Bennani', 'email' => 'amine@university.com', 'password' => $seedPassword, 'role_id' => $adminRole->id]),
+            User::create(['name' => 'Khadija El Idrissi', 'email' => 'khadija@university.com', 'password' => $seedPassword, 'role_id' => $adminRole->id]),
+            User::create(['name' => 'Rachid Mansouri', 'email' => 'rachid@university.com', 'password' => $seedPassword, 'role_id' => $adminRole->id]),
+            User::create(['name' => 'Fatima Zahra Tazi', 'email' => 'fatima@university.com', 'password' => $seedPassword, 'role_id' => $adminRole->id]),
         ];
 
         // 7. Users & Professors (5 Professors with Moroccan names)
@@ -112,7 +114,7 @@ class DatabaseSeeder extends Seeder
             $user = User::create([
                 'name' => $p['name'],
                 'email' => $p['email'],
-                'password' => Hash::make('password'),
+                'password' => $seedPassword,
                 'role_id' => $professorRole->id,
             ]);
             $professors[] = Professor::create([
@@ -121,7 +123,7 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        // 8. Users & Students (5 Students with Moroccan names + linked to groups)
+        // 8. Users & Students (Main students + 50 random students)
         $studentsData = [
             ['name' => 'Amine El Amrani', 'email' => 'student@university.com', 'group' => $groups[1], 'num' => 'S202601'], // Main student for testing
             ['name' => 'Chaimae Jabri', 'email' => 'chaimae@university.com', 'group' => $groups[1], 'num' => 'S202602'],
@@ -130,12 +132,27 @@ class DatabaseSeeder extends Seeder
             ['name' => 'Soukaina Naciri', 'email' => 'soukaina@university.com', 'group' => $groups[3], 'num' => 'S202605'],
         ];
 
+        // Random Moroccan names
+        $firstNames = ['Mohammed', 'Ahmed', 'Youssef', 'Hamza', 'Omar', 'Ali', 'Hassan', 'Othmane', 'Ilyas', 'Ayoub', 'Fatima', 'Khadija', 'Meryem', 'Salma', 'Sara', 'Hajar', 'Imane', 'Nada', 'Zineb', 'Aya'];
+        $lastNames = ['Alaoui', 'Bennani', 'Tazi', 'Idrissi', 'El Fassi', 'Bennis', 'Guessous', 'Benjelloun', 'Chraibi', 'Lazraq', 'Lahlou', 'Benani', 'El Amrani', 'Mansouri', 'Filali'];
+
+        for ($i = 6; $i <= 55; $i++) {
+            $fn = $firstNames[array_rand($firstNames)];
+            $ln = $lastNames[array_rand($lastNames)];
+            $studentsData[] = [
+                'name' => $fn . ' ' . $ln,
+                'email' => strtolower($fn) . '.' . strtolower($ln) . $i . '@university.com',
+                'group' => $groups[array_rand($groups)],
+                'num' => 'S2026' . str_pad($i, 2, '0', STR_PAD_LEFT),
+            ];
+        }
+
         $students = [];
         foreach ($studentsData as $s) {
             $user = User::create([
                 'name' => $s['name'],
                 'email' => $s['email'],
-                'password' => Hash::make('password'),
+                'password' => $seedPassword,
                 'role_id' => $studentRole->id,
             ]);
             $students[] = Student::create([
@@ -152,13 +169,42 @@ class DatabaseSeeder extends Seeder
         Schedule::create(['group_id' => $groups[2]->id, 'module_id' => $modules[3]->id, 'professor_id' => $professors[3]->id, 'room_id' => $rooms[3]->id, 'date' => now()->startOfWeek()->addDays(3)->format('Y-m-d'), 'day_of_week' => 4, 'start_time' => '16:15:00', 'end_time' => '18:15:00']);
         Schedule::create(['group_id' => $groups[3]->id, 'module_id' => $modules[4]->id, 'professor_id' => $professors[4]->id, 'room_id' => $rooms[4]->id, 'date' => now()->startOfWeek()->addDays(4)->format('Y-m-d'), 'day_of_week' => 5, 'start_time' => '09:00:00', 'end_time' => '12:00:00']);
 
-        // 10. Grades (6 realistic grades for students)
-        Grade::create(['student_id' => $students[0]->id, 'module_id' => $modules[0]->id, 'cc1' => 14.50, 'cc2' => 15.00, 'exam' => 16.00, 'final_grade' => 15.40]);
-        Grade::create(['student_id' => $students[0]->id, 'module_id' => $modules[1]->id, 'cc1' => 12.00, 'cc2' => 14.00, 'exam' => 11.50, 'final_grade' => 12.30]);
-        Grade::create(['student_id' => $students[1]->id, 'module_id' => $modules[0]->id, 'cc1' => 16.00, 'cc2' => 17.50, 'exam' => 18.00, 'final_grade' => 17.40]);
-        Grade::create(['student_id' => $students[2]->id, 'module_id' => $modules[2]->id, 'cc1' => 9.50, 'cc2' => 11.00, 'exam' => 8.00, 'final_grade' => 9.10]);
-        Grade::create(['student_id' => $students[3]->id, 'module_id' => $modules[3]->id, 'cc1' => 13.00, 'cc2' => 12.50, 'exam' => 15.00, 'final_grade' => 14.10]);
-        Grade::create(['student_id' => $students[4]->id, 'module_id' => $modules[4]->id, 'cc1' => 15.00, 'cc2' => 16.00, 'exam' => 17.00, 'final_grade' => 16.30]);
+        // 10. Grades (Realistic grades for ALL students)
+        foreach ($students as $index => $student) {
+            // Give each student 3 to 5 grades
+            $numGrades = rand(3, 5);
+            $studentModules = array_rand($modules, $numGrades);
+            if (!is_array($studentModules)) $studentModules = [$studentModules];
+            
+            foreach ($studentModules as $modIndex) {
+                // Some students are good, some are average, some fail
+                $profile = rand(1, 100);
+                if ($profile > 80) {
+                    $cc1 = rand(14, 18) + (rand(0, 4) * 0.25);
+                    $cc2 = rand(15, 19) + (rand(0, 4) * 0.25);
+                    $exam = rand(14, 18) + (rand(0, 4) * 0.25);
+                } elseif ($profile > 30) {
+                    $cc1 = rand(10, 14) + (rand(0, 4) * 0.25);
+                    $cc2 = rand(9, 13) + (rand(0, 4) * 0.25);
+                    $exam = rand(10, 14) + (rand(0, 4) * 0.25);
+                } else {
+                    $cc1 = rand(4, 9) + (rand(0, 4) * 0.25);
+                    $cc2 = rand(5, 9) + (rand(0, 4) * 0.25);
+                    $exam = rand(3, 8) + (rand(0, 4) * 0.25);
+                }
+                
+                $final = ($cc1 * 0.2) + ($cc2 * 0.2) + ($exam * 0.6);
+                
+                Grade::create([
+                    'student_id' => $student->id,
+                    'module_id' => $modules[$modIndex]->id,
+                    'cc1' => min(20, $cc1),
+                    'cc2' => min(20, $cc2),
+                    'exam' => min(20, $exam),
+                    'final_grade' => min(20, round($final, 2))
+                ]);
+            }
+        }
 
         // 11. Absences (5 realistic absences)
         Absence::create(['student_id' => $students[0]->id, 'date' => now()->subDays(5)->format('Y-m-d'), 'session_type' => 'course', 'is_justified' => false, 'justification_status' => 'none']);

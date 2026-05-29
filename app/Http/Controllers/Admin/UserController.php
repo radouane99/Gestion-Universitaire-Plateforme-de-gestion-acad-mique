@@ -11,7 +11,11 @@ class UserController extends Controller
 {
     public function index()
     {
-        $users = \App\Models\User::with(['role', 'student.group', 'professor'])->get();
+        // On n'affiche que les admins et professeurs (rôle != student)
+        $roleStudent = \App\Models\Role::where('name', 'student')->first();
+        $users = \App\Models\User::with(['role', 'professor'])
+            ->where('role_id', '!=', $roleStudent->id)
+            ->get();
         return view('admin.users.index', compact('users'));
     }
 
@@ -108,15 +112,9 @@ class UserController extends Controller
             // Write UTF-8 BOM for Excel compatibility
             fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF));
             
-            if ($type === 'student') {
-                fputcsv($file, ['name', 'email', 'password', 'group_name', 'group_level', 'student_number']);
-                fputcsv($file, ['Ahmed El Fassi', 'ahmed.fassi@upf.ac.ma', 'password123', 'GI-1', 'Licence 1', 'EST202601']);
-                fputcsv($file, ['Sofia Mansouri', 'sofia.mansouri@upf.ac.ma', 'password123', 'IDS-2', 'Licence 2', 'EST202602']);
-            } else {
-                fputcsv($file, ['name', 'email', 'password', 'department']);
-                fputcsv($file, ['Prof. Tariq Alaoui', 'tariq@upf.ac.ma', 'password123', 'Génie Informatique']);
-                fputcsv($file, ['Dr. Karima Bennani', 'karima@upf.ac.ma', 'password123', 'Intelligence Artificielle']);
-            }
+            fputcsv($file, ['name', 'email', 'password', 'department']);
+            fputcsv($file, ['Prof. Tariq Alaoui', 'tariq@upf.ac.ma', 'UseAStrongPass!', 'Génie Informatique']);
+            fputcsv($file, ['Dr. Karima Bennani', 'karima@upf.ac.ma', 'UseAStrongPass!', 'Intelligence Artificielle']);
             fclose($file);
         };
 
@@ -130,11 +128,11 @@ class UserController extends Controller
     {
         $request->validate([
             'import_file' => 'required|file|mimes:csv,txt|max:4096',
-            'role_type' => 'required|in:student,professor',
         ]);
 
         $file = $request->file('import_file');
-        $roleType = $request->role_type;
+        // Dans ce controller on n'importe que des professeurs (les admins sont créés manuellement)
+        $roleType = 'professor';
         $role = \App\Models\Role::where('name', $roleType)->firstOrFail();
 
         $path = $file->getRealPath();
@@ -185,6 +183,11 @@ class UserController extends Controller
                 continue;
             }
 
+            if (empty($password)) {
+                $errors[] = "Ligne {$rowNum}: Le mot de passe est requis.";
+                continue;
+            }
+
             // Verify email uniqueness
             if (\App\Models\User::where('email', $email)->exists()) {
                 $errors[] = "Ligne {$rowNum}: L'email '{$email}' existe déjà.";
@@ -192,7 +195,7 @@ class UserController extends Controller
             }
 
             // Hash password
-            $passHash = Hash::make($password ?: 'password123');
+            $passHash = Hash::make($password);
 
             // Create User
             $user = \App\Models\User::create([
@@ -202,30 +205,13 @@ class UserController extends Controller
                 'role_id' => $role->id,
             ]);
 
-            // Create Subprofile
-            if ($roleType === 'student') {
-                $groupName = trim($data['group_name'] ?? 'GI-1');
-                $groupLevel = trim($data['group_level'] ?? 'Licence');
-                $studentNumber = trim($data['student_number'] ?? ('EST' . time() . rand(10, 99)));
+            // Create Subprofile (Seulement professor ici)
+            $department = trim($data['department'] ?? 'Génie Informatique');
 
-                $group = \App\Models\Group::firstOrCreate(
-                    ['name' => $groupName],
-                    ['level' => $groupLevel]
-                );
-
-                \App\Models\Student::create([
-                    'user_id' => $user->id,
-                    'group_id' => $group->id,
-                    'student_number' => $studentNumber,
-                ]);
-            } else {
-                $department = trim($data['department'] ?? 'Génie Informatique');
-
-                \App\Models\Professor::create([
-                    'user_id' => $user->id,
-                    'department' => $department,
-                ]);
-            }
+            \App\Models\Professor::create([
+                'user_id' => $user->id,
+                'department' => $department,
+            ]);
 
             $importedCount++;
         }

@@ -6,7 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Student extends Model
 {
-    protected $fillable = ['user_id', 'group_id', 'student_number', 'academic_year_id'];
+    protected $fillable = ['user_id', 'group_id', 'student_number', 'cin', 'academic_year_id'];
+
+    // ─── Relations ───────────────────────────────────────────────────────────
 
     public function academicYear()
     {
@@ -33,8 +35,86 @@ class Student extends Model
         return $this->hasMany(Absence::class);
     }
 
-    public function getAbsenceScoreAttribute()
+    public function disciplineCases()
     {
-        return $this->absences()->where('is_justified', false)->sum('duration');
+        return $this->hasMany(DisciplineCase::class);
+    }
+
+    public function examAttendances()
+    {
+        return $this->hasMany(ExamAttendance::class);
+    }
+
+    public function examJustifications()
+    {
+        return $this->hasMany(ExamJustification::class);
+    }
+
+    public function retakeEligibilities()
+    {
+        return $this->hasMany(RetakeEligibility::class);
+    }
+
+    public function reclamations()
+    {
+        return $this->hasMany(Reclamation::class);
+    }
+
+    // ─── Absence Helpers ──────────────────────────────────────────────────────
+
+    /**
+     * Total heures d'absences non justifiées (anciennement absence_score)
+     */
+    public function getAbsenceScoreAttribute(): float
+    {
+        return (float) $this->absences()->where('is_justified', false)->sum('duration');
+    }
+
+    /**
+     * Total heures d'absences justifiées
+     */
+    public function getJustifiedHoursAttribute(): float
+    {
+        return (float) $this->absences()->where('is_justified', true)->sum('duration');
+    }
+
+    /**
+     * Total général d'absences (justifiées + non justifiées)
+     */
+    public function getTotalAbsenceHoursAttribute(): float
+    {
+        return (float) $this->absences()->sum('duration');
+    }
+
+    /**
+     * Statut discipline basé sur les seuils configurables
+     */
+    public function getDisciplineStatusAttribute(): string
+    {
+        $settings   = \App\Models\Setting::first();
+        $warning    = $settings?->absence_warning_threshold ?? 80;
+        $discipline = $settings?->absence_discipline_threshold ?? 120;
+        $score      = $this->absence_score;
+
+        if ($score >= $discipline) return 'conseil_discipline';
+        if ($score >= $warning)    return 'a_surveiller';
+        return 'normal';
+    }
+
+    /**
+     * A-t-il un dossier de discipline actif (ouvert ou notifié) ?
+     */
+    public function hasActiveDisciplineCase(): bool
+    {
+        return $this->disciplineCases()->whereIn('status', ['open', 'notified'])->exists();
+    }
+
+    /**
+     * Retourne le dossier discipline actif s'il existe
+     */
+    public function getActiveDisciplineCaseAttribute(): ?DisciplineCase
+    {
+        return $this->disciplineCases()->whereIn('status', ['open', 'notified'])->latest()->first();
     }
 }
+

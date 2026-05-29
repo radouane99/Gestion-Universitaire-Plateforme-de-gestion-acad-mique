@@ -5,7 +5,7 @@
         </div>
         <div class="absolute -bottom-1 -right-1 w-5 h-5 bg-upf-magenta rounded-lg border-2 border-white shadow-sm"></div>
     </div>
-    <div class="hidden md:block leading-none">
+    <div class="hidden xl:block leading-none">
         <p class="text-upf-blue font-black text-lg tracking-tight uppercase">Université Privée de Fès</p>
         <p class="text-upf-magenta text-[10px] font-bold tracking-widest uppercase">Excellence & Innovation</p>
     </div>

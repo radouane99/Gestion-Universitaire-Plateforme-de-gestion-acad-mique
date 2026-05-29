@@ -178,4 +178,50 @@ class AcademicApiController extends Controller
             'absences' => $absences
         ], 200);
     }
+
+    /**
+     * Get exams for the authenticated user.
+     */
+    public function exams()
+    {
+        $user = Auth::user();
+        $query = \App\Models\Exam::with(['module', 'room', 'group', 'proctors.user']);
+
+        if ($user->isStudent()) {
+            if (!$user->student) {
+                return response()->json(['status' => 'error', 'message' => 'Student profile not found.'], 404);
+            }
+            $query->where('group_id', $user->student->group_id);
+        } elseif ($user->isProfessor()) {
+            if (!$user->professor) {
+                return response()->json(['status' => 'error', 'message' => 'Professor profile not found.'], 404);
+            }
+            $query->whereHas('proctors', function($q) use ($user) {
+                $q->where('professor_id', $user->professor->id);
+            });
+        } elseif (!$user->isAdmin()) {
+            return response()->json(['status' => 'error', 'message' => 'Unauthorized.'], 403);
+        }
+
+        // Return all exams for the calendar, no pagination needed as exams are limited per semester
+        $exams = $query->get();
+
+        return response()->json([
+            'status' => 'success',
+            'role' => $user->role->name ?? 'unknown',
+            'exams' => $exams->map(function($exam) {
+                return [
+                    'id' => $exam->id,
+                    'date' => $exam->date,
+                    'start_time' => $exam->start_time,
+                    'end_time' => $exam->end_time,
+                    'module' => $exam->module,
+                    'room' => $exam->room,
+                    'group' => $exam->group,
+                    'proctors' => $exam->proctors,
+                    'title' => 'EXAMEN: ' . ($exam->module->name ?? 'Matière'),
+                ];
+            })
+        ], 200);
+    }
 }

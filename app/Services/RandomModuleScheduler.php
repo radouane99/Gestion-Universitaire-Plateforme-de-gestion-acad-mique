@@ -46,8 +46,17 @@ class RandomModuleScheduler
 
         foreach ($modules as $module) {
             // ---- Determine number of students for this module ----
-            // TODO: replace with real count, e.g.: $studentsCount = $module->students()->count();
-            $studentsCount = random_int(30, 70); // placeholder for demo
+            // Prefer an actual enrollment count if we can infer it from grades or schedule groups.
+            $studentsCount = $module->grades()->distinct('student_id')->count('student_id');
+            if ($studentsCount === 0) {
+                $studentsCount = $module->schedules()->with('group.students')->get()
+                    ->reduce(function ($count, $schedule) {
+                        return $count + ($schedule->group?->students->count() ?? 0);
+                    }, 0);
+            }
+            if ($studentsCount === 0) {
+                $studentsCount = max(1, min((int) round($rooms->avg('capacity')), 30));
+            }
 
             // Find a room with enough capacity (or the smallest that fits)
             $room = $rooms->firstWhere('capacity', '>=', $studentsCount);

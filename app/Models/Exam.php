@@ -41,6 +41,26 @@ class Exam extends Model
         return $this->hasMany(Convocation::class);
     }
 
+    public function academicYear()
+    {
+        return $this->belongsTo(AcademicYear::class);
+    }
+
+    public function pvExamen()
+    {
+        return $this->hasOne(PVExamen::class);
+    }
+
+    public function reclamations()
+    {
+        return $this->hasMany(Reclamation::class);
+    }
+
+    public function scopeActive($query)
+    {
+        return $query->where('is_archived', false);
+    }
+
     public function getEndTimeAttribute()
     {
         return date('H:i', strtotime($this->start_time) + ($this->duration * 60));

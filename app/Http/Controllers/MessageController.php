@@ -57,14 +57,23 @@ class MessageController extends Controller
         }
 
         $validated = $request->validate([
-            'content' => 'required|string|max:2000'
+            'content' => 'required_without:attachment|nullable|string|max:2000',
+            'attachment' => 'nullable|file|mimes:pdf,doc,docx,jpg,png,zip|max:5120'
         ]);
 
-        Message::create([
+        $message = Message::create([
             'conversation_id' => $conversation->id,
             'user_id' => $userId,
-            'content' => $validated['content']
+            'content' => $validated['content'] ?? ''
         ]);
+
+        if ($request->hasFile('attachment')) {
+            $file = $request->file('attachment');
+            $path = $file->store('attachments', 'public');
+            $message->attachment_path = $path;
+            $message->attachment_name = $file->getClientOriginalName();
+            $message->save();
+        }
 
         return back();
     }

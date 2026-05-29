@@ -29,12 +29,18 @@ Route::get('/dashboard', function () {
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [\App\Http\Controllers\Admin\AdminController::class, 'index'])->name('dashboard');
 
-    // Importation Excel/CSV
+    // Importation Excel/CSV pour le Staff
     Route::get('/users/import', [\App\Http\Controllers\Admin\UserController::class, 'showImportForm'])->name('users.import.form');
     Route::post('/users/import', [\App\Http\Controllers\Admin\UserController::class, 'importUsers'])->name('users.import');
     Route::get('/users/import/template/{type}', [\App\Http\Controllers\Admin\UserController::class, 'downloadTemplate'])->name('users.import.template');
 
     Route::resource('users', \App\Http\Controllers\Admin\UserController::class);
+
+    // Gestion des Étudiants
+    Route::get('/students/import', [\App\Http\Controllers\Admin\StudentController::class, 'showImportForm'])->name('students.import.form');
+    Route::post('/students/import', [\App\Http\Controllers\Admin\StudentController::class, 'importStudents'])->name('students.import');
+    Route::get('/students/import/template', [\App\Http\Controllers\Admin\StudentController::class, 'downloadTemplate'])->name('students.import.template');
+    Route::resource('students', \App\Http\Controllers\Admin\StudentController::class);
 
     // Importation Modules Excel/CSV
     Route::get('/modules/import', [\App\Http\Controllers\Admin\ModuleController::class, 'showImportForm'])->name('modules.import.form');
@@ -69,11 +75,22 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('academic/assignments/template', [App\Http\Controllers\Admin\AcademicYearController::class, 'downloadTemplate'])->name('academic.assignments.template');
     
     // Admin Exams
+    Route::get('/exams/sessions/{session}/planning', [\App\Http\Controllers\Admin\ExamPlanningController::class, 'simulation'])->name('exams.planning.simulation');
+    Route::post('/exams/sessions/{session}/planning/generate', [\App\Http\Controllers\Admin\ExamPlanningController::class, 'generate'])->name('exams.planning.generate');
+    Route::post('/exams/sessions/{session}/planning/validate', [\App\Http\Controllers\Admin\ExamPlanningController::class, 'validatePlanning'])->name('exams.planning.validate');
+    Route::post('/exams/sessions/{session}/planning/convocations', [\App\Http\Controllers\Admin\ExamPlanningController::class, 'generateConvocations'])->name('exams.planning.convocations');
+    Route::post('/exams/sessions/{session}/planning/publish', [\App\Http\Controllers\Admin\ExamPlanningController::class, 'publish'])->name('exams.planning.publish');
+    
+    // Exam Display Lists
+    Route::get('/exams/{exam}/display-list', [\App\Http\Controllers\Admin\ExamDisplayListController::class, 'show'])->name('exams.display_list.show');
+    Route::get('/exams/{exam}/display-list/pdf', [\App\Http\Controllers\Admin\ExamDisplayListController::class, 'downloadPdf'])->name('exams.display_list.pdf');
+
     Route::post('/exams/auto-schedule', [\App\Http\Controllers\Admin\ExamController::class, 'autoSchedule'])->name('exams.auto-schedule');
     Route::post('/exams/{exam}/generate-convocations', [\App\Http\Controllers\Admin\ExamController::class, 'generateConvocations'])->name('exams.generate_convocations');
     Route::post('/exams/{exam}/send-emails', [\App\Http\Controllers\Admin\ExamController::class, 'sendEmails'])->name('exams.send_emails');
     Route::get('/exams/{exam}/pdf', [\App\Http\Controllers\Admin\ExamController::class, 'generatePdf'])->name('exams.pdf');
     Route::get('/exams/{exam}/attendance-sheet', [\App\Http\Controllers\Admin\ExamController::class, 'attendanceSheet'])->name('exams.attendance_sheet');
+    Route::get('/exams/{exam}/pv/pdf', [\App\Http\Controllers\Professor\PVExamenController::class, 'exportPdf'])->name('exams.pv.pdf');
     // Calendar view for exams filtered by filière
     Route::get('/exams/calendar', [\App\Http\Controllers\Admin\ExamController::class, 'showCalendar'])->name('exams.calendar');
     // Auto‑generate exams for a filière & session
@@ -81,6 +98,15 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     // API endpoint providing events for FullCalendar
     Route::get('/exams/api/calendar', [\App\Http\Controllers\Admin\ExamController::class, 'calendarData'])->name('exams.api.calendar');
     Route::resource('exams', \App\Http\Controllers\Admin\ExamController::class);
+
+    // Admin Convocations (Student + Professor — Session-level management)
+    Route::get('/convocations', [\App\Http\Controllers\Admin\ConvocationController::class, 'index'])->name('convocations.index');
+    Route::post('/convocations/generate-session', [\App\Http\Controllers\Admin\ConvocationController::class, 'generateForSession'])->name('convocations.generate_session');
+    Route::post('/convocations/send-session', [\App\Http\Controllers\Admin\ConvocationController::class, 'sendForSession'])->name('convocations.send_session');
+    Route::post('/convocations/auto-assign', [\App\Http\Controllers\Admin\ConvocationController::class, 'autoAssignProctors'])->name('convocations.auto_assign');
+    Route::post('/convocations/generate-professors', [\App\Http\Controllers\Admin\ConvocationController::class, 'generateProfessors'])->name('convocations.generate_professors');
+    Route::post('/convocations/send-professors', [\App\Http\Controllers\Admin\ConvocationController::class, 'sendProfessors'])->name('convocations.send_professors');
+    Route::get('/professor-availabilities', [\App\Http\Controllers\Admin\ConvocationController::class, 'professorAvailabilities'])->name('convocations.professor_availabilities');
 
     // Convocations Scanner (for proctors/admins)
     Route::get('/convocations/{reference}/verify', [\App\Http\Controllers\Admin\ExamController::class, 'verifyConvocation'])->name('convocations.verify');
@@ -94,15 +120,29 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/grades/edit', [\App\Http\Controllers\Admin\GradeController::class, 'edit'])->name('grades.edit');
     Route::post('/grades/store', [\App\Http\Controllers\Admin\GradeController::class, 'store'])->name('grades.store');
 
+    // PV Globaux & Synthèses Académiques
+    Route::get('/pv-globaux', [\App\Http\Controllers\Admin\PVGlobalController::class, 'index'])->name('pv_globaux.index');
+    Route::get('/pv-globaux/excel', [\App\Http\Controllers\Admin\PVGlobalController::class, 'exportExcel'])->name('pv_globaux.export_excel');
+    Route::get('/pv-globaux/pdf', [\App\Http\Controllers\Admin\PVGlobalController::class, 'exportPdf'])->name('pv_globaux.export_pdf');
+
+    // Documents Officiels
+    Route::get('/students/{student}/releve-notes/{academicYear}', [\App\Http\Controllers\Admin\DocumentController::class, 'releveNotes'])->name('documents.releve');
+    Route::get('/students/{student}/attestation-reussite/{academicYear}', [\App\Http\Controllers\Admin\DocumentController::class, 'attestationReussite'])->name('documents.attestation');
+
+    // Assistant IA Admin
+    Route::post('/students/{student}/ai-report', [\App\Http\Controllers\Admin\AiAdminController::class, 'generateReport'])->name('students.ai-report');
+
     // Dynamic API for cascade selects (Filière → Groupe → Module)
     Route::get('/api/filieres/{filiere}/groups', [\App\Http\Controllers\Admin\ApiController::class, 'getGroups'])->name('api.filiere.groups');
     Route::get('/api/groups/{group}/modules', [\App\Http\Controllers\Admin\ApiController::class, 'getModules'])->name('api.group.modules');
     Route::get('/api/rooms/{room}/availability', [\App\Http\Controllers\Admin\ApiController::class, 'getRoomAvailability'])->name('api.room.availability');
 
-    // Internal API test suite protected for admins
-    Route::get('/test-api-suite', function () {
-        return view('test_api');
-    })->name('test-api-suite');
+    // Internal API test suite protected for admins and only available in local/testing environments
+    if (app()->environment(['local', 'testing'])) {
+        Route::get('/test-api-suite', function () {
+            return view('test_api');
+        })->name('test-api-suite');
+    }
 
     // Admin Reservations Management
     Route::post('/reservations/{reservation}/approve', [\App\Http\Controllers\Admin\ReservationController::class, 'approve'])->name('reservations.approve');
@@ -125,6 +165,10 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     // Activity Log Route
     Route::get('/activity-logs', [\App\Http\Controllers\Admin\ActivityLogController::class, 'index'])->name('activity-logs.index');
 
+    // Paramètres Institution
+    Route::get('/settings', [\App\Http\Controllers\Admin\SettingController::class, 'index'])->name('settings.index');
+    Route::post('/settings', [\App\Http\Controllers\Admin\SettingController::class, 'update'])->name('settings.update');
+
     // Cahier de Textes global consult
     Route::get('/textbooks', [\App\Http\Controllers\TextbookController::class, 'adminIndex'])->name('textbooks.index');
 
@@ -134,6 +178,60 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::post('/absences/{absence}/reject', [\App\Http\Controllers\AbsenceController::class, 'rejectJustification'])->name('absences.reject');
     Route::post('/absences/{absence}/force-justify', [\App\Http\Controllers\AbsenceController::class, 'forceJustify'])->name('absences.force-justify');
     Route::delete('/absences/{absence}', [\App\Http\Controllers\AbsenceController::class, 'destroy'])->name('absences.destroy');
+
+    // ── Pilotage Académique ───────────────────────────────────────────────────
+    Route::get('/pilotage', [\App\Http\Controllers\Admin\AcademicPilotingController::class, 'index'])->name('pilotage.index');
+
+    // ── Conseil de Discipline ─────────────────────────────────────────────────
+    Route::get('/discipline', [\App\Http\Controllers\Admin\DisciplineCaseController::class, 'index'])->name('discipline.index');
+    Route::get('/discipline/{case}', [\App\Http\Controllers\Admin\DisciplineCaseController::class, 'show'])->name('discipline.show');
+    Route::post('/discipline/{case}/treat', [\App\Http\Controllers\Admin\DisciplineCaseController::class, 'treat'])->name('discipline.treat');
+    Route::post('/discipline/create', [\App\Http\Controllers\Admin\DisciplineCaseController::class, 'create'])->name('discipline.create');
+
+    // ── Présence Examens (Admin) ─────────────────────────────────────────────
+    Route::get('/exams/{exam}/attendance', [\App\Http\Controllers\Admin\ExamAttendanceController::class, 'index'])->name('exam_attendance.index');
+    Route::post('/exams/{exam}/attendance', [\App\Http\Controllers\Admin\ExamAttendanceController::class, 'store'])->name('exam_attendance.store');
+    Route::post('/exams/{exam}/attendance/{student}/mark', [\App\Http\Controllers\Admin\ExamAttendanceController::class, 'markOne'])->name('exam_attendance.mark_one');
+
+    // ── Justifications Examens (Admin) ───────────────────────────────────────
+    Route::get('/exam-justifications', [\App\Http\Controllers\Admin\ExamJustificationController::class, 'index'])->name('exam_justifications.index');
+    Route::post('/exam-justifications/{justification}/approve', [\App\Http\Controllers\Admin\ExamJustificationController::class, 'approve'])->name('exam_justifications.approve');
+    Route::post('/exam-justifications/{justification}/reject', [\App\Http\Controllers\Admin\ExamJustificationController::class, 'reject'])->name('exam_justifications.reject');
+    Route::get('/exam-justifications/{justification}/download', [\App\Http\Controllers\Admin\ExamJustificationController::class, 'downloadFile'])->name('exam_justifications.download');
+
+    // ── Rattrapage (Admin) ───────────────────────────────────────────────────
+    Route::get('/retake', [\App\Http\Controllers\Admin\RetakeEligibilityController::class, 'index'])->name('retake.index');
+    Route::get('/sessions/{session}/retake', [\App\Http\Controllers\Admin\RetakeEligibilityController::class, 'index'])->name('retake.session_index');
+    Route::post('/retake/{eligibility}/approve', [\App\Http\Controllers\Admin\RetakeEligibilityController::class, 'approve'])->name('retake.approve');
+    Route::post('/retake/{eligibility}/reject', [\App\Http\Controllers\Admin\RetakeEligibilityController::class, 'reject'])->name('retake.reject');
+    Route::get('/sessions/{session}/retake/pdf', [\App\Http\Controllers\Admin\RetakeEligibilityController::class, 'exportPdf'])->name('retake.export_pdf');
+    Route::get('/sessions/{session}/retake/excel', [\App\Http\Controllers\Admin\RetakeEligibilityController::class, 'exportExcel'])->name('retake.export_excel');
+
+    // Rapports PDF Automatiques
+    Route::get('/reports', [\App\Http\Controllers\Admin\ReportController::class, 'index'])->name('reports.index');
+    Route::get('/reports/absences', [\App\Http\Controllers\Admin\ReportController::class, 'exportAbsences'])->name('reports.absences');
+    Route::get('/reports/grades', [\App\Http\Controllers\Admin\ReportController::class, 'exportGrades'])->name('reports.grades');
+    Route::get('/reports/exams', [\App\Http\Controllers\Admin\ReportController::class, 'exportExams'])->name('reports.exams');
+    Route::get('/reports/rooms', [\App\Http\Controllers\Admin\ReportController::class, 'exportRooms'])->name('reports.rooms');
+    Route::get('/reports/at-risk', [\App\Http\Controllers\Admin\ReportController::class, 'exportAtRisk'])->name('reports.at-risk');
+
+    // Étudiants à Risque
+    Route::get('/students-risk', [\App\Http\Controllers\Admin\StudentRiskController::class, 'index'])->name('students_risk.index');
+    Route::post('/students-risk/{student}/summon', [\App\Http\Controllers\Admin\StudentRiskController::class, 'summon'])->name('students_risk.summon');
+
+    // Réclamations Admin
+    Route::get('/reclamations', [\App\Http\Controllers\Admin\ReclamationController::class, 'index'])->name('reclamations.index');
+
+    // Import CSV Premium (overrides old forms for modern preview importer)
+    Route::get('/students/import-csv', [\App\Http\Controllers\Admin\StudentImportController::class, 'show'])->name('students.import.show');
+    Route::post('/students/import-csv', [\App\Http\Controllers\Admin\StudentImportController::class, 'store'])->name('students.import.store');
+
+    // Archivage Annuel
+    Route::get('/archiving', [\App\Http\Controllers\Admin\ArchivingController::class, 'index'])->name('archiving.index');
+    Route::post('/archiving/rollover', [\App\Http\Controllers\Admin\ArchivingController::class, 'rollover'])->name('archiving.rollover');
+
+    // Statistiques Avancées
+    Route::get('/analytics', [\App\Http\Controllers\Admin\AnalyticsController::class, 'index'])->name('analytics.index');
 });
 
 Route::middleware(['auth', 'role:professor'])->prefix('professor')->name('professor.')->group(function () {
@@ -166,7 +264,29 @@ Route::middleware(['auth', 'role:professor'])->prefix('professor')->name('profes
     Route::get('/availability', [\App\Http\Controllers\Professor\AvailabilityController::class, 'index'])->name('availability.index');
     Route::post('/availability', [\App\Http\Controllers\Professor\AvailabilityController::class, 'store'])->name('availability.store');
     Route::delete('/availability/{availability}', [\App\Http\Controllers\Professor\AvailabilityController::class, 'destroy'])->name('availability.destroy');
+
+    // Convocations de surveillance professeur
+    Route::get('/proctor-convocations', [\App\Http\Controllers\Professor\ProctorConvocationController::class, 'index'])->name('proctor_convocations.index');
+    Route::get('/proctor-convocations/{convocation}/download', [\App\Http\Controllers\Professor\ProctorConvocationController::class, 'download'])->name('proctor_convocations.download');
+    Route::post('/proctor-convocations/{convocation}/confirm', [\App\Http\Controllers\Professor\ProctorConvocationController::class, 'confirm'])->name('proctor_convocations.confirm');
+
+    // ── Présence Examens (Professeur Surveillant) ────────────────────────────
+    Route::get('/exams/{exam}/attendance', [\App\Http\Controllers\Professor\ExamAttendanceController::class, 'index'])->name('exam_attendance.index');
+    Route::post('/exams/{exam}/attendance', [\App\Http\Controllers\Professor\ExamAttendanceController::class, 'store'])->name('exam_attendance.store');
+
+    // PV d'Examen
+    Route::get('/exams/{exam}/pv/create', [\App\Http\Controllers\Professor\PVExamenController::class, 'create'])->name('exams.pv.create');
+    Route::post('/exams/{exam}/pv', [\App\Http\Controllers\Professor\PVExamenController::class, 'store'])->name('exams.pv.store');
+    Route::get('/exams/{exam}/pv/pdf', [\App\Http\Controllers\Professor\PVExamenController::class, 'exportPdf'])->name('exams.pv.pdf');
+
+    // Réclamations Professeur
+    Route::get('/reclamations', [\App\Http\Controllers\Professor\ReclamationController::class, 'index'])->name('reclamations.index');
+    Route::post('/reclamations/{reclamation}/resolve', [\App\Http\Controllers\Professor\ReclamationController::class, 'resolve'])->name('reclamations.resolve');
+    
+    // Assistant IA (Génération de Brouillon)
+    Route::post('/reclamations/{reclamation}/ai-draft', [\App\Http\Controllers\Professor\AiProfessorController::class, 'generateDraft'])->name('ai.draft');
 });
+
 
 Route::middleware(['auth', 'role:student'])->prefix('student')->name('student.')->group(function () {
     Route::get('/dashboard', [\App\Http\Controllers\Student\StudentController::class, 'index'])->name('dashboard');
@@ -181,6 +301,20 @@ Route::middleware(['auth', 'role:student'])->prefix('student')->name('student.')
     // Convocations
     Route::get('/convocations', [\App\Http\Controllers\Student\ConvocationController::class, 'index'])->name('convocations.index');
     Route::get('/convocations/{convocation}/download', [\App\Http\Controllers\Student\ConvocationController::class, 'download'])->name('convocations.download');
+
+    // ── Mes Examens + Rattrapage (Étudiant) ──────────────────────────────────
+    Route::get('/exams', [\App\Http\Controllers\Student\ExamController::class, 'index'])->name('exams.index');
+    Route::get('/retake', [\App\Http\Controllers\Student\ExamController::class, 'showRetake'])->name('retake.index');
+    Route::get('/exam-justification/{attendance}/create', [\App\Http\Controllers\Student\ExamJustificationController::class, 'create'])->name('exam_justification.create');
+    Route::post('/exam-justification/{attendance}', [\App\Http\Controllers\Student\ExamJustificationController::class, 'store'])->name('exam_justification.store');
+
+    // Réclamations Étudiant
+    Route::get('/reclamations', [\App\Http\Controllers\Student\ReclamationController::class, 'index'])->name('reclamations.index');
+    Route::get('/reclamations/create', [\App\Http\Controllers\Student\ReclamationController::class, 'create'])->name('reclamations.create');
+    Route::post('/reclamations', [\App\Http\Controllers\Student\ReclamationController::class, 'store'])->name('reclamations.store');
+
+    // Assistant IA (Smart UPF)
+    Route::post('/ai/chat', [\App\Http\Controllers\Student\AiChatController::class, 'chat'])->name('ai.chat');
 });
 
 // Shared Classroom
@@ -222,8 +356,27 @@ Route::middleware('auth')->group(function () {
     
     // Secure route for downloading absence justifications
     Route::get('/absences/{absence}/justification', [\App\Http\Controllers\AbsenceController::class, 'downloadJustification'])->name('absences.justification');
+
+    // Global Search (for all roles)
+    Route::get('/global-search', [\App\Http\Controllers\SearchController::class, 'search'])->name('global_search');
 });
 
+
+// Public QR verification for professor surveillance convocations (no sensitive data exposed)
+Route::get('/verify/proctor/{reference}', function ($reference) {
+    $conv = \App\Models\ProfessorConvocation::with([
+        'professor.user',
+        'exam.module',
+        'exam.room',
+        'exam.group',
+    ])->where('reference', $reference)->firstOrFail();
+
+    return view('convocations.verify_proctor', compact('conv'));
+})->name('convocations.verify_proctor');
+
+// Official Documents Download & Verify
+Route::get('/documents/{documentRequest}/download', [\App\Http\Controllers\DocumentController::class, 'downloadPdf'])->name('documents.download')->middleware('auth');
+Route::get('/verify/document/{id}/{hash}', [\App\Http\Controllers\DocumentController::class, 'verify'])->name('documents.verify');
 
 Route::get('/lang/{locale}', function ($locale) {
     if (in_array($locale, ['en', 'fr', 'ar'])) {

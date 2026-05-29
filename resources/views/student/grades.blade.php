@@ -1,39 +1,45 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight flex justify-between items-center">
-            <span>{{ __('My Academic Grades') }}</span>
-        </h2>
+        <x-page-header 
+            title="{{ __('Mes Notes & Résultats') }}" 
+            subtitle="{{ __('Espace Étudiant') }}"
+            icon='<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>'
+        >
+        </x-page-header>
     </x-slot>
 
-    <div class="py-12 bg-[#F8FAFC]" x-data="gradeSimulator()">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-8">
+    <div class="py-6 bg-[#F8FAFC]" x-data="gradeSimulator()">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
             
+            <x-alert-messages />
+
             <!-- Dashboard Card -->
-            <div class="bg-gradient-to-br from-emerald-600 to-teal-800 rounded-3xl p-10 text-white shadow-2xl relative overflow-hidden flex flex-col md:flex-row justify-between items-center gap-6 transition-all duration-500"
+            <div class="bg-gradient-to-br from-emerald-600 to-teal-800 rounded-[2.5rem] p-10 text-white shadow-sm relative overflow-hidden flex flex-col md:flex-row justify-between items-center gap-6 transition-all duration-500"
                  :class="{'from-indigo-600 to-purple-800': isSimulation}">
                 <div class="relative z-10">
-                    <h2 class="text-3xl font-black mb-2 italic" x-text="isSimulation ? 'Mode Simulation' : 'Academic Performance'">Academic Performance</h2>
-                    <p class="text-emerald-100 opacity-80" :class="{'text-indigo-100': isSimulation}" x-text="isSimulation ? 'Saisissez des notes fictives pour estimer votre moyenne globale.' : 'Track your verified marks and final results by semester.'">Track your verified marks and final results by semester.</p>
+                    <h2 class="text-3xl font-black mb-2" x-text="isSimulation ? '{{ __('Mode Simulation') }}' : '{{ __('Performance Académique') }}'"></h2>
+                    <p class="text-emerald-100 opacity-80" :class="{'text-indigo-100': isSimulation}" x-text="isSimulation ? '{{ __('Saisissez des notes fictives pour estimer votre moyenne globale.') }}' : '{{ __('Suivez vos notes validées et vos résultats finaux par semestre.') }}'"></p>
                     
-                    <button @click="toggleSimulation" class="mt-4 px-6 py-2 rounded-full font-black text-sm uppercase tracking-widest transition-all shadow-lg"
+                    <button @click="toggleSimulation" class="mt-4 px-6 py-3 rounded-xl font-black text-xs uppercase tracking-widest transition-all shadow-sm flex items-center gap-2"
                             :class="isSimulation ? 'bg-white text-indigo-700 hover:bg-gray-100' : 'bg-white text-emerald-700 hover:bg-gray-100'">
-                        <span x-text="isSimulation ? 'Quitter la Simulation' : 'Activer le Simulateur'">Activer le Simulateur</span>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                        <span x-text="isSimulation ? '{{ __('Quitter la Simulation') }}' : '{{ __('Activer le Simulateur') }}'"></span>
                     </button>
                 </div>
                 <div class="relative z-10 text-right">
-                    <div class="text-sm font-bold text-emerald-200 uppercase tracking-widest" :class="{'text-indigo-200': isSimulation}">Moyenne Annuelle <span x-show="isSimulation">(Estimée)</span></div>
+                    <div class="text-sm font-bold text-emerald-200 uppercase tracking-widest" :class="{'text-indigo-200': isSimulation}">{{ __('Moyenne Annuelle') }} <span x-show="isSimulation">({{ __('Estimée') }})</span></div>
                     <div class="text-5xl font-black" :class="parseFloat(yearlyGpa).toFixed(2) >= 10 ? 'text-white' : 'text-rose-300'">
                         <span x-text="parseFloat(yearlyGpa).toFixed(2)"></span> <span class="text-xl text-opacity-80">/ 20</span>
                     </div>
                     
                     <template x-if="parseFloat(yearlyGpa) >= 10">
-                        <div class="mt-2 inline-block px-4 py-1 bg-white text-emerald-800 rounded-full text-xs font-black uppercase tracking-widest" :class="{'text-indigo-800': isSimulation}">Année Validée ✅</div>
+                        <div class="mt-2 inline-block px-4 py-1.5 bg-white text-emerald-800 rounded-full text-[10px] font-black uppercase tracking-widest shadow-sm" :class="{'text-indigo-800': isSimulation}">{{ __('Année Validée') }} ✅</div>
                     </template>
                     <template x-if="parseFloat(yearlyGpa) < 10 && parseFloat(yearlyGpa) > 0">
-                        <div class="mt-2 inline-block px-4 py-1 bg-rose-500 text-white rounded-full text-xs font-black uppercase tracking-widest">Ajourné(e) ⚠️</div>
+                        <div class="mt-2 inline-block px-4 py-1.5 bg-rose-500 text-white rounded-full text-[10px] font-black uppercase tracking-widest shadow-sm">{{ __('Ajourné(e)') }} ⚠️</div>
                     </template>
                 </div>
-                <div class="absolute -top-24 -right-24 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
+                <div class="absolute -top-24 -right-24 w-64 h-64 bg-white/10 rounded-full blur-3xl pointer-events-none"></div>
             </div>
 
             <!-- Semesters List -->
@@ -41,11 +47,11 @@
             @php
                 $semIndex = $loop->index;
             @endphp
-            <div class="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden mb-8 semester-block" data-semester-idx="{{ $semIndex }}">
+            <x-card class="p-0 mb-8 semester-block" data-semester-idx="{{ $semIndex }}">
                 <div class="bg-gray-50/80 px-8 py-5 border-b border-gray-100 flex justify-between items-center transition-colors duration-500" :class="{'bg-indigo-50/50': isSimulation}">
                     <h3 class="text-xl font-black text-upf-blue">{{ $semesterName }}</h3>
                     <div class="text-sm font-bold text-gray-500">
-                        Moyenne Semestre : 
+                        {{ __('Moyenne Semestre') }} : 
                         <span class="text-lg font-black" :class="parseFloat(semGpas[{{ $semIndex }}]).toFixed(2) >= 10 ? 'text-emerald-500' : 'text-rose-500'" x-text="parseFloat(semGpas[{{ $semIndex }}]).toFixed(2)"></span>
                     </div>
                 </div>
@@ -53,11 +59,11 @@
                     <table class="min-w-full">
                         <thead>
                             <tr class="bg-white border-b border-gray-50">
-                                <th class="px-8 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Module</th>
-                                <th class="px-8 py-4 text-center text-[10px] font-black text-gray-400 uppercase tracking-widest">CC1 (40%)</th>
-                                <th class="px-8 py-4 text-center text-[10px] font-black text-gray-400 uppercase tracking-widest">CC2 (40%)</th>
-                                <th class="px-8 py-4 text-center text-[10px] font-black text-gray-400 uppercase tracking-widest">Final Exam</th>
-                                <th class="px-8 py-4 text-right text-[10px] font-black text-gray-400 uppercase tracking-widest">Weighted Final</th>
+                                <th class="px-8 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">{{ __('Module') }}</th>
+                                <th class="px-8 py-4 text-center text-[10px] font-black text-gray-400 uppercase tracking-widest">{{ __('CC1') }} (40%)</th>
+                                <th class="px-8 py-4 text-center text-[10px] font-black text-gray-400 uppercase tracking-widest">{{ __('CC2') }} (40%)</th>
+                                <th class="px-8 py-4 text-center text-[10px] font-black text-gray-400 uppercase tracking-widest">{{ __('Examen Final') }}</th>
+                                <th class="px-8 py-4 text-right text-[10px] font-black text-gray-400 uppercase tracking-widest">{{ __('Moyenne') }}</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-100">
@@ -76,7 +82,7 @@
                                         <span class="font-bold text-gray-600" x-text="moduleData[{{ $modIdx }}].cc1 !== null ? moduleData[{{ $modIdx }}].cc1 : '--'"></span>
                                     </div>
                                     <div x-show="isSimulation && moduleData[{{ $modIdx }}].real_cc1 === null">
-                                        <input type="number" min="0" max="20" step="0.25" x-model.number="moduleData[{{ $modIdx }}].sim_cc1" @input="recalculate()" class="w-16 px-2 py-1 text-xs border border-indigo-200 rounded focus:ring-indigo-500 focus:border-indigo-500 bg-indigo-50 font-bold text-indigo-700 text-center shadow-inner">
+                                        <input type="number" min="0" max="20" step="0.25" x-model.number="moduleData[{{ $modIdx }}].sim_cc1" @input="recalculate()" class="w-16 px-2 py-1.5 text-xs border border-indigo-200 rounded-xl focus:ring-upf-magenta focus:border-upf-magenta bg-indigo-50 font-bold text-indigo-700 text-center shadow-inner">
                                     </div>
                                 </td>
 
@@ -85,7 +91,7 @@
                                         <span class="font-bold text-gray-600" x-text="moduleData[{{ $modIdx }}].cc2 !== null ? moduleData[{{ $modIdx }}].cc2 : '--'"></span>
                                     </div>
                                     <div x-show="isSimulation && moduleData[{{ $modIdx }}].real_cc2 === null">
-                                        <input type="number" min="0" max="20" step="0.25" x-model.number="moduleData[{{ $modIdx }}].sim_cc2" @input="recalculate()" class="w-16 px-2 py-1 text-xs border border-indigo-200 rounded focus:ring-indigo-500 focus:border-indigo-500 bg-indigo-50 font-bold text-indigo-700 text-center shadow-inner">
+                                        <input type="number" min="0" max="20" step="0.25" x-model.number="moduleData[{{ $modIdx }}].sim_cc2" @input="recalculate()" class="w-16 px-2 py-1.5 text-xs border border-indigo-200 rounded-xl focus:ring-upf-magenta focus:border-upf-magenta bg-indigo-50 font-bold text-indigo-700 text-center shadow-inner">
                                     </div>
                                 </td>
 
@@ -94,13 +100,13 @@
                                         <span class="font-black text-upf-blue" x-text="moduleData[{{ $modIdx }}].exam !== null ? moduleData[{{ $modIdx }}].exam : '--'"></span>
                                     </div>
                                     <div x-show="isSimulation && moduleData[{{ $modIdx }}].real_exam === null">
-                                        <input type="number" min="0" max="20" step="0.25" x-model.number="moduleData[{{ $modIdx }}].sim_exam" @input="recalculate()" class="w-16 px-2 py-1 text-xs border border-indigo-300 rounded focus:ring-indigo-500 focus:border-indigo-500 bg-indigo-100 font-black text-indigo-900 text-center shadow-inner">
+                                        <input type="number" min="0" max="20" step="0.25" x-model.number="moduleData[{{ $modIdx }}].sim_exam" @input="recalculate()" class="w-16 px-2 py-1.5 text-xs border border-indigo-300 rounded-xl focus:ring-upf-magenta focus:border-upf-magenta bg-indigo-100 font-black text-indigo-900 text-center shadow-inner">
                                     </div>
                                 </td>
 
                                 <td class="px-8 py-6 text-right">
                                     <div class="inline-flex flex-col items-end">
-                                        <span class="px-4 py-1 rounded-full font-black text-sm transition-colors duration-300"
+                                        <span class="px-4 py-1 rounded-full font-black text-sm transition-colors duration-300 shadow-sm"
                                               :class="{
                                                 'bg-emerald-100 text-emerald-700': getFinalGrade({{ $modIdx }}) >= 10,
                                                 'bg-rose-100 text-rose-700': getFinalGrade({{ $modIdx }}) < 10 && getFinalGrade({{ $modIdx }}) !== null,
@@ -110,10 +116,10 @@
                                         </span>
                                         
                                         <template x-if="getFinalGrade({{ $modIdx }}) >= 10">
-                                            <span class="text-[8px] font-black text-emerald-500 uppercase mt-1">Validated ✅</span>
+                                            <span class="text-[8px] font-black text-emerald-500 uppercase mt-1">{{ __('Validé') }} ✅</span>
                                         </template>
                                         <template x-if="getFinalGrade({{ $modIdx }}) < 10 && getFinalGrade({{ $modIdx }}) !== null">
-                                            <span class="text-[8px] font-black text-rose-500 uppercase mt-1">Rattrapage ⚠️</span>
+                                            <span class="text-[8px] font-black text-rose-500 uppercase mt-1">{{ __('Rattrapage') }} ⚠️</span>
                                         </template>
                                     </div>
                                 </td>
@@ -122,14 +128,12 @@
                         </tbody>
                     </table>
                 </div>
-            </div>
+            </x-card>
             @empty
-            <div class="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
-                <div class="p-24 text-center">
-                    <div class="text-4xl mb-4">📑</div>
-                    <p class="text-gray-400 italic font-bold">Aucune note ou module n'a été enregistré pour cette année.</p>
-                </div>
-            </div>
+            <x-card class="p-24 text-center">
+                <div class="text-4xl mb-4">📑</div>
+                <p class="text-gray-400 italic font-bold">{{ __('Aucune note ou module n\'a été enregistré pour cette année.') }}</p>
+            </x-card>
             @endforelse
 
         </div>

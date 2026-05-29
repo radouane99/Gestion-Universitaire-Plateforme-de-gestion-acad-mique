@@ -1,28 +1,26 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex justify-between items-center">
-            <h2 class="font-black text-2xl text-upf-blue leading-tight tracking-tight italic">
-                📅 Mes Disponibilités — Examens
-            </h2>
-            <span class="text-xs font-black text-gray-400 uppercase tracking-widest">
-                {{ now()->format('d/m/Y') }}
-            </span>
-        </div>
+        <x-page-header 
+            title="{{ __('Mes Disponibilités — Examens') }}" 
+            subtitle="{{ __('Semaine du :date', ['date' => now()->format('d/m/Y')]) }}"
+            icon='<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>'
+        >
+        </x-page-header>
     </x-slot>
 
-    <div class="py-10 bg-[#F8FAFC]">
-        <div class="max-w-5xl mx-auto sm:px-6 lg:px-8 space-y-8">
+    <div class="py-6 bg-[#F8FAFC]">
+        <div class="max-w-5xl mx-auto sm:px-6 lg:px-8 space-y-6">
 
             <x-alert-messages />
 
             {{-- Hero Info Card --}}
-            <div class="bg-gradient-to-br from-upf-blue via-indigo-700 to-purple-800 rounded-[2.5rem] p-10 text-white shadow-2xl relative overflow-hidden">
+            <div class="bg-gradient-to-br from-upf-blue via-indigo-700 to-purple-800 rounded-[2.5rem] p-10 text-white shadow-sm relative overflow-hidden">
                 <div class="relative z-10">
-                    <p class="text-[11px] font-black uppercase tracking-[0.3em] text-purple-300 mb-2">Semaine d'Examens</p>
-                    <h2 class="text-3xl font-black tracking-tighter mb-3">Soumettez vos disponibilités</h2>
+                    <p class="text-[11px] font-black uppercase tracking-[0.3em] text-purple-300 mb-2">{{ __('Semaine d\'Examens') }}</p>
+                    <h2 class="text-3xl font-black tracking-tighter mb-3">{{ __('Soumettez vos disponibilités') }}</h2>
                     <p class="text-blue-200 text-sm leading-relaxed max-w-xl">
-                        Indiquez les jours où vous êtes disponible pour surveiller des examens. <br>
-                        <span class="font-black text-white">⚠️ Minimum 3 jours obligatoires</span> par soumission.
+                        {{ __('Indiquez les jours où vous êtes disponible pour surveiller des examens.') }} <br>
+                        <span class="font-black text-white">⚠️ {{ __('Minimum 3 jours obligatoires') }}</span> {{ __('par soumission.') }}
                     </p>
                 </div>
                 <div class="absolute -bottom-10 -right-10 w-48 h-48 bg-white/5 rounded-full blur-2xl pointer-events-none"></div>
@@ -31,80 +29,80 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
                 {{-- FORM --}}
-                <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-8">
+                <x-card class="p-8">
                     <h3 class="font-black text-gray-900 text-lg mb-6 flex items-center gap-2">
                         <span class="w-8 h-8 rounded-full bg-upf-blue text-white flex items-center justify-center text-sm">✏️</span>
-                        Nouvelle soumission
+                        {{ __('Nouvelle soumission') }}
                     </h3>
 
                     <form action="{{ route('professor.availability.store') }}" method="POST" id="availabilityForm">
                         @csrf
 
                         <div class="mb-6">
-                            <label class="block text-xs font-black text-gray-500 uppercase tracking-widest mb-2">Libellé de la semaine d'examen</label>
-                            <input type="text" name="exam_week" required
-                                placeholder="Ex: Semaine d'examens Juin 2026"
+                            <x-input-label for="exam_week" :value="__('Libellé de la semaine d\'examen')" class="text-[10px] font-black uppercase tracking-widest text-gray-500 mb-2" />
+                            <x-text-input type="text" name="exam_week" required
+                                placeholder="{{ __('Ex: Semaine d\'examens Juin 2026') }}"
                                 class="w-full rounded-xl border-gray-200 focus:ring-upf-magenta focus:border-upf-magenta text-sm font-bold shadow-sm"
-                                value="{{ old('exam_week') }}">
-                            @error('exam_week') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                                value="{{ old('exam_week') }}" />
+                            <x-input-error :messages="$errors->get('exam_week')" class="mt-2" />
                         </div>
 
                         <div class="mb-6">
-                            <label class="block text-xs font-black text-gray-500 uppercase tracking-widest mb-2">
-                                Jours disponibles <span class="text-upf-magenta">(min. 3)</span>
+                            <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">
+                                {{ __('Jours disponibles') }} <span class="text-upf-magenta">({{ __('min. 3') }})</span>
                             </label>
                             <div class="space-y-2" id="dateList">
                                 <div class="flex gap-2 date-row">
-                                    <input type="date" name="dates[]" required
+                                    <x-text-input type="date" name="dates[]" required
                                         min="{{ now()->addDay()->format('Y-m-d') }}"
-                                        class="flex-1 rounded-xl border-gray-200 focus:ring-upf-magenta focus:border-upf-magenta text-sm font-bold shadow-sm">
+                                        class="flex-1 rounded-xl border-gray-200 focus:ring-upf-magenta focus:border-upf-magenta text-sm font-bold shadow-sm" />
                                     <button type="button" onclick="removeDate(this)" class="text-red-400 hover:text-red-600 p-2 hover:bg-red-50 rounded-xl transition-colors text-lg hidden">✕</button>
                                 </div>
                                 <div class="flex gap-2 date-row">
-                                    <input type="date" name="dates[]" required
+                                    <x-text-input type="date" name="dates[]" required
                                         min="{{ now()->addDay()->format('Y-m-d') }}"
-                                        class="flex-1 rounded-xl border-gray-200 focus:ring-upf-magenta focus:border-upf-magenta text-sm font-bold shadow-sm">
+                                        class="flex-1 rounded-xl border-gray-200 focus:ring-upf-magenta focus:border-upf-magenta text-sm font-bold shadow-sm" />
                                     <button type="button" onclick="removeDate(this)" class="text-red-400 hover:text-red-600 p-2 hover:bg-red-50 rounded-xl transition-colors text-lg hidden">✕</button>
                                 </div>
                                 <div class="flex gap-2 date-row">
-                                    <input type="date" name="dates[]" required
+                                    <x-text-input type="date" name="dates[]" required
                                         min="{{ now()->addDay()->format('Y-m-d') }}"
-                                        class="flex-1 rounded-xl border-gray-200 focus:ring-upf-magenta focus:border-upf-magenta text-sm font-bold shadow-sm">
+                                        class="flex-1 rounded-xl border-gray-200 focus:ring-upf-magenta focus:border-upf-magenta text-sm font-bold shadow-sm" />
                                     <button type="button" onclick="removeDate(this)" class="text-red-400 hover:text-red-600 p-2 hover:bg-red-50 rounded-xl transition-colors text-lg hidden">✕</button>
                                 </div>
                             </div>
-                            @error('dates') <p class="text-red-500 text-xs mt-2 font-bold">{{ $message }}</p> @enderror
+                            <x-input-error :messages="$errors->get('dates')" class="mt-2 font-bold" />
 
                             <button type="button" onclick="addDate()" class="mt-3 flex items-center gap-2 text-upf-blue font-black text-sm hover:text-upf-magenta transition-colors">
                                 <span class="w-6 h-6 rounded-full bg-blue-50 flex items-center justify-center text-xs">+</span>
-                                Ajouter un autre jour
+                                {{ __('Ajouter un autre jour') }}
                             </button>
                         </div>
 
                         <div class="mb-6">
-                            <label class="block text-xs font-black text-gray-500 uppercase tracking-widest mb-2">Notes (optionnel)</label>
+                            <x-input-label for="notes" :value="__('Notes (optionnel)')" class="text-[10px] font-black uppercase tracking-widest text-gray-500 mb-2" />
                             <textarea name="notes" rows="3"
-                                placeholder="Contraintes particulières, préférences horaires..."
+                                placeholder="{{ __('Contraintes particulières, préférences horaires...') }}"
                                 class="w-full rounded-xl border-gray-200 focus:ring-upf-magenta focus:border-upf-magenta text-sm font-bold shadow-sm">{{ old('notes') }}</textarea>
                         </div>
 
-                        <button type="submit" class="w-full bg-upf-blue hover:bg-upf-navy text-white font-black py-3 px-6 rounded-2xl shadow-lg transition-all hover:scale-[1.01] uppercase tracking-widest text-sm">
-                            ✅ Soumettre mes disponibilités
-                        </button>
+                        <x-primary-button class="w-full justify-center py-3">
+                            ✅ {{ __('Soumettre mes disponibilités') }}
+                        </x-primary-button>
                     </form>
-                </div>
+                </x-card>
 
                 {{-- Existing Availabilities --}}
-                <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-8">
+                <x-card class="p-8">
                     <h3 class="font-black text-gray-900 text-lg mb-6 flex items-center gap-2">
                         <span class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-sm">📆</span>
-                        Mes disponibilités soumises
+                        {{ __('Mes disponibilités soumises') }}
                     </h3>
 
                     @if($byWeek->isEmpty())
                         <div class="text-center py-12">
                             <div class="text-4xl mb-3">📭</div>
-                            <p class="text-gray-400 font-bold text-sm">Aucune disponibilité soumise.</p>
+                            <p class="text-gray-400 font-bold text-sm">{{ __('Aucune disponibilité soumise.') }}</p>
                         </div>
                     @else
                         <div class="space-y-6 max-h-[500px] overflow-y-auto pr-2">
@@ -127,12 +125,12 @@
                                                     </div>
                                                 </div>
                                                 @if(!$av->available_date->isPast())
-                                                    <form action="{{ route('professor.availability.destroy', $av) }}" method="POST" onsubmit="return confirm('Supprimer cette disponibilité ?');">
+                                                    <form action="{{ route('professor.availability.destroy', $av) }}" method="POST" onsubmit="return confirm('{{ __('Supprimer cette disponibilité ?') }}');">
                                                         @csrf @method('DELETE')
                                                         <button type="submit" class="text-red-400 hover:text-red-600 p-2 rounded-xl hover:bg-red-50 transition-colors">✕</button>
                                                     </form>
                                                 @else
-                                                    <span class="text-[9px] font-black text-gray-300 uppercase tracking-widest">Passé</span>
+                                                    <span class="text-[9px] font-black text-gray-300 uppercase tracking-widest">{{ __('Passé') }}</span>
                                                 @endif
                                             </div>
                                         @endforeach
@@ -141,7 +139,7 @@
                             @endforeach
                         </div>
                     @endif
-                </div>
+                </x-card>
             </div>
 
         </div>
@@ -164,7 +162,7 @@
         function removeDate(btn) {
             const rows = document.querySelectorAll('.date-row');
             if (rows.length <= 3) {
-                alert('Vous devez conserver au minimum 3 jours de disponibilité.');
+                alert('{{ __('Vous devez conserver au minimum 3 jours de disponibilité.') }}');
                 return;
             }
             btn.closest('.date-row').remove();

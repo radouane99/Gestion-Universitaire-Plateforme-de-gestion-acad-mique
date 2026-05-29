@@ -275,68 +275,108 @@
                 document.getElementById('modal-color-dot').style.background = color.bg;
                 document.getElementById('event-modal-overlay').classList.add('show');
             },
-            events: function(fetchInfo, successCallback, failureCallback) {
-                fetch('/api/schedule', {
-                    headers: {
-                        'Accept': 'application/json',
-                        'Authorization': 'Bearer ' + '{{ Auth::user()->createToken("cal-view")->plainTextToken }}'
-                    }
-                })
-                .then(r => r.json())
-                .then(data => {
-                    if (data.status === 'success' && Array.isArray(data.schedules)) {
-                        const color = getColor(data.schedules[0]?.module?.name || 'default');
-                        
-                        // Stats
-                        const uniqueModules = new Set(data.schedules.map(s => s.module_id || s.module?.id)).size;
-                        const uniqueRooms = new Set(data.schedules.map(s => s.room?.name)).size;
-                        let totalHours = 0;
-
-                        const events = data.schedules.map(item => {
-                            const fcDay = item.day_of_week == 7 ? 0 : item.day_of_week;
-                            const c = getColor(item.module?.name || '');
-
-                            // Calculate hours
-                            if (item.start_time && item.end_time) {
-                                const [sh, sm] = item.start_time.split(':').map(Number);
-                                const [eh, em] = item.end_time.split(':').map(Number);
-                                totalHours += ((eh * 60 + em) - (sh * 60 + sm)) / 60;
+            eventSources: [
+                {
+                    events: function(fetchInfo, successCallback, failureCallback) {
+                        fetch('/api/schedule', {
+                            headers: {
+                                'Accept': 'application/json',
+                                'Authorization': 'Bearer ' + '{{ Auth::user()->createToken("cal-view")->plainTextToken }}'
                             }
+                        })
+                        .then(r => r.json())
+                        .then(data => {
+                            if (data.status === 'success' && Array.isArray(data.schedules.data)) {
+                                const schedules = data.schedules.data;
+                                
+                                // Stats
+                                const uniqueModules = new Set(schedules.map(s => s.module_id || s.module?.id)).size;
+                                const uniqueRooms = new Set(schedules.map(s => s.room?.name)).size;
+                                let totalHours = 0;
 
-                            return {
-                                title: item.module?.name || 'Cours',
-                                startTime: item.start_time,
-                                endTime: item.end_time,
-                                daysOfWeek: [fcDay],
-                                backgroundColor: c.bg,
-                                borderColor: 'transparent',
-                                extendedProps: {
-                                    moduleName: item.module?.name || 'Cours',
-                                    roomName: item.room?.name || 'Salle non définie',
-                                    profName: item.professor?.user?.name || 'Non assigné',
-                                    groupName: item.group?.name || '—',
-                                }
-                            };
+                                const events = schedules.map(item => {
+                                    const fcDay = item.day_of_week == 7 ? 0 : item.day_of_week;
+                                    const c = getColor(item.module?.name || '');
+
+                                    // Calculate hours
+                                    if (item.start_time && item.end_time) {
+                                        const [sh, sm] = item.start_time.split(':').map(Number);
+                                        const [eh, em] = item.end_time.split(':').map(Number);
+                                        totalHours += ((eh * 60 + em) - (sh * 60 + sm)) / 60;
+                                    }
+
+                                    return {
+                                        title: item.module?.name || 'Cours',
+                                        startTime: item.start_time,
+                                        endTime: item.end_time,
+                                        daysOfWeek: [fcDay],
+                                        backgroundColor: c.bg,
+                                        borderColor: 'transparent',
+                                        extendedProps: {
+                                            moduleName: item.module?.name || 'Cours',
+                                            roomName: item.room?.name || 'Salle non définie',
+                                            profName: item.professor?.user?.name || 'Non assigné',
+                                            groupName: item.group?.name || '—',
+                                        }
+                                    };
+                                });
+
+                                // Update stats
+                                document.getElementById('stat-weekly').textContent = schedules.length;
+                                document.getElementById('stat-modules').textContent = uniqueModules;
+                                document.getElementById('stat-hours').textContent = totalHours.toFixed(0) + 'h';
+                                document.getElementById('stat-rooms').textContent = uniqueRooms;
+                                document.getElementById('loading-badge').innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-400"></span> <span class="text-emerald-600">Chargé</span>';
+
+                                successCallback(events);
+                            } else {
+                                successCallback([]);
+                            }
+                        })
+                        .catch(err => {
+                            console.error(err);
+                            failureCallback(err);
                         });
-
-                        // Update stats
-                        document.getElementById('stat-weekly').textContent = data.schedules.length;
-                        document.getElementById('stat-modules').textContent = uniqueModules;
-                        document.getElementById('stat-hours').textContent = totalHours.toFixed(0) + 'h';
-                        document.getElementById('stat-rooms').textContent = uniqueRooms;
-                        document.getElementById('loading-badge').innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-400"></span> <span class="text-emerald-600">' + events.length + ' cours chargés</span>';
-
-                        successCallback(events);
-                    } else {
-                        successCallback([]);
-                        document.getElementById('loading-badge').innerHTML = '<span class="text-gray-400">Aucun cours trouvé</span>';
                     }
-                })
-                .catch(err => {
-                    console.error(err);
-                    failureCallback(err);
-                });
-            }
+                },
+                {
+                    events: function(fetchInfo, successCallback, failureCallback) {
+                        fetch('/api/exams', {
+                            headers: {
+                                'Accept': 'application/json',
+                                'Authorization': 'Bearer ' + '{{ Auth::user()->createToken("cal-view")->plainTextToken }}'
+                            }
+                        })
+                        .then(r => r.json())
+                        .then(data => {
+                            if (data.status === 'success' && Array.isArray(data.exams)) {
+                                const events = data.exams.map(item => {
+                                    return {
+                                        title: item.title,
+                                        start: item.date + 'T' + item.start_time,
+                                        end: item.date + 'T' + item.end_time,
+                                        backgroundColor: '#ef4444', // Red for exams
+                                        borderColor: '#b91c1c',
+                                        extendedProps: {
+                                            moduleName: item.title,
+                                            roomName: item.room?.name || 'Salle non définie',
+                                            profName: item.proctors?.map(p => p.user?.name).join(', ') || 'Non assigné',
+                                            groupName: item.group?.name || '—',
+                                        }
+                                    };
+                                });
+                                successCallback(events);
+                            } else {
+                                successCallback([]);
+                            }
+                        })
+                        .catch(err => {
+                            console.error(err);
+                            failureCallback(err);
+                        });
+                    }
+                }
+            ]
         });
 
         calendar.render();

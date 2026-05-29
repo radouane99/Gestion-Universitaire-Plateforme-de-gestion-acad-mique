@@ -38,9 +38,18 @@ class StudentController extends Controller
         $gpaPercent   = round(($gpa / 20) * 100);
         $unjustified  = $absences->where('is_justified', false)->count();
 
+        $pendingRetakes = \App\Models\RetakeEligibility::where('student_id', $student->id)
+            ->whereIn('admin_decision', ['pending', 'approved'])
+            ->count();
+
+        $pendingReclamations = \App\Models\Reclamation::where('student_id', $student->id)
+            ->whereIn('status', ['pending', 'in_progress'])
+            ->count();
+
         return view('student.dashboard', compact(
             'grades', 'absences', 'requests', 'schedule',
-            'gpa', 'gpaPercent', 'nextClass', 'unjustified'
+            'gpa', 'gpaPercent', 'nextClass', 'unjustified',
+            'pendingRetakes', 'pendingReclamations'
         ));
     }
 

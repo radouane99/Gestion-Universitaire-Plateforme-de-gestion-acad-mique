@@ -16,11 +16,13 @@ class UserSeeder extends Seeder
         $professorRole = \App\Models\Role::where('name', 'professor')->first();
         $studentRole = \App\Models\Role::where('name', 'student')->first();
 
+        $seedPassword = \Hash::make(env('SEED_USER_PASSWORD', 'ChangeMe123!'));
+
         // Admin
         \App\Models\User::create([
             'name' => 'Admin User',
             'email' => 'admin@university.com',
-            'password' => \Hash::make('password'),
+            'password' => $seedPassword,
             'role_id' => $adminRole->id,
         ]);
 
@@ -28,7 +30,7 @@ class UserSeeder extends Seeder
         $profUser = \App\Models\User::create([
             'name' => 'Professor Smith',
             'email' => 'prof@university.com',
-            'password' => \Hash::make('password'),
+            'password' => $seedPassword,
             'role_id' => $professorRole->id,
         ]);
         \App\Models\Professor::create([
@@ -46,7 +48,7 @@ class UserSeeder extends Seeder
         $studentUser = \App\Models\User::create([
             'name' => 'Student Doe',
             'email' => 'student@university.com',
-            'password' => \Hash::make('password'),
+            'password' => $seedPassword,
             'role_id' => $studentRole->id,
         ]);
         \App\Models\Student::create([

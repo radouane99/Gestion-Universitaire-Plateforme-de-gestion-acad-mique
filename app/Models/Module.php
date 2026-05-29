@@ -27,4 +27,9 @@ class Module extends Model
     {
         return $this->hasMany(Schedule::class);
     }
+
+    public function reclamations()
+    {
+        return $this->hasMany(Reclamation::class);
+    }
 }

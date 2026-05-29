@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#1f2937">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>Mode Hors-Ligne - UPF Portail</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html, body {
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #1e293b;
+            min-height: 100vh;
+            padding: 1rem;
+        }
+        
+        .container {
+            max-width: 450px;
+            width: 100%;
+            padding: 2.5rem 2rem;
+            background: white;
+            border-radius: 24px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 20px 40px rgb(0 0 0 / 0.08);
+            animation: slideUp 0.4s ease-out;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .icon {
+            font-size: 5rem;
+            margin-bottom: 1.5rem;
+            display: inline-block;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+        
+        h1 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 0.75rem;
+        }
+        
+        .brand {
+            font-size: 0.875rem;
+            color: #64748b;
+            font-weight: 500;
+            margin-bottom: 1.5rem;
+            letter-spacing: 0.05em;
+        }
+        
+        .message {
+            color: #475569;
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .actions {
+            display: flex;
+            gap: 1rem;
+            flex-direction: column;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+        }
+        
+        .btn-primary {
+            background: #1f2937;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #111827;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgb(0 0 0 / 0.15);
+        }
+        
+        .btn-secondary {
+            background: #f1f5f9;
+            color: #1f2937;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .btn-secondary:hover {
+            background: #e2e8f0;
+            border-color: #cbd5e1;
+        }
+        
+        .footer {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e2e8f0;
+            text-align: center;
+            font-size: 0.875rem;
+            color: #94a3b8;
+        }
+        
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            font-size: 0.875rem;
+        }
+        
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ef4444;
+            animation: blink 1s ease-in-out infinite;
+        }
+        
+        @keyframes blink {
+            0%, 49%, 100% { opacity: 1; }
+            50%, 99% { opacity: 0.3; }
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 2rem 1.5rem;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            .icon {
+                font-size: 3.5rem;
+            }
+            
+            .message {
+                font-size: 0.9375rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="icon">📡</div>
+            <h1>Hors-Ligne</h1>
+            <div class="brand">UPF Portail</div>
+        </div>
+        
+        <p class="message">
+            Vous n'êtes actuellement pas connecté à Internet. Veuillez vérifier votre connexion pour accéder à la plateforme de gestion universitaire.
+        </p>
+        
+        <div class="actions">
+            <button onclick="location.reload()" class="btn btn-primary">
+                ↻ Réessayer
+            </button>
+            <button onclick="goHome()" class="btn btn-secondary">
+                ← Retour à l'accueil
+            </button>
+        </div>
+        
+        <div class="status-indicator">
+            <div class="status-dot"></div>
+            <span>Pas de connexion</span>
+        </div>
+        
+        <div class="footer">
+            <p>Vous pourrez accéder aux données en cache une fois reconnecté.</p>
+        </div>
+    </div>
+    
+    <script>
+        function goHome() {
+            window.location.href = '/';
+        }
+        
+        // Listen for connection restoration
+        window.addEventListener('online', () => {
+            console.log('[PWA] Back online!');
+            // Optionally auto-reload
+            setTimeout(() => {
+                location.reload();
+            }, 1000);
+        });
+        
+        window.addEventListener('offline', () => {
+            console.log('[PWA] Went offline');
+        });
+    </script>
+</body>
+</html>

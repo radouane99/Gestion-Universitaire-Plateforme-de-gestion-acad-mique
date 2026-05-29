@@ -1,43 +1,41 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex justify-between items-center">
-            <h2 class="font-black text-2xl text-upf-blue leading-tight tracking-tight italic">
-                Mon Planning d'Enseignement
-            </h2>
-            <div class="flex items-center gap-3">
-                <a href="{{ route('schedules.pdf') }}" class="bg-gray-800 hover:bg-black text-white font-bold py-2 px-4 rounded-xl shadow transition-colors text-xs flex items-center gap-2">
-                    📄 Exporter PDF
+        <x-page-header 
+            title="{{ __('Mon Planning d\'Enseignement') }}" 
+            subtitle="{{ __('Semaine du :start au :end', ['start' => now()->startOfWeek()->format('d/m'), 'end' => now()->endOfWeek()->format('d/m/Y')]) }}"
+            icon='<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>'
+        >
+            <x-slot name="actions">
+                <a href="{{ route('schedules.pdf') }}" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-xl font-bold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition ease-in-out duration-150 shadow-sm hover:shadow-md">
+                    📄 {{ __('Exporter PDF') }}
                 </a>
-                <span class="text-xs font-black text-gray-400 uppercase tracking-widest">
-                    Semaine du {{ now()->startOfWeek()->format('d/m') }} au {{ now()->endOfWeek()->format('d/m/Y') }}
-                </span>
-            </div>
-        </div>
+            </x-slot>
+        </x-page-header>
     </x-slot>
 
-    <div class="py-10 bg-[#F8FAFC]">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-8">
+    <div class="py-6 bg-[#F8FAFC]">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
 
             {{-- Hero --}}
-            <div class="bg-gradient-to-br from-amber-600 via-orange-600 to-rose-600 rounded-[2.5rem] p-10 text-white shadow-2xl relative overflow-hidden">
+            <div class="bg-gradient-to-br from-amber-600 via-orange-600 to-rose-600 rounded-[2.5rem] p-10 text-white shadow-sm relative overflow-hidden">
                 <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                     <div>
-                        <p class="text-[11px] font-black uppercase tracking-[0.3em] text-yellow-200 mb-2">Planning Personnel Enseignant</p>
-                        <h2 class="text-3xl font-black tracking-tighter">📅 Mes Séances de Cours</h2>
-                        <p class="text-orange-100 text-xs mt-2 opacity-80">Emploi du temps géré exclusivement par l'administration — mis à jour en temps réel.</p>
+                        <p class="text-[11px] font-black uppercase tracking-[0.3em] text-yellow-200 mb-2">{{ __('Planning Personnel Enseignant') }}</p>
+                        <h2 class="text-3xl font-black tracking-tighter">📅 {{ __('Mes Séances de Cours') }}</h2>
+                        <p class="text-orange-100 text-xs mt-2 opacity-80">{{ __('Emploi du temps géré exclusivement par l\'administration — mis à jour en temps réel.') }}</p>
                     </div>
                     <div class="flex gap-4">
-                        <div class="bg-white/15 backdrop-blur border border-white/20 px-6 py-4 rounded-2xl text-center">
+                        <div class="bg-white/15 backdrop-blur border border-white/20 px-6 py-4 rounded-2xl text-center shadow-inner">
                             <p class="text-2xl font-black">{{ $schedules->count() }}</p>
-                            <p class="text-[9px] uppercase font-black text-yellow-200 tracking-widest">Séances</p>
+                            <p class="text-[9px] uppercase font-black text-yellow-200 tracking-widest">{{ __('Séances') }}</p>
                         </div>
-                        <div class="bg-white/15 backdrop-blur border border-white/20 px-6 py-4 rounded-2xl text-center">
+                        <div class="bg-white/15 backdrop-blur border border-white/20 px-6 py-4 rounded-2xl text-center shadow-inner">
                             <p class="text-2xl font-black">{{ $totalGroups }}</p>
-                            <p class="text-[9px] uppercase font-black text-yellow-200 tracking-widest">Groupes</p>
+                            <p class="text-[9px] uppercase font-black text-yellow-200 tracking-widest">{{ __('Groupes') }}</p>
                         </div>
-                        <div class="bg-white/15 backdrop-blur border border-white/20 px-6 py-4 rounded-2xl text-center">
+                        <div class="bg-white/15 backdrop-blur border border-white/20 px-6 py-4 rounded-2xl text-center shadow-inner">
                             <p class="text-2xl font-black">{{ number_format($totalHours, 1) }}h</p>
-                            <p class="text-[9px] uppercase font-black text-yellow-200 tracking-widest">Hebdo</p>
+                            <p class="text-[9px] uppercase font-black text-yellow-200 tracking-widest">{{ __('Hebdo') }}</p>
                         </div>
                     </div>
                 </div>
@@ -45,9 +43,9 @@
             </div>
 
             {{-- FullCalendar Container --}}
-            <div class="bg-white rounded-[2rem] border shadow-sm overflow-hidden p-6" wire:ignore>
+            <x-card class="p-6" wire:ignore>
                 <div id="calendar"></div>
-            </div>
+            </x-card>
 
             {{-- FullCalendar Scripts & Styles --}}
             <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
@@ -89,11 +87,11 @@
                             right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
                         },
                         buttonText: {
-                            today: "Aujourd'hui",
-                            month: 'Mois',
-                            week: 'Semaine',
-                            day: 'Jour',
-                            list: 'Liste'
+                            today: "{{ __('Aujourd\'hui') }}",
+                            month: "{{ __('Mois') }}",
+                            week: "{{ __('Semaine') }}",
+                            day: "{{ __('Jour') }}",
+                            list: "{{ __('Liste') }}"
                         },
                         allDaySlot: false,
                         slotMinTime: '08:00:00',
@@ -115,10 +113,8 @@
                             return { domNodes: arrayOfDomNodes }
                         },
                         eventClick: function(info) {
-                            // Could open a modal here, but for now just show a simple alert or do nothing
-                            // as it's just a view
                             const props = info.event.extendedProps;
-                            alert(`Module: ${props.module}\nGroupe: ${props.group}\nSalle: ${props.room}\nDurée: ${props.duration}`);
+                            alert(`{{ __('Module') }}: ${props.module}\n{{ __('Groupe') }}: ${props.group}\n{{ __('Salle') }}: ${props.room}\n{{ __('Durée') }}: ${props.duration}`);
                         },
                         height: 'auto',
                         slotLabelFormat: {
@@ -156,9 +152,9 @@
                 }
                 .fc .fc-button-primary:not(:disabled).fc-button-active, 
                 .fc .fc-button-primary:not(:disabled):active {
-                    background-color: #4f46e5 !important;
+                    background-color: #003399 !important;
                     color: #fff !important;
-                    border-color: #4f46e5 !important;
+                    border-color: #003399 !important;
                 }
                 .fc-event { border: none !important; border-radius: 0.5rem !important; padding: 0.25rem 0.5rem !important; box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05); }
                 .fc-timegrid-slot { height: 3rem !important; }

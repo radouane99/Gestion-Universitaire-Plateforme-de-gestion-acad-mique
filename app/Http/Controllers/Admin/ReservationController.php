@@ -158,6 +158,12 @@ class ReservationController extends Controller
             'ip_address' => request()->ip()
         ]);
 
+        $reservation->professor->user->notify(new \App\Notifications\AcademicNotification(
+            "✅ Votre demande de réservation pour la salle {$reservation->room->name} a été APPROUVÉE.",
+            'success',
+            route('professor.reservations.index')
+        ));
+
         return redirect()->route('admin.reservations.index')->with('success', 'Demande de réservation approuvée avec succès !');
     }
 
@@ -172,6 +178,12 @@ class ReservationController extends Controller
             'description' => "Administration : Rejeté la réservation de la salle {$reservation->room->name} pour {$reservation->professor->user->name}.",
             'ip_address' => request()->ip()
         ]);
+
+        $reservation->professor->user->notify(new \App\Notifications\AcademicNotification(
+            "❌ Votre demande de réservation pour la salle {$reservation->room->name} a été REFUSÉE.",
+            'error',
+            route('professor.reservations.index')
+        ));
 
         return redirect()->route('admin.reservations.index')->with('success', 'Demande de réservation rejetée.');
     }

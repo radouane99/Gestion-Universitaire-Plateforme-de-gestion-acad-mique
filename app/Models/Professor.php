@@ -32,4 +32,9 @@ class Professor extends Model
     {
         return $this->belongsToMany(Exam::class, 'exam_proctor');
     }
+
+    public function proctorConvocations()
+    {
+        return $this->hasMany(ProfessorConvocation::class);
+    }
 }

@@ -38,7 +38,15 @@
                             <div class="flex justify-end">
                                 <div class="max-w-[75%]">
                                     <div class="bg-upf-blue text-white rounded-[2rem] rounded-tr-none px-6 py-4 shadow-md">
-                                        <p class="text-sm font-medium leading-relaxed">{!! nl2br(e($msg->content)) !!}</p>
+                                        @if($msg->attachment_path)
+                                            <a href="{{ Storage::url($msg->attachment_path) }}" target="_blank" class="flex items-center gap-2 mb-2 p-2 bg-white/20 rounded-xl hover:bg-white/30 transition-colors">
+                                                <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg>
+                                                <span class="text-xs font-bold truncate">{{ $msg->attachment_name ?? 'Pièce jointe' }}</span>
+                                            </a>
+                                        @endif
+                                        @if($msg->content)
+                                            <p class="text-sm font-medium leading-relaxed">{!! nl2br(e($msg->content)) !!}</p>
+                                        @endif
                                     </div>
                                     <div class="flex items-center justify-end gap-1 mt-1">
                                         <span class="text-[10px] font-bold text-gray-400">{{ $msg->created_at->format('H:i') }}</span>
@@ -55,7 +63,15 @@
                             <div class="flex justify-start">
                                 <div class="max-w-[75%]">
                                     <div class="bg-white border border-gray-100 text-gray-800 rounded-[2rem] rounded-tl-none px-6 py-4 shadow-sm">
-                                        <p class="text-sm font-medium leading-relaxed">{!! nl2br(e($msg->content)) !!}</p>
+                                        @if($msg->attachment_path)
+                                            <a href="{{ Storage::url($msg->attachment_path) }}" target="_blank" class="flex items-center gap-2 mb-2 p-2 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors">
+                                                <svg class="w-5 h-5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg>
+                                                <span class="text-xs font-bold text-gray-600 truncate">{{ $msg->attachment_name ?? 'Pièce jointe' }}</span>
+                                            </a>
+                                        @endif
+                                        @if($msg->content)
+                                            <p class="text-sm font-medium leading-relaxed">{!! nl2br(e($msg->content)) !!}</p>
+                                        @endif
                                     </div>
                                     <div class="flex items-center justify-start gap-1 mt-1">
                                         <span class="text-[10px] font-bold text-gray-400">{{ $msg->created_at->format('H:i') }}</span>
@@ -73,12 +89,21 @@
 
                 <!-- Message Input -->
                 <div class="p-6 bg-white border-t border-gray-100">
-                    <form action="{{ route('chat.store', $conversation) }}" method="POST" class="flex gap-4 items-end">
+                    <form action="{{ route('chat.store', $conversation) }}" method="POST" enctype="multipart/form-data" class="flex gap-4 items-end">
                         @csrf
-                        <div class="flex-1 bg-gray-50 border border-gray-200 rounded-[1.5rem] p-2 focus-within:ring-2 focus-within:ring-upf-blue focus-within:border-upf-blue transition-all">
-                            <textarea name="content" rows="1" placeholder="Écrivez votre message..." required autofocus
-                                class="w-full bg-transparent border-none focus:ring-0 text-sm font-medium text-gray-800 resize-none max-h-32 py-3 px-4 custom-scrollbar" 
-                                oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'"></textarea>
+                        <div class="flex-1 bg-gray-50 border border-gray-200 rounded-[1.5rem] p-2 flex items-end gap-2 focus-within:ring-2 focus-within:ring-upf-blue focus-within:border-upf-blue transition-all">
+                            
+                            <label class="w-10 h-10 rounded-full flex items-center justify-center text-gray-400 hover:bg-gray-200 hover:text-upf-blue cursor-pointer transition-colors flex-shrink-0">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg>
+                                <input type="file" name="attachment" class="hidden" accept=".pdf,.doc,.docx,.jpg,.png,.zip" onchange="document.getElementById('file-name').innerText = this.files[0] ? this.files[0].name : ''">
+                            </label>
+
+                            <div class="flex-1 flex flex-col">
+                                <span id="file-name" class="text-[10px] font-bold text-upf-magenta px-3 truncate"></span>
+                                <textarea name="content" rows="1" placeholder="Écrivez votre message..." autofocus
+                                    class="w-full bg-transparent border-none focus:ring-0 text-sm font-medium text-gray-800 resize-none max-h-32 py-3 px-2 custom-scrollbar" 
+                                    oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'"></textarea>
+                            </div>
                         </div>
                         <button type="submit" class="w-14 h-14 rounded-full bg-upf-blue text-white flex items-center justify-center hover:bg-upf-navy hover:scale-105 transition-all shadow-lg flex-shrink-0">
                             <svg class="w-6 h-6 ml-1" fill="currentColor" viewBox="0 0 20 20"><path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"></path></svg>

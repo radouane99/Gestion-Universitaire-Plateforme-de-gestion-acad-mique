@@ -15,6 +15,16 @@
         <!-- FullCalendar -->
         <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
 
+        <!-- PWA Meta Tags -->
+        <link rel="manifest" href="/manifest.json">
+        <meta name="theme-color" content="#1f2937">
+        <meta name="description" content="Application de gestion universitaire intégrée pour l'Université Privée de Fès">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        <meta name="apple-mobile-web-app-title" content="UPF Portail">
+        <link rel="apple-touch-icon" href="/icons/icon-192x192.png">
+        <link rel="icon" type="image/png" href="/icons/icon-192x192.png">
+
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         <script>
@@ -23,6 +33,85 @@
             } else {
                 document.documentElement.classList.remove('dark');
             }
+        </script>
+        
+        <!-- Service Worker Registration -->
+        <script>
+            // Unregister service worker in development to prevent aggressive caching issues
+            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                if ('serviceWorker' in navigator) {
+                    navigator.serviceWorker.getRegistrations().then(registrations => {
+                        for (let registration of registrations) {
+                            registration.unregister().then(() => {
+                                console.log('[PWA] Unregistered service worker in development');
+                            });
+                        }
+                    });
+                }
+                // Clear any stored Cache Storage caches to bust cache instantly
+                if ('caches' in window) {
+                    caches.keys().then(names => {
+                        for (let name of names) {
+                            caches.delete(name).then(() => {
+                                console.log('[PWA] Cleared cache storage:', name);
+                            });
+                        }
+                    });
+                }
+            } else if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('/sw.js')
+                        .then(registration => {
+                            console.log('[PWA] Service Worker registered successfully:', registration.scope);
+                            
+                            // Check for updates periodically (every hour)
+                            setInterval(() => {
+                                registration.update();
+                            }, 60 * 60 * 1000);
+                            
+                            // Handle update available
+                            registration.addEventListener('updatefound', () => {
+                                const newWorker = registration.installing;
+                                newWorker.addEventListener('statechange', () => {
+                                    if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                        // New service worker ready, notify user
+                                        console.log('[PWA] New version available. Refresh to update.');
+                                        // You can dispatch custom event here for UI notification
+                                        window.dispatchEvent(new CustomEvent('swUpdated', { detail: registration }));
+                                    }
+                                });
+                            });
+                        })
+                        .catch(err => {
+                            console.error('[PWA] Service Worker registration failed:', err);
+                        });
+                    
+                    // Handle successful service worker activation
+                    let refreshing;
+                    navigator.serviceWorker.addEventListener('controllerchange', () => {
+                        if (refreshing) return;
+                        refreshing = true;
+                        window.location.reload();
+                    });
+                });
+            } else {
+                console.log('[PWA] Service Workers not supported in this browser');
+            }
+
+            // Detect install prompt
+            let deferredPrompt;
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+                // Signal app that install button should be shown
+                window.dispatchEvent(new CustomEvent('pwaMountPointReady', { detail: { deferredPrompt } }));
+            });
+
+            // Handle app installed
+            window.addEventListener('appinstalled', () => {
+                console.log('[PWA] App successfully installed');
+                deferredPrompt = null;
+            });
         </script>
     </head>
     <body class="font-sans antialiased bg-[#F8FAFC] dark:bg-[#020617] transition-colors duration-300">
@@ -42,6 +131,11 @@
             <main>
                 {{ $slot }}
             </main>
+
+            <!-- AI Chat Widget for Students -->
+            @if(Auth::check() && Auth::user()->isStudent())
+                <x-ai-chat-widget />
+            @endif
         </div>
     </body>
 </html>
