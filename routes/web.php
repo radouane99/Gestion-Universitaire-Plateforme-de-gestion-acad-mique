@@ -385,4 +385,10 @@ Route::get('/lang/{locale}', function ($locale) {
     return back();
 })->name('lang.switch');
 
+// MAGIC SETUP ROUTE FOR RAILWAY
+Route::get('/setup-db-magic', function () {
+    \Illuminate\Support\Facades\Artisan::call('migrate:fresh', ['--seed' => true, '--force' => true]);
+    return '<h1>🎉 MAGNIFIQUE !</h1><p>La NOUVELLE base de données est migrée avec vos données réelles (250 étudiants, filières, Radouane en Admin) ! Vous pouvez retourner à l\'accueil.</p><a href="/">Retour à l\'accueil</a>';
+});
+
 require __DIR__ . '/auth.php';
