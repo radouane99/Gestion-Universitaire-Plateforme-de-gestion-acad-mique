@@ -15,6 +15,7 @@
         "laravel/tinker": "^3.0",
         "maatwebsite/excel": "^1.1",
         "phpoffice/phpspreadsheet": "^5.7",
+        "resend/resend-php": "*",
         "simplesoftwareio/simple-qrcode": "^4.2",
         "symfony/http-client": "^8.1",
         "symfony/resend-mailer": "^8.1"
