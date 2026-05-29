@@ -13,7 +13,8 @@
         "laravel/tinker": "^3.0",
         "maatwebsite/excel": "^1.1",
         "phpoffice/phpspreadsheet": "^5.7",
-        "simplesoftwareio/simple-qrcode": "^4.2"
+        "simplesoftwareio/simple-qrcode": "^4.2",
+        "ext-gd": "*"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
