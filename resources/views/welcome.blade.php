@@ -36,7 +36,7 @@
                 <!-- Logo -->
                 <div class="flex-shrink-0 flex items-center gap-3">
                     <div class="h-14 w-auto flex items-center justify-center bg-white rounded-xl p-2 shadow-sm transition transform hover:scale-105">
-                        <img src="https://www.upf.ac.ma/wp-content/uploads/2020/07/logo-upf.png" alt="UPF Logo" class="h-10 object-contain" onerror="this.outerHTML='<div class=\'font-black text-2xl text-[#003893]\'>UPF<span class=\'text-[#b50060]\'>.</span></div>'">
+                        <img src="https://www.upf.ac.ma/images/logo_upf.png" alt="UPF Logo" class="h-10 object-contain" onerror="this.outerHTML='<div class=\'font-black text-2xl text-[#003893]\'>UPF<span class=\'text-[#b50060]\'>.</span></div>'">
                     </div>
                 </div>
 
@@ -233,12 +233,12 @@
                 <div class="col-span-1 md:col-span-2">
                     <div class="flex items-center gap-4 mb-6">
                         <div class="h-14 w-auto bg-white rounded-xl p-2">
-                            <img src="https://www.upf.ac.ma/wp-content/uploads/2020/07/logo-upf.png" alt="UPF Logo" class="h-10">
+                            <img src="https://www.upf.ac.ma/images/logo_upf.png" alt="UPF Logo" class="h-10">
                         </div>
                         <span class="font-black text-white text-2xl tracking-tight">Université Privée de Fès</span>
                     </div>
                     <p class="text-base leading-relaxed max-w-md">
-                        L'UPF est une institution d'enseignement supérieur reconnue par l'État marocain, offrant des formations d'excellence en ingénierie, architecture et management.
+                        L'UPF est une institution d'enseignement supérieur reconnue par l'État marocain (depuis 2006), offrant des formations d'excellence en ingénierie, architecture et management.
                     </p>
                 </div>
                 <div>
@@ -252,8 +252,8 @@
                 <div>
                     <h4 class="text-white font-bold text-lg mb-6">Contact & Accès</h4>
                     <ul class="space-y-3 text-base">
-                        <li class="flex items-start gap-2"><span>📍</span> <span>Lotissement Oued Fès, Route de Meknès, Fès, Maroc</span></li>
-                        <li class="flex items-center gap-2"><span>📞</span> <span>+212 535 61 03 20</span></li>
+                        <li class="flex items-start gap-2"><span>📍</span> <span>Lotissement Quaraouiyine, Université Privée de Fès, Ain chkf, Fès 30000</span></li>
+                        <li class="flex items-center gap-2"><span>📞</span> <span>06 61 44 60 24</span></li>
                         <li class="flex items-center gap-2"><span>✉️</span> <span>contact@upf.ac.ma</span></li>
                     </ul>
                 </div>
