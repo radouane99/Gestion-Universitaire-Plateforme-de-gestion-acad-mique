@@ -385,10 +385,4 @@ Route::get('/lang/{locale}', function ($locale) {
     return back();
 })->name('lang.switch');
 
-// MAGIC SETUP ROUTE FOR RAILWAY
-Route::get('/setup-db-magic', function () {
-    \Illuminate\Support\Facades\Artisan::call('migrate:fresh', ['--seed' => true, '--force' => true]);
-    return '<h1>🎉 MAGNIFIQUE !</h1><p>La base de données est migrée et remplie de données avec succès ! Vous pouvez maintenant retourner à l\'accueil et vous connecter.</p><a href="/">Retour à l\'accueil</a>';
-});
-
 require __DIR__ . '/auth.php';
