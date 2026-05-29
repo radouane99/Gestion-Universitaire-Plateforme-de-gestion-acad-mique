@@ -23,6 +23,36 @@
             
             <x-alert-messages />
 
+            <x-card class="mb-2">
+                <form method="GET" action="{{ route('admin.students.index') }}" class="flex flex-col md:flex-row gap-4 items-end p-4">
+                    <div class="w-full md:w-1/3">
+                        <label for="filiere_id" class="block font-medium text-sm text-gray-700">{{ __('Filtrer par Filière') }}</label>
+                        <select name="filiere_id" id="filiere_id" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-xl shadow-sm text-sm" onchange="this.form.submit()">
+                            <option value="">{{ __('Toutes les filières') }}</option>
+                            @foreach($filieres as $filiere)
+                                <option value="{{ $filiere->id }}" {{ request('filiere_id') == $filiere->id ? 'selected' : '' }}>{{ $filiere->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="w-full md:w-1/3">
+                        <label for="group_id" class="block font-medium text-sm text-gray-700">{{ __('Filtrer par Groupe') }}</label>
+                        <select name="group_id" id="group_id" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-xl shadow-sm text-sm" onchange="this.form.submit()">
+                            <option value="">{{ __('Tous les groupes') }}</option>
+                            @foreach($groups as $group)
+                                <option value="{{ $group->id }}" {{ request('group_id') == $group->id ? 'selected' : '' }}>{{ $group->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    @if(request()->hasAny(['filiere_id', 'group_id']) && (request('filiere_id') != '' || request('group_id') != ''))
+                    <div>
+                        <a href="{{ route('admin.students.index') }}" class="inline-flex items-center px-4 py-2 bg-rose-50 border border-rose-200 rounded-xl font-bold text-xs text-rose-600 uppercase tracking-widest hover:bg-rose-100 transition shadow-sm h-[38px]">
+                            {{ __('Effacer les filtres') }}
+                        </a>
+                    </div>
+                    @endif
+                </form>
+            </x-card>
+
             <x-card>
                 <div class="overflow-x-auto">
                     <table class="min-w-full text-left border-collapse">
