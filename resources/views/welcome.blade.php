@@ -129,35 +129,67 @@
         </div>
     </div>
 
-    <!-- Features Section -->
-    <div id="features" class="py-24 bg-slate-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center max-w-3xl mx-auto mb-20">
-                <h2 class="text-4xl font-black tracking-tight text-slate-900 sm:text-5xl mb-6">Une gestion académique d'excellence</h2>
-                <p class="text-lg text-slate-600 font-light">L'UPF s'engage à offrir la meilleure expérience numérique à ses étudiants et son corps professoral grâce à des outils de pointe.</p>
+    <!-- Features Section - 3 Espaces -->
+    <div id="features" class="py-32 bg-white relative">
+        <!-- Decorative background elements -->
+        <div class="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px] opacity-30"></div>
+        
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center max-w-3xl mx-auto mb-24">
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 text-upf-blue font-bold text-xs uppercase tracking-widest mb-4 border border-blue-100">
+                    Espaces Personnalisés
+                </div>
+                <h2 class="text-4xl font-black tracking-tight text-slate-900 sm:text-6xl mb-6">Une plateforme,<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-upf-blue to-upf-pink">Trois Univers distincts.</span></h2>
+                <p class="text-xl text-slate-500 font-light leading-relaxed">Une architecture centralisée offrant des interfaces sur-mesure et haut de gamme pour l'administration, le corps professoral et les étudiants.</p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
-                <!-- Feature 1 -->
-                <div class="bg-white rounded-[2rem] p-10 border border-slate-100 hover:border-upf-blue hover:shadow-2xl transition-all duration-300 group relative overflow-hidden">
-                    <div class="absolute top-0 right-0 w-32 h-32 bg-blue-50 rounded-bl-[100px] -z-10 transition-all group-hover:scale-150"></div>
-                    <div class="w-16 h-16 bg-blue-100 text-upf-blue rounded-2xl flex items-center justify-center text-3xl mb-8 group-hover:scale-110 transition-transform shadow-sm">🎓</div>
-                    <h3 class="text-2xl font-bold text-slate-900 mb-4">Scolarité Transparente</h3>
-                    <p class="text-slate-500 text-base leading-relaxed">Suivi des notes en temps réel, gestion des absences, et génération automatique de documents officiels (Attestations, Relevés) sécurisés par Code QR anti-fraude.</p>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Espace Administration -->
+                <div class="group relative bg-white rounded-[2.5rem] p-10 border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,56,147,0.1)] transition-all duration-500 hover:-translate-y-2 overflow-hidden flex flex-col h-full">
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-slate-50 rounded-bl-full -z-10 transition-transform duration-700 group-hover:scale-150 group-hover:bg-blue-50/50"></div>
+                    <div class="w-20 h-20 bg-gradient-to-br from-slate-800 to-slate-900 text-white rounded-3xl flex items-center justify-center text-4xl mb-8 shadow-xl shadow-slate-200 group-hover:rotate-6 transition-transform duration-500">
+                        🛡️
+                    </div>
+                    <h3 class="text-2xl font-black text-slate-900 mb-4 tracking-tight">Espace Administration</h3>
+                    <p class="text-slate-500 text-base leading-relaxed mb-8 flex-grow">Le centre de contrôle absolu. Pilotage des filières, gestion des inscriptions massives, délibérations automatisées et surveillance globale via un tableau de bord analytique puissant.</p>
+                    <ul class="space-y-3 mb-8">
+                        <li class="flex items-center gap-3 text-sm font-semibold text-slate-700"><span class="w-1.5 h-1.5 rounded-full bg-upf-blue"></span> PV & Délibérations</li>
+                        <li class="flex items-center gap-3 text-sm font-semibold text-slate-700"><span class="w-1.5 h-1.5 rounded-full bg-upf-blue"></span> Emplois du temps</li>
+                        <li class="flex items-center gap-3 text-sm font-semibold text-slate-700"><span class="w-1.5 h-1.5 rounded-full bg-upf-blue"></span> Statistiques IA</li>
+                    </ul>
                 </div>
-                <!-- Feature 2 -->
-                <div class="bg-white rounded-[2rem] p-10 border border-slate-100 hover:border-upf-pink hover:shadow-2xl transition-all duration-300 group relative overflow-hidden">
-                    <div class="absolute top-0 right-0 w-32 h-32 bg-pink-50 rounded-bl-[100px] -z-10 transition-all group-hover:scale-150"></div>
-                    <div class="w-16 h-16 bg-pink-100 text-upf-pink rounded-2xl flex items-center justify-center text-3xl mb-8 group-hover:scale-110 transition-transform shadow-sm">⚙️</div>
-                    <h3 class="text-2xl font-bold text-slate-900 mb-4">Délibérations Automatisées</h3>
-                    <p class="text-slate-500 text-base leading-relaxed">Le système calcule automatiquement la validation des modules, des semestres, et l'éligibilité aux rattrapages en respectant strictement le règlement de l'UPF.</p>
+
+                <!-- Espace Professeur -->
+                <div class="group relative bg-white rounded-[2.5rem] p-10 border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(181,0,96,0.15)] transition-all duration-500 hover:-translate-y-2 overflow-hidden flex flex-col h-full transform lg:-translate-y-8">
+                    <!-- Glow effect unique to the middle card -->
+                    <div class="absolute inset-0 bg-gradient-to-b from-upf-pink/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-pink-50/50 rounded-bl-full -z-10 transition-transform duration-700 group-hover:scale-150"></div>
+                    <div class="w-20 h-20 bg-gradient-to-br from-upf-pink to-rose-400 text-white rounded-3xl flex items-center justify-center text-4xl mb-8 shadow-xl shadow-pink-200 group-hover:-rotate-6 transition-transform duration-500">
+                        👨‍🏫
+                    </div>
+                    <h3 class="text-2xl font-black text-slate-900 mb-4 tracking-tight">Espace Professeur</h3>
+                    <p class="text-slate-500 text-base leading-relaxed mb-8 flex-grow">Un outil pédagogique nouvelle génération. Saisie de notes fluide, gestion interactive de la classe, cahier de textes numérique et suivi individuel des étudiants facilité.</p>
+                    <ul class="space-y-3 mb-8">
+                        <li class="flex items-center gap-3 text-sm font-semibold text-slate-700"><span class="w-1.5 h-1.5 rounded-full bg-upf-pink"></span> Saisie des Notes</li>
+                        <li class="flex items-center gap-3 text-sm font-semibold text-slate-700"><span class="w-1.5 h-1.5 rounded-full bg-upf-pink"></span> Appels & Absences</li>
+                        <li class="flex items-center gap-3 text-sm font-semibold text-slate-700"><span class="w-1.5 h-1.5 rounded-full bg-upf-pink"></span> Réclamations directes</li>
+                    </ul>
                 </div>
-                <!-- Feature 3 -->
-                <div class="bg-white rounded-[2rem] p-10 border border-slate-100 hover:border-blue-400 hover:shadow-2xl transition-all duration-300 group relative overflow-hidden">
-                    <div class="absolute top-0 right-0 w-32 h-32 bg-blue-50 rounded-bl-[100px] -z-10 transition-all group-hover:scale-150"></div>
-                    <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center text-3xl mb-8 group-hover:scale-110 transition-transform shadow-sm">📅</div>
-                    <h3 class="text-2xl font-bold text-slate-900 mb-4">Espace Professeur</h3>
-                    <p class="text-slate-500 text-base leading-relaxed">Cahier de textes numérique, saisie des notes simplifiée, gestion de la classe interactive et communication directe avec les groupes d'étudiants.</p>
+
+                <!-- Espace Étudiant -->
+                <div class="group relative bg-white rounded-[2.5rem] p-10 border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,191,165,0.1)] transition-all duration-500 hover:-translate-y-2 overflow-hidden flex flex-col h-full">
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-emerald-50 rounded-bl-full -z-10 transition-transform duration-700 group-hover:scale-150"></div>
+                    <div class="w-20 h-20 bg-gradient-to-br from-emerald-400 to-teal-500 text-white rounded-3xl flex items-center justify-center text-4xl mb-8 shadow-xl shadow-emerald-100 group-hover:scale-110 transition-transform duration-500">
+                        🎓
+                    </div>
+                    <h3 class="text-2xl font-black text-slate-900 mb-4 tracking-tight">Espace Étudiant</h3>
+                    <p class="text-slate-500 text-base leading-relaxed mb-8 flex-grow">Une interface fluide et intuitive. L'étudiant au cœur du système avec un accès instantané à ses résultats, ses documents officiels et un assistant IA personnel.</p>
+                    <ul class="space-y-3 mb-8">
+                        <li class="flex items-center gap-3 text-sm font-semibold text-slate-700"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Relevés de notes QR</li>
+                        <li class="flex items-center gap-3 text-sm font-semibold text-slate-700"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Assistant Pédagogique IA</li>
+                        <li class="flex items-center gap-3 text-sm font-semibold text-slate-700"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Suivi des absences</li>
+                    </ul>
                 </div>
             </div>
         </div>
