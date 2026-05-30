@@ -26,7 +26,7 @@
         }
         .page {
             width: 100%;
-            height: 270mm;
+            height: 262mm;
             position: relative;
             background: white;
             overflow: hidden;

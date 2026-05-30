@@ -23,7 +23,7 @@
         }
         .page {
             width: 100%;
-            height: 270mm;
+            height: 262mm;
             position: relative;
             background: #fffdf9; /* Slight warm paper tint */
             overflow: hidden;
