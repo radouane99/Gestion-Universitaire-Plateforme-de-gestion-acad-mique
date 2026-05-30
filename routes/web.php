@@ -399,4 +399,9 @@ Route::get('/setup-db-magic', function () {
     return '<h1>🎉 MAGNIFIQUE !</h1><p>La NOUVELLE base de données est migrée avec vos données réelles (250 étudiants, filières, Radouane en Admin) ! Vous pouvez retourner à l\'accueil.</p><a href="/">Retour à l\'accueil</a>';
 });
 
+Route::get('/run-migrations', function () {
+    \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+    return '<h1>🚀 MIGRATIONS APPLIQUÉES AVEC SUCCÈS !</h1><p>Les nouvelles tables de dérogations et crédits modules ont été ajoutées sans effacer vos données existantes !</p><a href="/">Retour à l\'accueil</a>';
+});
+
 require __DIR__ . '/auth.php';
