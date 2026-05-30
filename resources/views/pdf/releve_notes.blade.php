@@ -5,11 +5,12 @@
     <title>Relevé de Notes - {{ $student->student_number }}</title>
     <style>
         @page {
-            margin: 20px 40px;
+            size: A4 portrait;
+            margin: 15px 20px;
         }
         body {
-            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            font-size: 12px;
+            font-family: 'DejaVu Sans', Arial, sans-serif;
+            font-size: 11px;
             color: #1e293b;
             line-height: 1.4;
             background-color: #ffffff;
@@ -17,17 +18,16 @@
         .header {
             width: 100%;
             border-bottom: 2px solid #1e3a8a;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
+            padding-bottom: 8px;
+            margin-bottom: 12px;
         }
-        .header table {
-            width: 100%;
-            border: none;
-        }
-        .header td {
-            border: none;
-            vertical-align: middle;
-        }
+        .header table { width: 100%; border-collapse: collapse; }
+        .header td { border: none; vertical-align: middle; padding: 0; }
+        .hdr-left { width: 30%; font-size: 7px; font-weight: bold; color: #003399; line-height: 1.5; }
+        .hdr-center { width: 40%; text-align: center; }
+        .hdr-center img { height: 46px; display: block; margin: 0 auto 2px auto; }
+        .hdr-center-name { font-size: 8px; font-weight: bold; color: #003399; }
+        .hdr-right { width: 30%; text-align: right; font-size: 7px; font-weight: bold; color: #db2777; line-height: 1.5; direction: rtl; }
         .logo-text {
             font-size: 16px;
             font-weight: bold;
@@ -107,38 +107,58 @@
             font-size: 14px;
         }
         .footer {
-            margin-top: 40px;
+            margin-top: 20px;
             width: 100%;
             page-break-inside: avoid;
         }
-        .footer table {
-            width: 100%;
-        }
-        .footer td {
-            border: none;
-            width: 50%;
-            text-align: center;
-            vertical-align: top;
-        }
+        .footer table { width: 100%; border-collapse: collapse; }
+        .footer td { border: none; vertical-align: bottom; padding: 0; }
         .qr-code {
             position: absolute;
             top: 20px;
             right: 40px;
         }
+        .stamp-circle {
+            width: 80px; height: 80px;
+            border: 2px double #1e3a8a;
+            border-radius: 50%;
+            display: inline-block;
+            position: relative;
+        }
+        .stamp-inner {
+            width: 70px; height: 70px;
+            border: 1px solid #1e3a8a;
+            border-radius: 50%;
+            position: absolute;
+            top: 4px; left: 4px;
+        }
+        .stamp-top { position: absolute; top: 9px; width: 70px; text-align: center; font-size: 5px; font-weight: bold; color: #1e3a8a; text-transform: uppercase; }
+        .stamp-mid { position: absolute; top: 25px; width: 70px; text-align: center; font-size: 11px; font-weight: bold; color: #1e3a8a; }
+        .stamp-sub { position: absolute; top: 44px; width: 70px; text-align: center; font-size: 5px; font-weight: bold; color: #1e3a8a; }
+        .stamp-arabic { position: absolute; bottom: 9px; width: 70px; text-align: center; font-size: 5.5px; font-weight: bold; color: #1e3a8a; }
+        .page-footer-bar { border-top: 1px solid #e2e8f0; padding-top: 4px; text-align: center; font-size: 7px; color: #94a3b8; margin-top: 6px; }
     </style>
 </head>
 <body>
 
-    <div class="qr-code">
-        <img src="data:image/svg+xml;base64,{{ $qrCode }}" alt="QR Code">
-    </div>
-
     <div class="header">
         <table>
             <tr>
-                <td>
-                    <div class="logo-text">UNIVERSITÉ DE PORTFOLIO (UPF)</div>
-                    <div class="sub-logo">FACULTÉ DES SCIENCES & DE L'ÉDUCATION</div>
+                <td class="hdr-left">
+                    ROYAUME DU MAROC<br>
+                    UNIVERSITÉ PRIVÉE DE FÈS<br>
+                    École Supérieure d'Ingénierie<br>
+                    et de Technologie de Fès
+                </td>
+                <td class="hdr-center">
+                    <img src="{{ public_path('images/logo_upf.png') }}" alt="Logo UPF">
+                    <div class="hdr-center-name">UNIVERSITÉ PRIVÉE DE FÈS</div>
+                </td>
+                <td class="hdr-right">
+                    المملكة المغربية<br>
+                    الجامعة الخاصة لفاس<br>
+                    المدرسة العليا للهندسة<br>
+                    والتكنولوجيا بفاس
                 </td>
             </tr>
         </table>
@@ -232,21 +252,33 @@
     <div class="footer">
         <table>
             <tr>
-                <td>
-                    <p class="font-bold">Fait à Rabat, le {{ now()->format('d/m/Y') }}</p>
-                    <p>Le Chef de Département</p>
+                <!-- QR Left -->
+                <td style="width:40%; vertical-align:bottom;">
+                    <img src="data:image/svg+xml;base64,{{ $qrCode }}" alt="QR Code"
+                         style="border:1px solid #cbd5e1; padding:3px; background:white; border-radius:4px; display:block; width:75px; height:75px;">
+                    <div style="font-size:7px; color:#64748b; font-weight:bold; margin-top:3px;">Scannez pour vérifier l'authenticité</div>
                 </td>
-                <td>
-                    <p class="font-bold">&nbsp;</p>
-                    <p>Le Doyen de la Faculté</p>
+                <!-- Signature Right -->
+                <td style="width:60%; text-align:right; vertical-align:top;">
+                    <div style="font-size:10px; font-style:italic; color:#475569; margin-bottom:3px;">Fès, le {{ now()->format('d/m/Y') }}</div>
+                    <div style="font-size:10.5px; font-weight:bold; color:#1e3a8a; text-decoration:underline; margin-bottom:5px;">Le Doyen de la Faculté</div>
+                    <div class="stamp-circle">
+                        <div class="stamp-inner">
+                            <div class="stamp-top">UNIVERSITE PRIVEE DE FES</div>
+                            <div class="stamp-mid">★ UPF ★</div>
+                            <div class="stamp-sub">SCOLARITÉ</div>
+                            <div class="stamp-arabic">الجامعة الخاصة لفاس</div>
+                        </div>
+                    </div>
+                    <div style="font-size:9px; font-weight:bold; color:#1e3a8a; margin-top:3px;">Le Doyen</div>
                 </td>
             </tr>
         </table>
     </div>
-    
-    <div style="margin-top: 30px; font-size: 9px; color: #64748b; text-align: center;">
-        Ce document est délivré par le système de gestion académique UPF.<br>
-        Vous pouvez vérifier son authenticité en scannant le code QR en haut à droite.
+
+    <div class="page-footer-bar">
+        <strong style="color:#1e3a8a;">Université Privée de Fès</strong> — Route d'Aïn Chkef, B.P. 1357, Fès 30000, Maroc &nbsp;|&nbsp;
+        Tél : +212 5 35 61 21 21 &nbsp;|&nbsp; Web : upf.ac.ma &nbsp;|&nbsp; Email : contact@upf.ac.ma
     </div>
 
 </body>

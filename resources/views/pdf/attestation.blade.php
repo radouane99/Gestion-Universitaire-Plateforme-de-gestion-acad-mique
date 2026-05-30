@@ -14,176 +14,299 @@
             box-sizing: border-box;
         }
         body {
-            font-family: 'Georgia', 'Times New Roman', Times, serif;
+            font-family: 'DejaVu Sans', 'Arial', sans-serif;
             background: #ffffff;
             color: #1e293b;
-            padding: 12mm 15mm;
-            font-size: 13px;
-            line-height: 1.5;
+            font-size: 12px;
+            line-height: 1.4;
         }
-        .page {
-            width: 100%;
-            height: 250mm;
+
+        /* ======================== OUTER WRAPPER ======================== */
+        .page-wrapper {
+            width: 210mm;
+            min-height: 297mm;
+            max-height: 297mm;
+            overflow: hidden;
+            padding: 8mm 12mm 8mm 12mm;
             position: relative;
-            background: #fffdf9; /* Slight warm paper tint */
+            background: #ffffff;
+        }
+
+        /* ======================== GOLD BORDER ======================== */
+        .doc-border {
+            border: 7px double #c9a227;
+            padding: 10px 14px 8px 14px;
+            height: 270mm;
+            position: relative;
             overflow: hidden;
         }
-        .border-container {
-            border: 8px double #d4af37; /* Double royal gold border */
-            padding: 25px 30px;
-            height: 100%;
-            position: relative;
-        }
+
+        /* ======================== HEADER ======================== */
         .header-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 25px;
-            border-bottom: 1px solid rgba(212, 175, 55, 0.4);
-            padding-bottom: 12px;
+            border-bottom: 1.5px solid #c9a227;
+            padding-bottom: 6px;
+            margin-bottom: 6px;
         }
         .header-table td {
-            vertical-align: top;
-            width: 33%;
+            vertical-align: middle;
+            padding: 0;
         }
-        .header-left {
+        .hdr-left {
+            width: 30%;
             text-align: left;
-            font-size: 9.5px;
+            font-size: 7.5px;
             font-weight: bold;
             color: #003893;
-            line-height: 1.4;
-            font-family: sans-serif;
+            line-height: 1.5;
         }
-        .header-center {
+        .hdr-center {
+            width: 40%;
             text-align: center;
         }
-        .header-center img {
-            height: 60px;
-            margin-bottom: 5px;
+        .hdr-center img {
+            height: 52px;
+            display: block;
+            margin: 0 auto 2px auto;
         }
-        .header-right {
+        .hdr-center-title {
+            font-size: 8px;
+            font-weight: bold;
+            color: #003893;
+            letter-spacing: 0.3px;
+            line-height: 1.3;
+        }
+        .hdr-right {
+            width: 30%;
             text-align: right;
-            font-size: 9.5px;
+            font-size: 7.5px;
             font-weight: bold;
-            color: #b50060;
-            line-height: 1.4;
-            font-family: sans-serif;
+            color: #9b1d6e;
+            line-height: 1.5;
+            direction: rtl;
         }
-        .title-container {
+
+        /* Sub-line under institution names */
+        .sub-divider {
+            height: 2px;
+            background: linear-gradient(to right, #003893, #c9a227, #9b1d6e);
+            border-radius: 2px;
+            margin-bottom: 8px;
+        }
+
+        /* ======================== TITLE ======================== */
+        .doc-title {
             text-align: center;
-            margin: 20px 0;
+            margin: 6px 0 8px 0;
         }
-        .title-container h1 {
-            font-size: 24px;
+        .doc-title h1 {
+            font-size: 18px;
             font-weight: bold;
-            letter-spacing: 1.5px;
             color: #003893;
-            margin: 0;
             text-transform: uppercase;
-            border-bottom: 2px solid #b50060;
+            letter-spacing: 2px;
+            border-bottom: 2px solid #9b1d6e;
             display: inline-block;
-            padding-bottom: 5px;
+            padding-bottom: 3px;
         }
-        .certificate-body {
-            margin: 20px 0;
+
+        /* ======================== BODY TEXT ======================== */
+        .cert-body {
+            font-size: 11.5px;
+            line-height: 1.55;
             text-align: justify;
-            font-size: 14px;
-            line-height: 1.7;
+            margin-bottom: 8px;
         }
-        .highlight {
-            font-weight: bold;
-            color: #003893;
+        .cert-body p {
+            margin-bottom: 4px;
         }
+
+        /* ======================== INFO TABLE ======================== */
         .info-table {
             width: 100%;
-            margin: 15px 0;
+            margin: 6px 0;
             border-collapse: collapse;
-            background: rgba(212, 175, 55, 0.03);
-            border: 1px solid rgba(212, 175, 55, 0.2);
+            border: 1px solid rgba(201,162,39,0.35);
+        }
+        .info-table tr:last-child td {
+            border-bottom: none;
         }
         .info-table td {
-            padding: 8px 15px;
-            font-size: 13.5px;
-            border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+            padding: 5px 10px;
+            font-size: 11px;
+            border-bottom: 1px solid rgba(201,162,39,0.15);
         }
         .info-label {
             font-weight: bold;
             width: 38%;
             color: #475569;
-            font-family: sans-serif;
-            font-size: 11px;
+            font-size: 9px;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.4px;
         }
         .info-value {
             font-weight: bold;
             color: #0f172a;
         }
-        .footer-table {
+        .info-value.blue {
+            color: #003893;
+        }
+        .info-value.pink {
+            color: #9b1d6e;
+        }
+
+        /* ======================== FOOTER AREA ======================== */
+        .footer-section {
+            position: absolute;
+            bottom: 10px;
+            left: 14px;
+            right: 14px;
+        }
+
+        /* Signature table */
+        .sig-table {
             width: 100%;
             border-collapse: collapse;
-            position: absolute;
-            bottom: 40px;
-            left: 30px;
-            right: 30px;
+            margin-bottom: 6px;
         }
-        .qr-code-box {
+        .sig-table td {
+            vertical-align: bottom;
+            padding: 0;
+        }
+        .qr-cell {
+            width: 42%;
             text-align: left;
-            width: 40%;
             vertical-align: bottom;
         }
-        .qr-code-box img {
-            border: 1px solid #d4af37;
-            padding: 4px;
-            background-color: #fff;
-            border-radius: 6px;
+        .qr-cell img {
+            border: 1px solid #c9a227;
+            padding: 3px;
+            background: white;
+            border-radius: 4px;
+            display: block;
         }
-        .qr-code-box p {
-            font-size: 8px;
+        .qr-cell p {
+            font-size: 7px;
             color: #64748b;
-            margin-top: 5px;
+            margin-top: 3px;
             font-weight: bold;
-            font-family: sans-serif;
         }
-        .signature-box {
+        .sig-cell {
+            width: 58%;
             text-align: right;
-            width: 60%;
             vertical-align: top;
-            font-size: 12px;
         }
-        .signature-title {
+        .sig-date {
+            font-size: 10px;
+            font-style: italic;
+            color: #475569;
+            margin-bottom: 3px;
+        }
+        .sig-title {
+            font-size: 10.5px;
             font-weight: bold;
-            margin-bottom: 8px;
             color: #003893;
             text-decoration: underline;
+            margin-bottom: 4px;
         }
-        .signature-date {
-            font-style: italic;
-            margin-bottom: 8px;
-            color: #475569;
+
+        /* Stamp circle */
+        .stamp-wrapper {
+            display: inline-block;
+            text-align: center;
         }
-        .signature-image {
-            height: 50px;
-            opacity: 0.9;
+        .stamp-circle {
+            width: 90px;
+            height: 90px;
+            border: 2px double #003893;
+            border-radius: 50%;
+            display: inline-block;
+            position: relative;
+            background: rgba(0,56,147,0.03);
+        }
+        .stamp-inner {
+            width: 80px;
+            height: 80px;
+            border: 1px solid #003893;
+            border-radius: 50%;
+            position: absolute;
+            top: 4px;
+            left: 4px;
+        }
+        .stamp-top {
+            position: absolute;
+            top: 10px;
+            width: 80px;
+            text-align: center;
+            font-size: 5.5px;
+            font-weight: bold;
+            color: #003893;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .stamp-logo {
+            position: absolute;
+            top: 28px;
+            width: 80px;
+            text-align: center;
+            font-size: 13px;
+            font-weight: bold;
+            color: #003893;
+            letter-spacing: 1px;
+        }
+        .stamp-name {
+            position: absolute;
+            top: 50px;
+            width: 80px;
+            text-align: center;
+            font-size: 5px;
+            font-weight: bold;
+            color: #003893;
+        }
+        .stamp-arabic {
+            position: absolute;
+            bottom: 10px;
+            width: 80px;
+            text-align: center;
+            font-size: 6px;
+            font-weight: bold;
+            color: #003893;
+        }
+
+        /* Page footer bar */
+        .footer-bar {
+            border-top: 1px solid rgba(201,162,39,0.4);
+            padding-top: 4px;
+            text-align: center;
+            font-size: 7px;
+            color: #94a3b8;
+            line-height: 1.4;
+        }
+        .footer-bar strong {
+            color: #003893;
         }
     </style>
 </head>
 <body>
 
-<div class="page">
-    <div class="border-container">
-        <!-- Header Table -->
+<div class="page-wrapper">
+    <div class="doc-border">
+
+        <!-- ===== HEADER ===== -->
         <table class="header-table">
             <tr>
-                <td class="header-left">
+                <td class="hdr-left">
                     ROYAUME DU MAROC<br>
                     UNIVERSITÉ PRIVÉE DE FÈS<br>
                     École Supérieure d'Ingénierie<br>
                     et de Technologie de Fès
                 </td>
-                <td class="header-center">
-                    <img src="{{ public_path('images/logo_upf.png') }}" alt="Logo UPF" onerror="this.src='https://www.upf.ac.ma/images/logo_upf.png'">
+                <td class="hdr-center">
+                    <img src="{{ public_path('images/logo_upf.png') }}" alt="Logo UPF">
+                    <div class="hdr-center-title">UNIVERSITÉ PRIVÉE DE FÈS</div>
                 </td>
-                <td class="header-right" dir="rtl">
+                <td class="hdr-right">
                     المملكة المغربية<br>
                     الجامعة الخاصة لفاس<br>
                     المدرسة العليا للهندسة<br>
@@ -192,75 +315,109 @@
             </tr>
         </table>
 
-        <!-- Title -->
-        <div class="title-container">
+        <div class="sub-divider"></div>
+
+        <!-- ===== TITLE ===== -->
+        <div class="doc-title">
             <h1>Attestation de Réussite</h1>
         </div>
 
-        <!-- Body -->
-        <div class="certificate-body">
-            <p style="margin-bottom: 10px;">Le Président de l'Université Privée de Fès certifie que l'étudiant(e) :</p>
-            
-            <table class="info-table">
+        <!-- ===== BODY ===== -->
+        <div class="cert-body">
+            <p>Le Président de l'Université Privée de Fès certifie que l'étudiant(e) :</p>
+        </div>
+
+        <table class="info-table">
+            <tr>
+                <td class="info-label">Nom &amp; Prénom :</td>
+                <td class="info-value blue">{{ strtoupper($student->user->name) }}</td>
+            </tr>
+            <tr>
+                <td class="info-label">Code d'Inscription (CNE) :</td>
+                <td class="info-value blue">{{ $student->student_number }}</td>
+            </tr>
+            <tr>
+                <td class="info-label">N° de C.I.N :</td>
+                <td class="info-value">{{ $student->cin ?? 'Non renseigné' }}</td>
+            </tr>
+            <tr>
+                <td class="info-label">Date &amp; Lieu de Naissance :</td>
+                <td class="info-value">
+                    {{ $student->birth_date ? $student->birth_date->format('d/m/Y') : 'N/A' }}
+                    à {{ $student->birth_place ?? 'N/A' }}
+                </td>
+            </tr>
+            <tr>
+                <td class="info-label">Filière d'Études :</td>
+                <td class="info-value blue">{{ $student->filiere->name ?? ($student->group->filiere->name ?? 'N/A') }}</td>
+            </tr>
+            <tr>
+                <td class="info-label">Niveau Validé :</td>
+                <td class="info-value">{{ $student->group?->level ?? '1' }}ème Année</td>
+            </tr>
+            <tr>
+                <td class="info-label">Année Académique :</td>
+                <td class="info-value">{{ $student->academicYear?->name ?? '2025/2026' }}</td>
+            </tr>
+            <tr>
+                <td class="info-label">Moyenne Générale Obtenue :</td>
+                <td class="info-value"><span class="blue">{{ number_format($gpa, 2) }}</span> / 20</td>
+            </tr>
+            <tr>
+                <td class="info-label">Mention Attribuée :</td>
+                <td class="info-value pink">{{ $mention }}</td>
+            </tr>
+        </table>
+
+        <div class="cert-body" style="margin-top: 8px;">
+            <p>En foi de quoi, la présente attestation lui est délivrée pour servir et valoir ce que de droit.</p>
+        </div>
+
+        <!-- ===== FOOTER / SIGNATURE ===== -->
+        <div class="footer-section">
+            <table class="sig-table">
                 <tr>
-                    <td class="info-label">Nom &amp; Prénom :</td>
-                    <td class="info-value">{{ $student->user->name }}</td>
-                </tr>
-                <tr>
-                    <td class="info-label">Code d'Inscription (Matricule) :</td>
-                    <td class="info-value highlight">{{ $student->student_number }}</td>
-                </tr>
-                <tr>
-                    <td class="info-label">N° de C.I.N :</td>
-                    <td class="info-value">{{ $student->cin }}</td>
-                </tr>
-                <tr>
-                    <td class="info-label">Date &amp; Lieu de Naissance :</td>
-                    <td class="info-value">
-                        {{ $student->birth_date ? $student->birth_date->format('d/m/Y') : 'N/A' }} à {{ $student->birth_place ?? 'N/A' }}
+                    <!-- QR Code left -->
+                    <td class="qr-cell">
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data={{ urlencode($verifyUrl) }}"
+                             alt="QR Code" width="80" height="80">
+                        <p>Scannez pour vérifier l'authenticité</p>
+                        <p style="font-size:6.5px; color:#999; margin-top:2px;">Réf : ATT-{{ $student->student_number }}-{{ date('Y') }}</p>
                     </td>
-                </tr>
-                <tr>
-                    <td class="info-label">Filière d'Études :</td>
-                    <td class="info-value highlight">{{ $student->filiere->name }}</td>
-                </tr>
-                <tr>
-                    <td class="info-label">Niveau Validé :</td>
-                    <td class="info-value">{{ $student->group?->level ?? 'Licence 1' }}</td>
-                </tr>
-                <tr>
-                    <td class="info-label">Année Académique :</td>
-                    <td class="info-value">{{ $student->academicYear?->name ?? '2025/2026' }}</td>
-                </tr>
-                <tr>
-                    <td class="info-label">Moyenne Générale Obtenue :</td>
-                    <td class="info-value"><span class="highlight">{{ number_format($gpa, 2) }}</span> / 20</td>
-                </tr>
-                <tr>
-                    <td class="info-label">Mention Attribuée :</td>
-                    <td class="info-value highlight" style="color: #b50060;">{{ $mention }}</td>
+
+                    <!-- Signature + Stamp right -->
+                    <td class="sig-cell">
+                        <div class="sig-date">Fès, le {{ now()->format('d/m/Y') }}</div>
+                        <div class="sig-title">Le Président de l'Université Privée de Fès</div>
+
+                        <!-- Stamp Circle -->
+                        <div class="stamp-wrapper">
+                            <div class="stamp-circle">
+                                <div class="stamp-inner">
+                                    <div class="stamp-top">UNIVERSITE PRIVEE DE FES</div>
+                                    <div class="stamp-logo">★ UPF ★</div>
+                                    <div class="stamp-name">SCOLARITÉ</div>
+                                    <div class="stamp-arabic">الجامعة الخاصة لفاس</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="font-size:9px; font-weight:bold; color:#003893; margin-top:3px;">
+                            Le Président
+                        </div>
+                    </td>
                 </tr>
             </table>
 
-            <p style="margin-top: 15px;">En foi de quoi, la présente attestation lui est délivrée pour servir et valoir ce que de droit.</p>
+            <!-- Footer bar -->
+            <div class="footer-bar">
+                <strong>Université Privée de Fès</strong> — Route d'Aïn Chkef, B.P. 1357, Fès 30000, Maroc &nbsp;|&nbsp;
+                Tél : +212 5 35 61 21 21 &nbsp;|&nbsp; Web : upf.ac.ma &nbsp;|&nbsp; Email : contact@upf.ac.ma
+            </div>
         </div>
 
-        <!-- Footer / Signatures -->
-        <table class="footer-table">
-            <tr>
-                <td class="qr-code-box">
-                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=95x95&data={{ urlencode($verifyUrl) }}" alt="QR Code Verification">
-                    <p>Scannez pour vérifier l'authenticité</p>
-                </td>
-                <td class="signature-box">
-                    <div class="signature-date">Fès, le {{ now()->format('d/m/Y') }}</div>
-                    <div class="signature-title">Le Président de l'Université Privée de Fès</div>
-                    <img src="https://i.imgur.com/uFomf2Y.png" class="signature-image" alt="Signature & Cachet" onerror="this.style.display='none'">
-                </td>
-            </tr>
-        </table>
-    </div>
-</div>
+    </div><!-- /doc-border -->
+</div><!-- /page-wrapper -->
 
 </body>
 </html>
