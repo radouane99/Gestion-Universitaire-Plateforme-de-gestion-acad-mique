@@ -2,7 +2,7 @@
     <x-slot name="header">
         <x-page-header 
             title="{{ __('Saisie des Notes — :module', ['module' => $module->name]) }}" 
-            subtitle="{{ __('Groupe :group — :count étudiants', ['group' => $group->name, 'count' => $group->students->count()]) }}"
+            subtitle="{{ __('Groupe :group — :count étudiants', ['group' => $group->name, 'count' => $allStudents->count()]) }}"
             icon='<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>'
         >
             <x-slot name="actions">
@@ -64,7 +64,7 @@
                     <div>
                         <p class="text-blue-200 text-xs font-black uppercase tracking-widest mb-1">{{ __('Évaluation des Étudiants') }}</p>
                         <h2 class="text-3xl font-black italic leading-tight">{{ $module->name }}</h2>
-                        <p class="text-blue-100 text-sm mt-1">{{ __('Groupe') }} : <strong>{{ $group->name }}</strong> · {{ $group->students->count() }} {{ __('étudiants') }}</p>
+                        <p class="text-blue-100 text-sm mt-1">{{ __('Groupe') }} : <strong>{{ $group->name }}</strong> · {{ $allStudents->count() }} {{ __('étudiants') }}</p>
                     </div>
                     <div class="flex gap-3">
                         <div class="text-center bg-white/10 backdrop-blur rounded-2xl px-5 py-3">
@@ -135,7 +135,7 @@
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-50" id="grades-body">
-                                @foreach($group->students as $index => $student)
+                                @foreach($allStudents as $index => $student)
                                 @php
                                     $g = $grades[$student->id] ?? null;
                                 @endphp
@@ -147,7 +147,14 @@
                                                 {{ strtoupper(substr($student->user->name ?? '?', 0, 1)) }}
                                             </div>
                                             <div>
-                                                <p class="font-black text-gray-900 text-sm leading-none">{{ $student->user->name ?? 'N/A' }}</p>
+                                                <p class="font-black text-gray-900 text-sm leading-none">
+                                                    {{ $student->user->name ?? 'N/A' }}
+                                                    @if($student->group_id != $group->id)
+                                                        <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 text-[9px] font-black uppercase tracking-wider ml-2">
+                                                            ⚠️ {{ __('Crédit') }} ({{ $student->group->name ?? 'Dette' }})
+                                                        </span>
+                                                    @endif
+                                                </p>
                                                 <p class="text-[10px] text-gray-400 font-semibold mt-0.5">{{ $student->user->email ?? '' }}</p>
                                             </div>
                                         </div>

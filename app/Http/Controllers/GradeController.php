@@ -41,12 +41,30 @@ class GradeController extends Controller
 
         $group = \App\Models\Group::with('students.user')->findOrFail($group_id);
         $module = \App\Models\Module::findOrFail($module_id);
+
+        // Get regular group students
+        $students = $group->students;
+
+        // Get students with pending credit for this module from other groups
+        $creditStudentIds = \DB::table('student_credit_modules')
+            ->where('module_id', $module_id)
+            ->where('status', 'pending')
+            ->pluck('student_id');
+
+        $creditStudents = \App\Models\Student::whereIn('id', $creditStudentIds)
+            ->where('group_id', '!=', $group_id)
+            ->with(['user', 'group'])
+            ->get();
+
+        // Combine regular students and credit students
+        $allStudents = $students->concat($creditStudents);
+
         $grades = \App\Models\Grade::where('module_id', $module_id)
-            ->whereIn('student_id', $group->students->pluck('id'))
+            ->whereIn('student_id', $allStudents->pluck('id'))
             ->get()
             ->keyBy('student_id');
 
-        return view('professor.grades.edit', compact('group', 'module', 'grades'));
+        return view('professor.grades.edit', compact('group', 'module', 'grades', 'allStudents'));
     }
 
     public function store(\Illuminate\Http\Request $request)
@@ -76,7 +94,16 @@ class GradeController extends Controller
                     ->exists();
 
                 if (!$isAuthorized) {
-                    abort(403, "Vous n'êtes pas autorisé à modifier les notes de l'étudiant {$student->user->name} pour ce cours.");
+                    // Check if student has a pending credit for this module
+                    $hasCredit = \DB::table('student_credit_modules')
+                        ->where('student_id', $student->id)
+                        ->where('module_id', $validated['module_id'])
+                        ->where('status', 'pending')
+                        ->exists();
+
+                    if (!$hasCredit) {
+                        abort(403, "Vous n'êtes pas autorisé à modifier les notes de l'étudiant {$student->user->name} pour ce cours.");
+                    }
                 }
 
                 $grade = \App\Models\Grade::updateOrCreate(

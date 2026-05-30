@@ -35,7 +35,12 @@
                         <div class="space-y-4">
                             <label class="text-[10px] font-black uppercase tracking-widest text-gray-400 block">{{ __('Catégorie du Document') }}</label>
                             <div class="grid grid-cols-1 gap-3">
-                                @foreach(['Attestation de Scolarité' => __('Attestation de Scolarité'), 'Relevé de Notes' => __('Relevé de Notes'), 'Convention de Stage' => __('Convention de Stage')] as $value => $label)
+                                @foreach([
+                                    'Attestation de Scolarité' => __('Attestation de Scolarité'),
+                                    'Relevé de Notes' => __('Relevé de Notes'),
+                                    'Convention de Stage' => __('Convention de Stage'),
+                                    'Demande de Dérogation (Réinscription Exceptionnelle)' => __('Demande de Dérogation (Réinscription Exceptionnelle)')
+                                ] as $value => $label)
                                 <label class="relative flex items-center p-4 border-2 border-gray-100 rounded-2xl cursor-pointer hover:border-upf-blue transition-all group shadow-sm">
                                     <input type="radio" name="type" value="{{ $value }}" class="sr-only peer" required>
                                     <div class="w-5 h-5 border-2 border-gray-200 rounded-full mr-3 flex items-center justify-center transition-all peer-checked:border-upf-blue peer-checked:bg-upf-blue">

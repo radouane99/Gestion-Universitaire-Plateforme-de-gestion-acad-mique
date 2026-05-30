@@ -62,5 +62,25 @@ class Grade extends Model
         }
 
         $this->save();
+
+        // Automatically update credit status if this module is carrying credit for the student
+        if ($this->final_grade !== null) {
+            $credit = \DB::table('student_credit_modules')
+                ->where('student_id', $this->student_id)
+                ->where('module_id', $this->module_id)
+                ->first();
+
+            if ($credit) {
+                // If final grade >= 10, it is validated, otherwise not_validated
+                $status = ($this->final_grade >= 10) ? 'validated' : 'not_validated';
+                \DB::table('student_credit_modules')
+                    ->where('student_id', $this->student_id)
+                    ->where('module_id', $this->module_id)
+                    ->update([
+                        'status' => $status,
+                        'updated_at' => now()
+                    ]);
+            }
+        }
     }
 }

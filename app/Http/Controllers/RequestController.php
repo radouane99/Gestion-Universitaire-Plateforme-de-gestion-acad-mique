@@ -89,6 +89,17 @@ class RequestController extends Controller
             'reason' => $validated['status'] == 'rejected' ? ($validated['reason'] ?? 'Refusé par l\'administration') : null
         ]);
 
+        // Auto-activate student derogation if approved
+        if ($validated['status'] === 'approved' && $request->type === 'Demande de Dérogation (Réinscription Exceptionnelle)') {
+            $student = $request->user->student;
+            if ($student) {
+                $student->update([
+                    'has_derogation' => true,
+                    'derogation_note' => $request->reason ?? 'Approuvé via Secrétariat Numérique'
+                ]);
+            }
+        }
+
         \App\Models\ActivityLog::create([
             'user_id' => Auth::id(),
             'action' => $validated['status'] == 'approved' ? 'approved' : 'rejected',
@@ -130,6 +141,17 @@ class RequestController extends Controller
             'status' => $validated['status'],
             'reason' => $validated['status'] == 'rejected' ? ($validated['reason'] ?? 'Refusé par l\'administration') : null
         ]);
+
+        // Auto-activate student derogation if approved
+        if ($validated['status'] === 'approved' && $request->type === 'Demande de Dérogation (Réinscription Exceptionnelle)') {
+            $student = $request->user->student;
+            if ($student) {
+                $student->update([
+                    'has_derogation' => true,
+                    'derogation_note' => $request->reason ?? 'Approuvé via Kanban Secrétariat'
+                ]);
+            }
+        }
 
         \App\Models\ActivityLog::create([
             'user_id' => Auth::id(),
