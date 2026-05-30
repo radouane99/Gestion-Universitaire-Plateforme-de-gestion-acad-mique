@@ -3,19 +3,17 @@
 namespace App\Notifications;
 
 use Illuminate\Notifications\Notification;
+use App\Traits\SendsEmailNotification;
 
 class ExamAbsenceJustificationReviewed extends Notification
 {
+    use SendsEmailNotification;
+
     public function __construct(
         private string $moduleName,
         private string $status,       // 'approved' | 'rejected'
         private string $adminComment = '',
     ) {}
-
-    public function via($notifiable): array
-    {
-        return ['database'];
-    }
 
     public function toDatabase($notifiable): array
     {

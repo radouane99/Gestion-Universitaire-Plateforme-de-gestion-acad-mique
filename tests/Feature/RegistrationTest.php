@@ -236,4 +236,69 @@ class RegistrationTest extends TestCase
             'status' => 'pending',
         ]);
     }
+
+    public function test_student_can_download_attestation_of_success_when_eligible()
+    {
+        // Mock the PDF facade to bypass the PHP GD requirement in CLI environments
+        $pdfMock = \Mockery::mock(\Barryvdh\DomPDF\PDF::class);
+        $pdfMock->shouldReceive('download')
+            ->once()
+            ->andReturn(response('mock pdf content', 200, ['content-type' => 'application/pdf']));
+
+        \Barryvdh\DomPDF\Facade\Pdf::shouldReceive('loadView')
+            ->once()
+            ->with('pdf.attestation', \Mockery::any())
+            ->andReturn($pdfMock);
+
+        $filiere = Filiere::create(['name' => 'Génie Informatique', 'code' => 'GI']);
+        $studentUser = User::create([
+            'name' => 'Graduating Student',
+            'email' => 'grad@upf.ac.ma',
+            'password' => Hash::make('password'),
+            'role_id' => Role::where('name', 'student')->first()->id,
+        ]);
+        $student = Student::create([
+            'user_id' => $studentUser->id,
+            'student_number' => 'EST-2025-999',
+            'cin' => 'K112233',
+            'filiere_id' => $filiere->id,
+            'registration_status' => 'approved',
+        ]);
+
+        // Gpa of 15.00, no failed modules
+        $module = Module::create(['name' => 'Module 1', 'code' => 'MOD-1', 'filiere_id' => $filiere->id]);
+        Grade::create([
+            'student_id' => $student->id,
+            'module_id' => $module->id,
+            'final_grade' => 15.00,
+        ]);
+
+        $response = $this->actingAs($studentUser)->get(route('student.attestation.download'));
+        $response->assertStatus(200);
+    }
+
+    public function test_public_can_verify_document_with_token()
+    {
+        $filiere = Filiere::create(['name' => 'Génie Informatique', 'code' => 'GI']);
+        $studentUser = User::create([
+            'name' => 'Graduating Student',
+            'email' => 'grad@upf.ac.ma',
+            'password' => Hash::make('password'),
+            'role_id' => Role::where('name', 'student')->first()->id,
+        ]);
+        $student = Student::create([
+            'user_id' => $studentUser->id,
+            'student_number' => 'EST-2025-999',
+            'cin' => 'K112233',
+            'filiere_id' => $filiere->id,
+            'registration_status' => 'approved',
+        ]);
+
+        $token = $student->document_token;
+        $response = $this->get(route('verify.document', $token));
+        
+        $response->assertStatus(200);
+        $response->assertViewIs('public.verify_document');
+        $response->assertSee('Graduating Student');
+    }
 }

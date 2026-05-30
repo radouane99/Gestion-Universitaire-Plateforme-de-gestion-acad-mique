@@ -191,5 +191,13 @@ class Student extends Model
             ->get()
             ->pluck('module');
     }
+
+    /**
+     * Token de sécurité unique pour l'Attestation de Réussite
+     */
+    public function getDocumentTokenAttribute(): string
+    {
+        return sha1($this->id . '_' . $this->cin);
+    }
 }
 

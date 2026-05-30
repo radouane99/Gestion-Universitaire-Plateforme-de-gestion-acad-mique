@@ -4,18 +4,16 @@ namespace App\Notifications;
 
 use App\Models\RetakeEligibility;
 use Illuminate\Notifications\Notification;
+use App\Traits\SendsEmailNotification;
 
 class RetakeStatusChanged extends Notification
 {
+    use SendsEmailNotification;
+
     public function __construct(
         private RetakeEligibility $eligibility,
         private string            $newStatus, // 'eligible', 'approved', 'rejected'
     ) {}
-
-    public function via($notifiable): array
-    {
-        return ['database'];
-    }
 
     public function toDatabase($notifiable): array
     {

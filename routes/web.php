@@ -304,6 +304,9 @@ Route::middleware(['auth', 'role:professor'])->prefix('professor')->name('profes
 Route::middleware(['auth', 'role:student'])->prefix('student')->name('student.')->group(function () {
     Route::get('/dashboard', [\App\Http\Controllers\Student\StudentController::class, 'index'])->name('dashboard');
 
+    // Attestation de Réussite
+    Route::get('/attestation/download', [\App\Http\Controllers\Student\StudentController::class, 'downloadAttestation'])->name('attestation.download');
+
     // Réinscriptions
     Route::get('/reinscription', [\App\Http\Controllers\Student\StudentController::class, 'showReinscriptionForm'])->name('reinscription.form');
     Route::post('/reinscription', [\App\Http\Controllers\Student\StudentController::class, 'processReinscription'])->name('reinscription.store');
@@ -412,5 +415,7 @@ Route::get('/run-migrations', function () {
     \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
     return '<h1>🚀 MIGRATIONS APPLIQUÉES AVEC SUCCÈS !</h1><p>Les nouvelles tables de dérogations et crédits modules ont été ajoutées sans effacer vos données existantes !</p><a href="/">Retour à l\'accueil</a>';
 });
+
+Route::get('/verify-document/{token}', [\App\Http\Controllers\PublicVerificationController::class, 'verifyDocument'])->name('verify.document');
 
 require __DIR__ . '/auth.php';

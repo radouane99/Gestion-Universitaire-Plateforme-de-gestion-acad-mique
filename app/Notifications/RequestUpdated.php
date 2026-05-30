@@ -3,9 +3,12 @@
 namespace App\Notifications;
 
 use Illuminate\Notifications\Notification;
+use App\Traits\SendsEmailNotification;
 
 class RequestUpdated extends Notification
 {
+    use SendsEmailNotification;
+
     public string $requestType;
     public string $status;
 
@@ -13,11 +16,6 @@ class RequestUpdated extends Notification
     {
         $this->requestType = $requestType;
         $this->status = $status;
-    }
-
-    public function via($notifiable): array
-    {
-        return ['database'];
     }
 
     public function toDatabase($notifiable): array

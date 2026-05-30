@@ -6,20 +6,16 @@ use App\Models\ExamSession;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Notifications\Messages\DatabaseMessage;
+use App\Traits\SendsEmailNotification;
 
 class ConvocationGenerated extends Notification
 {
-    use Queueable;
+    use Queueable, SendsEmailNotification;
 
     public function __construct(
         public readonly ExamSession $session,
         public readonly int $count
     ) {}
-
-    public function via(object $notifiable): array
-    {
-        return ['database'];
-    }
 
     public function toDatabase(object $notifiable): array
     {

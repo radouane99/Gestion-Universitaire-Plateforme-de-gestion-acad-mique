@@ -3,18 +3,16 @@
 namespace App\Notifications;
 
 use Illuminate\Notifications\Notification;
+use App\Traits\SendsEmailNotification;
 
 class AbsenceWarningReached extends Notification
 {
+    use SendsEmailNotification;
+
     public function __construct(
         private float $currentHours,
         private int   $threshold,
     ) {}
-
-    public function via($notifiable): array
-    {
-        return ['database'];
-    }
 
     public function toDatabase($notifiable): array
     {

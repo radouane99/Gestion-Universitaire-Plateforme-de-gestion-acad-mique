@@ -3,9 +3,12 @@
 namespace App\Notifications;
 
 use Illuminate\Notifications\Notification;
+use App\Traits\SendsEmailNotification;
 
 class AbsenceRecorded extends Notification
 {
+    use SendsEmailNotification;
+
     public string $moduleName;
     public string $date;
 
@@ -13,11 +16,6 @@ class AbsenceRecorded extends Notification
     {
         $this->moduleName = $moduleName;
         $this->date = $date;
-    }
-
-    public function via($notifiable): array
-    {
-        return ['database'];
     }
 
     public function toDatabase($notifiable): array

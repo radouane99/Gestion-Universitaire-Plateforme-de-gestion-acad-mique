@@ -5,19 +5,15 @@ namespace App\Notifications;
 use App\Models\ProfessorConvocation;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
+use App\Traits\SendsEmailNotification;
 
 class ProfessorConvocationGenerated extends Notification
 {
-    use Queueable;
+    use Queueable, SendsEmailNotification;
 
     public function __construct(
         public readonly ProfessorConvocation $convocation
     ) {}
-
-    public function via(object $notifiable): array
-    {
-        return ['database'];
-    }
 
     public function toDatabase(object $notifiable): array
     {

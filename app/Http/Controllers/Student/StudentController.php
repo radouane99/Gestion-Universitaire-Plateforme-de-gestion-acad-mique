@@ -206,4 +206,36 @@ class StudentController extends Controller
             return redirect()->route('student.dashboard')->with('success', 'Votre réinscription a été traitée avec succès ! Vos modules de dette ont été reportés en crédits.');
         });
     }
+
+    /**
+     * Téléchargement de l'Attestation de Réussite officielle en PDF avec QR Code.
+     */
+    public function downloadAttestation()
+    {
+        $student = Auth::user()->student;
+        if (!$student) {
+            abort(404);
+        }
+
+        // Éligibilité : Moyenne annuelle >= 10 et aucun module en échec (0 dette active)
+        if ($student->getYearlyGpa() < 10 || !$student->getFailedModules()->isEmpty()) {
+            return redirect()->route('student.dashboard')->with('error', "Vous n'êtes pas éligible au téléchargement de l'attestation de réussite car vous avez des dettes ou n'avez pas validé l'année.");
+        }
+
+        $gpa = $student->getYearlyGpa();
+        $mention = match (true) {
+            $gpa >= 16.0 => 'Très Bien',
+            $gpa >= 14.0 => 'Bien',
+            $gpa >= 12.0 => 'Assez Bien',
+            $gpa >= 10.0 => 'Passable',
+            default      => 'Passable',
+        };
+
+        $verifyUrl = route('verify.document', $student->document_token);
+
+        // Génération du PDF
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pdf.attestation', compact('student', 'gpa', 'mention', 'verifyUrl'));
+        
+        return $pdf->download("Attestation_Reussite_{$student->student_number}.pdf");
+    }
 }

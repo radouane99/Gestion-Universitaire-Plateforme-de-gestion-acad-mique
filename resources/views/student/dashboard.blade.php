@@ -295,9 +295,16 @@
                                 <h3 class="text-2xl font-black mb-1">📄 {{ __('Documents Officiels') }}</h3>
                                 <p class="text-blue-200/70 dark:text-slate-400 text-sm max-w-md">{{ __('Téléchargez vos attestations et relevés de notes validés par l\'administration.') }}</p>
                             </div>
-                            <a href="{{ route('student.requests.create') }}" class="px-5 py-3.5 bg-white text-upf-navy font-black rounded-2xl hover:bg-upf-magenta hover:text-white transition-all duration-300 shadow-md group-hover:scale-105 transform whitespace-nowrap text-xs uppercase tracking-widest">
-                                {{ __('Gérer mes demandes') }}
-                            </a>
+                            <div class="flex flex-wrap items-center gap-3">
+                                @if(Auth::user()->student && Auth::user()->student->getYearlyGpa() >= 10 && Auth::user()->student->getFailedModules()->isEmpty())
+                                    <a href="{{ route('student.attestation.download') }}" class="px-5 py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-2xl transition-all duration-300 shadow-md hover:scale-105 transform whitespace-nowrap text-xs uppercase tracking-widest flex items-center gap-2">
+                                        🎓 {{ __('Attestation de Réussite') }}
+                                    </a>
+                                @endif
+                                <a href="{{ route('student.requests.create') }}" class="px-5 py-3.5 bg-white text-upf-navy font-black rounded-2xl hover:bg-upf-magenta hover:text-white transition-all duration-300 shadow-md hover:scale-105 transform whitespace-nowrap text-xs uppercase tracking-widest">
+                                    {{ __('Gérer mes demandes') }}
+                                </a>
+                            </div>
                         </div>
                         <div class="absolute -bottom-10 -right-10 w-40 h-40 bg-upf-magenta rounded-full opacity-20 blur-2xl group-hover:opacity-40 transition-opacity pointer-events-none"></div>
                     </div>

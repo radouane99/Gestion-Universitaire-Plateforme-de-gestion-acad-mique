@@ -3,9 +3,12 @@
 namespace App\Notifications;
 
 use Illuminate\Notifications\Notification;
+use App\Traits\SendsEmailNotification;
 
 class GradePublished extends Notification
 {
+    use SendsEmailNotification;
+
     public string $moduleName;
     public float $finalGrade;
 
@@ -13,11 +16,6 @@ class GradePublished extends Notification
     {
         $this->moduleName = $moduleName;
         $this->finalGrade = $finalGrade;
-    }
-
-    public function via($notifiable): array
-    {
-        return ['database'];
     }
 
     public function toDatabase($notifiable): array

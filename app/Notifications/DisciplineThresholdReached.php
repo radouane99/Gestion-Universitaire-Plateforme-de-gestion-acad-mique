@@ -4,20 +4,18 @@ namespace App\Notifications;
 
 use App\Models\Student;
 use Illuminate\Notifications\Notification;
+use App\Traits\SendsEmailNotification;
 
 class DisciplineThresholdReached extends Notification
 {
+    use SendsEmailNotification;
+
     public function __construct(
         private float   $currentHours,
         private int     $threshold,
         private string  $message,
         private ?Student $targetStudent = null, // Fourni quand notif envoyée aux admins
     ) {}
-
-    public function via($notifiable): array
-    {
-        return ['database'];
-    }
 
     public function toDatabase($notifiable): array
     {
