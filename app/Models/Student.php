@@ -14,13 +14,35 @@ class Student extends Model
         'academic_year_id',
         'has_derogation',
         'derogation_note',
-        'is_last_chance'
+        'is_last_chance',
+        'birth_date',
+        'birth_place',
+        'father_name',
+        'father_cin',
+        'father_occupation',
+        'mother_name',
+        'mother_cin',
+        'mother_occupation',
+        'bac_filiere',
+        'bac_grade',
+        'bac_mention',
+        'bac_year',
+        'filiere_id',
+        'registration_status',
+        'registration_type'
     ];
 
     protected $casts = [
         'has_derogation' => 'boolean',
         'is_last_chance' => 'boolean',
+        'birth_date' => 'date',
+        'bac_grade' => 'decimal:2',
     ];
+
+    public function filiere()
+    {
+        return $this->belongsTo(Filiere::class);
+    }
 
     // ─── Relations ───────────────────────────────────────────────────────────
 
@@ -136,6 +158,38 @@ class Student extends Model
     public function getActiveDisciplineCaseAttribute(): ?DisciplineCase
     {
         return $this->disciplineCases()->whereIn('status', ['open', 'notified'])->latest()->first();
+    }
+
+    /**
+     * Règle d'éligibilité à la réinscription
+     */
+    public function isEligibleForReinscription(): bool
+    {
+        $hasGrades = $this->grades()->exists();
+        return $hasGrades && $this->registration_status === 'approved' && $this->registration_type !== 'reinscription';
+    }
+
+    /**
+     * Calcul de la moyenne annuelle
+     */
+    public function getYearlyGpa(): float
+    {
+        $grades = $this->grades()->whereNotNull('final_grade')->get();
+        if ($grades->isEmpty()) return 0.0;
+        return (float) $grades->avg('final_grade');
+    }
+
+    /**
+     * Liste des modules non validés (note < 10)
+     */
+    public function getFailedModules()
+    {
+        return $this->grades()
+            ->whereNotNull('final_grade')
+            ->where('final_grade', '<', 10)
+            ->with('module')
+            ->get()
+            ->pluck('module');
     }
 }
 

@@ -42,6 +42,12 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/students/import/template', [\App\Http\Controllers\Admin\StudentController::class, 'downloadTemplate'])->name('students.import.template');
     Route::resource('students', \App\Http\Controllers\Admin\StudentController::class);
 
+    // Inscription & Réinscription Administrative
+    Route::get('/registrations', [\App\Http\Controllers\Admin\RegistrationController::class, 'index'])->name('registrations.index');
+    Route::post('/registrations/{student}/approve', [\App\Http\Controllers\Admin\RegistrationController::class, 'approve'])->name('registrations.approve');
+    Route::post('/registrations/{student}/reject', [\App\Http\Controllers\Admin\RegistrationController::class, 'reject'])->name('registrations.reject');
+    Route::post('/registrations/auto-dispatch', [\App\Http\Controllers\Admin\RegistrationController::class, 'autoDispatch'])->name('registrations.auto_dispatch');
+
     // Gestion des Crédits Modules & Dérogations exceptionnelles
     Route::get('/students-credits', [\App\Http\Controllers\Admin\StudentCreditController::class, 'index'])->name('student_credits.index');
     Route::get('/students-credits/{student}/manage', [\App\Http\Controllers\Admin\StudentCreditController::class, 'manage'])->name('student_credits.manage');
@@ -295,9 +301,12 @@ Route::middleware(['auth', 'role:professor'])->prefix('professor')->name('profes
     Route::post('/reclamations/{reclamation}/ai-draft', [\App\Http\Controllers\Professor\AiProfessorController::class, 'generateDraft'])->name('ai.draft');
 });
 
-
 Route::middleware(['auth', 'role:student'])->prefix('student')->name('student.')->group(function () {
     Route::get('/dashboard', [\App\Http\Controllers\Student\StudentController::class, 'index'])->name('dashboard');
+
+    // Réinscriptions
+    Route::get('/reinscription', [\App\Http\Controllers\Student\StudentController::class, 'showReinscriptionForm'])->name('reinscription.form');
+    Route::post('/reinscription', [\App\Http\Controllers\Student\StudentController::class, 'processReinscription'])->name('reinscription.store');
     Route::get('/grades', [\App\Http\Controllers\Student\StudentController::class, 'grades'])->name('grades');
     Route::get('/absences', [\App\Http\Controllers\Student\StudentController::class, 'absences'])->name('absences');
     Route::get('/schedule', [\App\Http\Controllers\ScheduleController::class, 'studentSchedule'])->name('schedule');

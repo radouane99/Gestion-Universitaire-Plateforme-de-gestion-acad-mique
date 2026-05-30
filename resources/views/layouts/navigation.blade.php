@@ -259,6 +259,7 @@
                     $isScolariteActive = request()->routeIs('admin.academic.*')
                         || request()->routeIs('admin.users.*')
                         || request()->routeIs('admin.students.*')
+                        || request()->routeIs('admin.registrations.*')
                         || request()->routeIs('admin.filieres.*')
                         || request()->routeIs('admin.groups.*')
                         || request()->routeIs('admin.schedules.*')
@@ -314,6 +315,9 @@
                         </a>
                         <a href="{{ route('admin.students.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] transition-all duration-150 {{ request()->routeIs('admin.students.*') ? 'text-white bg-white/10 font-semibold' : 'text-slate-400 hover:text-white hover:bg-white/[0.05]' }}">
                             <span class="text-sm">🎒</span> <span>{{ __('Étudiants') }}</span>
+                        </a>
+                        <a href="{{ route('admin.registrations.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] transition-all duration-150 {{ request()->routeIs('admin.registrations.*') ? 'text-white bg-white/10 font-semibold' : 'text-slate-400 hover:text-white hover:bg-white/[0.05]' }}">
+                            <span class="text-sm">📝</span> <span>{{ __('Inscriptions') }}</span>
                         </a>
                         <a href="{{ route('admin.filieres.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] transition-all duration-150 {{ request()->routeIs('admin.filieres.*') ? 'text-white bg-white/10 font-semibold' : 'text-slate-400 hover:text-white hover:bg-white/[0.05]' }}">
                             <span class="text-sm">🏫</span> <span>{{ __('Filières') }}</span>

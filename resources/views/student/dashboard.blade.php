@@ -92,6 +92,27 @@
                 <div class="absolute -bottom-16 left-16 w-48 h-48 bg-blue-400/10 rounded-full blur-2xl pointer-events-none"></div>
             </div>
 
+            {{-- ===================== REINSCRIPTION ALERT BANNER ===================== --}}
+            @if(Auth::user()->student && Auth::user()->student->isEligibleForReinscription())
+            <div class="bg-gradient-to-r from-upf-magenta to-indigo-650 dark:from-pink-900 dark:to-slate-900 rounded-[2.5rem] p-6 lg:p-8 text-white shadow-lg flex flex-col sm:flex-row items-center justify-between gap-6 border border-white/5">
+                <div class="flex items-center gap-5">
+                    <div class="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center shadow-inner shrink-0">
+                        <span class="text-3xl">📝</span>
+                    </div>
+                    <div>
+                        <p class="text-[10px] font-black uppercase tracking-widest text-pink-100">🎓 {{ __('Campagne de réinscription ouverte') }}</p>
+                        <p class="text-xl font-black mt-0.5">{{ __('Procédez à votre réinscription en 1-Clic') }}</p>
+                        <p class="text-pink-105/90 text-xs font-bold mt-0.5">
+                            {{ __('Consultez vos crédits modules de dette et validez votre passage à l\'année d\'études suivante.') }}
+                        </p>
+                    </div>
+                </div>
+                <a href="{{ route('student.reinscription.form') }}" class="bg-white text-indigo-950 hover:bg-pink-100 transition-all px-6 py-3.5 rounded-xl text-xs font-black uppercase tracking-widest shadow-md shrink-0">
+                    {{ __('Se réinscrire') }} →
+                </a>
+            </div>
+            @endif
+
             {{-- ===================== NEXT CLASS WIDGET ===================== --}}
             @if($nextClass)
             <div class="bg-gradient-to-r from-emerald-600 to-teal-600 dark:from-emerald-700 dark:to-teal-800 rounded-[2.5rem] p-6 lg:p-8 text-white shadow-lg flex flex-col sm:flex-row items-center justify-between gap-6 border border-white/5">

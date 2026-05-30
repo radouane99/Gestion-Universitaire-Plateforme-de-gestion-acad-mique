@@ -13,6 +13,11 @@ class StudentController extends Controller
         $user    = Auth::user();
         $student = $user->student;
 
+        // If the student's registration is still pending administrative review
+        if ($student && $student->registration_status == 'pending') {
+            return view('student.pending_validation', compact('student'));
+        }
+
         $grades   = \App\Models\Grade::where('student_id', $student->id)->with('module')->get();
         $absences = \App\Models\Absence::where('student_id', $student->id)->with('module')->get();
         $requests = \App\Models\Request::where('user_id', $user->id)->orderBy('created_at', 'desc')->get();
@@ -92,5 +97,104 @@ class StudentController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
         return view('student.requests.create', compact('requests'));
+    }
+
+    public function showReinscriptionForm()
+    {
+        $student = Auth::user()->student;
+        if (!$student) {
+            abort(404);
+        }
+
+        if (!$student->isEligibleForReinscription()) {
+            return redirect()->route('student.dashboard')->with('error', 'Vous n\'êtes pas éligible pour la réinscription ou vous êtes déjà réinscrit pour cette année.');
+        }
+
+        $failedModules = $student->getFailedModules();
+        $gpa = $student->getYearlyGpa();
+
+        return view('student.reinscription', compact('student', 'failedModules', 'gpa'));
+    }
+
+    public function processReinscription(Request $request)
+    {
+        $student = Auth::user()->student;
+        if (!$student || !$student->isEligibleForReinscription()) {
+            return redirect()->route('student.dashboard')->with('error', 'Action non autorisée.');
+        }
+
+        $request->validate([
+            'confirm_details' => 'required|accepted',
+        ]);
+
+        $gpa = $student->getYearlyGpa();
+        $failedModules = $student->getFailedModules();
+
+        return \Illuminate\Support\Facades\DB::transaction(function () use ($student, $gpa, $failedModules, $request) {
+            $currentGroup = $student->group;
+            $nextGroup = null;
+
+            if ($gpa >= 10) {
+                // Passed! Try to promote to next group level
+                if ($currentGroup) {
+                    $currentLevel = $currentGroup->level; // e.g. "Licence 1"
+                    $currentName = $currentGroup->name;   // e.g. "GI-1"
+
+                    // Look for level 2 or similar
+                    $nextLevel = str_replace(['1', 'one', 'un'], ['2', 'two', 'deux'], $currentLevel);
+                    $nextName = str_replace('1', '2', $currentName);
+
+                    $nextGroup = \App\Models\Group::where('filiere_id', $student->filiere_id)
+                        ->where(function($q) use ($nextLevel, $nextName) {
+                            $q->where('level', $nextLevel)->orWhere('name', $nextName);
+                        })->first();
+                }
+
+                // If next group doesn't exist, keep in current group but mark year promoted
+                if (!$nextGroup) {
+                    $nextGroup = $currentGroup;
+                }
+            } else {
+                // Failed (GPA < 10): Remains in the same repeating level group
+                $nextGroup = $currentGroup;
+            }
+
+            // Carry over failed modules as debts (Crédits Modules)
+            $oldYearId = $student->academic_year_id;
+            foreach ($failedModules as $module) {
+                // Insert into student_credit_modules if not already exists
+                \DB::table('student_credit_modules')->updateOrInsert(
+                    ['student_id' => $student->id, 'module_id' => $module->id],
+                    [
+                        'academic_year_id' => $oldYearId,
+                        'status' => 'pending',
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]
+                );
+            }
+
+            // Get current active academic year to promote them into
+            $newYearId = \DB::table('academic_years')->where('is_current', true)->value('id')
+                ?? \DB::table('academic_years')->first()?->id;
+
+            // Promote Student
+            $student->update([
+                'group_id' => $nextGroup ? $nextGroup->id : null,
+                'academic_year_id' => $newYearId,
+                'registration_type' => 'reinscription', // Marked as re-registered
+                'registration_status' => 'approved',
+            ]);
+
+            \App\Models\ActivityLog::create([
+                'user_id' => Auth::id(),
+                'action' => 'updated',
+                'model_type' => 'Student',
+                'description' => "Réinscription effectuée avec succès pour '{$student->user->name}'. GPA Annuel: {$gpa}/20. " . $failedModules->count() . " crédits reportés.",
+                'ip_address' => $request->ip(),
+            ]);
+
+            return redirect()->route('student.dashboard')->with('success', 'Votre réinscription a été traitée avec succès ! Vos modules de dette ont été reportés en crédits.');
+        });
     }
 }
