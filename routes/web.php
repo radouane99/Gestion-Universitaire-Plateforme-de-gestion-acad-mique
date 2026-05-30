@@ -7,15 +7,6 @@ Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
 
-Route::get('/run-migration-online', function() {
-    try {
-        \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
-        return "Migration réussie !<br><br>Détails :<br>" . nl2br(\Illuminate\Support\Facades\Artisan::output());
-    } catch (\Exception $e) {
-        return "Erreur lors de la migration : " . $e->getMessage();
-    }
-});
-
 Route::get('/contact', [\App\Http\Controllers\ContactController::class, 'index'])->name('contact');
 Route::post('/contact', [\App\Http\Controllers\ContactController::class, 'store'])->name('contact.store');
 
