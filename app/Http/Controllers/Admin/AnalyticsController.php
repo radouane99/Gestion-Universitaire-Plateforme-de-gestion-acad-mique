@@ -31,12 +31,17 @@ class AnalyticsController extends Controller
         $flopModules = $moduleStats->sortBy('avg_grade')->take(5);
 
         // 3. Statistiques des Rattrapages
-        $retakeStats = RetakeEligibility::select('module_id', DB::raw('count(*) as count'))
-            ->groupBy('module_id')
-            ->with('module')
+        $retakeStats = RetakeEligibility::select('exams.module_id', DB::raw('count(retake_eligibilities.id) as count'))
+            ->join('exams', 'retake_eligibilities.exam_id', '=', 'exams.id')
+            ->groupBy('exams.module_id')
             ->orderByDesc('count')
             ->take(5)
             ->get();
+
+        $modules = Module::whereIn('id', $retakeStats->pluck('module_id'))->get()->keyBy('id');
+        foreach ($retakeStats as $stat) {
+            $stat->setRelation('module', $modules->get($stat->module_id));
+        }
 
         // 4. Répartition des Décisions (Estimation simple basée sur les moyennes >= 10)
         $studentAverages = Grade::select('student_id', DB::raw('AVG(final_grade) as student_avg'))
