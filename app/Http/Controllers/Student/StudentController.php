@@ -217,6 +217,17 @@ class StudentController extends Controller
             abort(404);
         }
 
+        $level = $student->group->level ?? null;
+        $isPvValidated = \App\Models\PVGlobalApproval::where('filiere_id', $student->filiere_id)
+            ->where('academic_year_id', $student->academic_year_id)
+            ->where('level', $level)
+            ->where('is_validated', true)
+            ->exists();
+
+        if (!$isPvValidated) {
+            return redirect()->route('student.dashboard')->with('error', "L'attestation de réussite n'est pas encore disponible. Le PV académique annuel doit d'abord être validé par la direction.");
+        }
+
         // Éligibilité : Moyenne annuelle >= 10 et aucun module en échec (0 dette active)
         if ($student->getYearlyGpa() < 10 || !$student->getFailedModules()->isEmpty()) {
             return redirect()->route('student.dashboard')->with('error', "Vous n'êtes pas éligible au téléchargement de l'attestation de réussite car vous avez des dettes ou n'avez pas validé l'année.");
@@ -232,10 +243,62 @@ class StudentController extends Controller
         };
 
         $verifyUrl = route('verify.document', $student->document_token);
+        $isPdf = true;
 
         // Génération du PDF
-        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pdf.attestation', compact('student', 'gpa', 'mention', 'verifyUrl'));
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pdf.attestation', compact('student', 'gpa', 'mention', 'verifyUrl', 'isPdf'));
         
-        return $pdf->download("Attestation_Reussite_{$student->student_number}.pdf");
+        $nameSlug = \Illuminate\Support\Str::slug($student->user->name, '_');
+        return $pdf->download("attestation_reussite_{$nameSlug}.pdf");
+    }
+
+    /**
+     * Téléchargement du Diplôme de Réussite officielle en PDF.
+     */
+    public function downloadDiplome()
+    {
+        $student = Auth::user()->student;
+        if (!$student) {
+            abort(404);
+        }
+
+        $level = $student->group->level ?? null;
+        if ($level != 3) {
+            return redirect()->route('student.dashboard')->with('error', "Action non autorisée. Les diplômes ne sont délivrés qu'aux lauréats de 3ème année.");
+        }
+
+        $isPvValidated = \App\Models\PVGlobalApproval::where('filiere_id', $student->filiere_id)
+            ->where('academic_year_id', $student->academic_year_id)
+            ->where('level', $level)
+            ->where('is_validated', true)
+            ->exists();
+
+        if (!$isPvValidated) {
+            return redirect()->route('student.dashboard')->with('error', "Le diplôme n'est pas encore disponible. Le PV académique annuel doit d'abord être validé par la direction.");
+        }
+
+        // Éligibilité : Moyenne annuelle >= 10 et aucun module en échec (0 dette active)
+        if ($student->getYearlyGpa() < 10 || !$student->getFailedModules()->isEmpty()) {
+            return redirect()->route('student.dashboard')->with('error', "Vous n'êtes pas éligible à la délivrance du diplôme car vous avez des dettes ou n'avez pas validé l'année.");
+        }
+
+        $gpa = $student->getYearlyGpa();
+        $mention = match (true) {
+            $gpa >= 16.0 => 'Très Bien',
+            $gpa >= 14.0 => 'Bien',
+            $gpa >= 12.0 => 'Assez Bien',
+            $gpa >= 10.0 => 'Passable',
+            default      => 'Passable',
+        };
+
+        $verifyUrl = route('verify.document', $student->document_token);
+        $isPdf = true;
+
+        // Génération du PDF
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pdf.diplome', compact('student', 'gpa', 'mention', 'verifyUrl', 'isPdf'));
+        $pdf->setPaper('A4', 'landscape');
+        
+        $nameSlug = \Illuminate\Support\Str::slug($student->user->name, '_');
+        return $pdf->download("diplome_{$nameSlug}.pdf");
     }
 }

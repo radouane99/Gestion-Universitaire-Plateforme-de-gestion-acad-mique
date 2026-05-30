@@ -61,9 +61,23 @@
                                 </div>
                             </div>
 
-                            <div id="professor_fields" class="hidden">
-                                <x-input-label for="department" :value="__('Department')" />
-                                <x-text-input id="department" class="block mt-1 w-full" type="text" name="department" :value="old('department')" />
+                            <div id="professor_fields" class="hidden space-y-4">
+                                <div>
+                                    <x-input-label for="department" :value="__('Department')" />
+                                    <x-text-input id="department" class="block mt-1 w-full" type="text" name="department" :value="old('department')" />
+                                </div>
+                                <div x-data="{ status: 'permanent' }">
+                                    <x-input-label for="status" :value="__('Type de Contrat')" />
+                                    <select id="status" name="status" class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" x-model="status">
+                                        <option value="permanent">Permanent</option>
+                                        <option value="vacataire">Vacataire</option>
+                                    </select>
+                                    
+                                    <div class="mt-4" x-show="status === 'vacataire'" x-transition>
+                                        <x-input-label for="contract_end_date" :value="__('Date de Fin de Contrat')" />
+                                        <x-text-input id="contract_end_date" class="block mt-1 w-full" type="date" name="contract_end_date" :value="old('contract_end_date')" />
+                                    </div>
+                                </div>
                             </div>
                         </div>
 

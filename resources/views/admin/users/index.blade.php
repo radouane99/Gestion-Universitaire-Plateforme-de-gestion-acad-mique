@@ -71,6 +71,15 @@
                                 <td class="px-6 py-4">
                                     @if($user->role->name === 'professor')
                                         <span class="text-sm text-gray-800 font-bold">{{ __('Dép') }}: {{ $user->professor->department ?? '-' }}</span>
+                                        @if($user->professor && $user->professor->status === 'vacataire')
+                                            @if(!$user->professor->isContractActive())
+                                                <span class="block text-[9px] text-rose-500 font-black uppercase mt-1">Vacataire (Expiré ⚠️)</span>
+                                            @else
+                                                <span class="block text-[9px] text-amber-500 font-black uppercase mt-1">Vacataire (Actif ✅)</span>
+                                            @endif
+                                        @else
+                                            <span class="block text-[9px] text-emerald-500 font-black uppercase mt-1">Permanent</span>
+                                        @endif
                                     @else
                                         <span class="text-[11px] text-gray-400 italic font-black uppercase">{{ __('Accès Total') }}</span>
                                     @endif

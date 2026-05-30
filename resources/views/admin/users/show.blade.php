@@ -70,10 +70,31 @@
                                 <span class="text-gray-900 text-base font-extrabold">{{ $user->student->group->level ?? 'N/A' }}</span>
                             </div>
                         @elseif($user->role->name === 'professor')
-                            <div class="space-y-1 md:col-span-2">
+                            <div class="space-y-1">
                                 <span class="text-[9px] font-black text-gray-400 uppercase tracking-widest block">Département d'Enseignement</span>
                                 <span class="text-upf-blue text-base font-black">{{ $user->professor->department ?? '-' }}</span>
                             </div>
+
+                            <div class="space-y-1">
+                                <span class="text-[9px] font-black text-gray-400 uppercase tracking-widest block">Type de Contrat</span>
+                                <span class="text-gray-900 text-base font-extrabold capitalize">
+                                    {{ $user->professor->status ?? 'permanent' }}
+                                </span>
+                            </div>
+
+                            @if($user->professor && $user->professor->status === 'vacataire')
+                                <div class="space-y-1 md:col-span-2">
+                                    <span class="text-[9px] font-black text-gray-400 uppercase tracking-widest block">Date de Fin de Contrat</span>
+                                    <span class="text-gray-900 text-base font-extrabold">
+                                        {{ $user->professor->contract_end_date ? $user->professor->contract_end_date->format('d/m/Y') : 'Non renseignée' }}
+                                        @if(!$user->professor->isContractActive())
+                                            <span class="ml-2 px-2 py-0.5 rounded bg-rose-100 text-rose-800 text-[10px] font-black uppercase tracking-widest">Expiré ⚠️</span>
+                                        @else
+                                            <span class="ml-2 px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[10px] font-black uppercase tracking-widest">Actif ✅</span>
+                                        @endif
+                                    </span>
+                                </div>
+                            @endif
                         @endif
                     </div>
                 </div>

@@ -108,6 +108,63 @@
                     <p class="text-gray-400 dark:text-slate-500 max-w-md mx-auto">Il n'y a aucun étudiant inscrit dans cette filière au niveau sélectionné pour l'année universitaire active.</p>
                 </div>
             @else
+                {{-- Deliberation Pipeline Widget --}}
+                @php
+                    $pvApproval = \App\Models\PVGlobalApproval::where('filiere_id', $selectedFiliereId)
+                        ->where('academic_year_id', $currentYearId)
+                        ->where('level', $selectedLevel)
+                        ->first();
+                    $isPvApproved = $pvApproval && $pvApproval->is_validated;
+                @endphp
+
+                <div class="mb-8 p-6 rounded-3xl bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
+                    <div class="flex items-center gap-4">
+                        <div class="w-14 h-14 rounded-2xl flex items-center justify-center shadow-inner shrink-0 {{ $isPvApproved ? 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400' : 'bg-amber-50 dark:bg-amber-950/30 text-amber-600 dark:text-amber-400' }}">
+                            @if($isPvApproved)
+                                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                            @else
+                                <svg class="w-8 h-8 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                            @endif
+                        </div>
+                        <div>
+                            <span class="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-gray-500">Statut de Délibération Pipeline</span>
+                            @if($isPvApproved)
+                                <h4 class="text-xl font-black text-emerald-600 dark:text-emerald-400 mt-0.5">Procès-Verbal Global Officiellement Validé ✅</h4>
+                                <p class="text-xs font-bold text-slate-400 dark:text-slate-500 mt-0.5">
+                                    Approuvé par <strong class="text-slate-600 dark:text-slate-350">{{ $pvApproval->validator->name ?? 'Administration' }}</strong> le {{ $pvApproval->validated_at->format('d/m/Y à H:i') }}.
+                                </p>
+                            @else
+                                <h4 class="text-xl font-black text-amber-600 dark:text-amber-500 mt-0.5">En Attente de Validation Administrative ⏳</h4>
+                                <p class="text-xs font-bold text-slate-400 dark:text-slate-505 mt-0.5">Le PV annuel doit être validé pour débloquer les attestations de réussite (tous niveaux) et les diplômes (3ème année) des étudiants.</p>
+                            @endif
+                        </div>
+                    </div>
+                    
+                    <div>
+                        @if(!$isPvApproved)
+                            <form method="POST" action="{{ route('admin.pv_globaux.validate') }}">
+                                @csrf
+                                <input type="hidden" name="filiere_id" value="{{ $selectedFiliereId }}">
+                                <input type="hidden" name="academic_year_id" value="{{ $currentYearId }}">
+                                <input type="hidden" name="level" value="{{ $selectedLevel }}">
+                                <button type="submit" class="px-6 py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-2xl text-xs uppercase tracking-widest transition-all shadow-md flex items-center gap-2">
+                                    ⚖️ Valider & Débloquer les Diplômes
+                                </button>
+                            </form>
+                        @else
+                            <form method="POST" action="{{ route('admin.pv_globaux.reject') }}">
+                                @csrf
+                                <input type="hidden" name="filiere_id" value="{{ $selectedFiliereId }}">
+                                <input type="hidden" name="academic_year_id" value="{{ $currentYearId }}">
+                                <input type="hidden" name="level" value="{{ $selectedLevel }}">
+                                <button type="submit" class="px-6 py-3.5 bg-rose-600 hover:bg-rose-700 text-white font-black rounded-2xl text-xs uppercase tracking-widest transition-all shadow-md flex items-center gap-2">
+                                    ❌ Annuler la Validation
+                                </button>
+                            </form>
+                        @endif
+                    </div>
+                </div>
+
                 {{-- Global PV Grid (Horizontal Scrollable Table) --}}
                 <div class="bg-white dark:bg-slate-900 rounded-3xl border border-gray-100 dark:border-slate-800 shadow-xl overflow-hidden mb-8">
                     <div class="p-6 border-b border-gray-100 dark:border-slate-800 flex flex-wrap justify-between items-center gap-4">

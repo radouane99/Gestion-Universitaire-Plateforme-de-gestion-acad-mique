@@ -24,7 +24,7 @@ Route::get('/dashboard', function () {
     $availableRooms = \App\Models\Room::count();
 
     return view('dashboard', compact('totalUsers', 'activeModules', 'availableRooms'));
-})->middleware(['auth', 'verified'])->name('dashboard');
+})->middleware(['auth', 'verified', 'check.contract'])->name('dashboard');
 
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [\App\Http\Controllers\Admin\AdminController::class, 'index'])->name('dashboard');
@@ -138,6 +138,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/pv-globaux', [\App\Http\Controllers\Admin\PVGlobalController::class, 'index'])->name('pv_globaux.index');
     Route::get('/pv-globaux/excel', [\App\Http\Controllers\Admin\PVGlobalController::class, 'exportExcel'])->name('pv_globaux.export_excel');
     Route::get('/pv-globaux/pdf', [\App\Http\Controllers\Admin\PVGlobalController::class, 'exportPdf'])->name('pv_globaux.export_pdf');
+    Route::post('/pv-globaux/validate', [\App\Http\Controllers\Admin\PVGlobalController::class, 'validatePV'])->name('pv_globaux.validate');
+    Route::post('/pv-globaux/reject', [\App\Http\Controllers\Admin\PVGlobalController::class, 'rejectPV'])->name('pv_globaux.reject');
 
     // Documents Officiels
     Route::get('/students/{student}/releve-notes/{academicYear}', [\App\Http\Controllers\Admin\DocumentController::class, 'releveNotes'])->name('documents.releve');
@@ -248,7 +250,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/analytics', [\App\Http\Controllers\Admin\AnalyticsController::class, 'index'])->name('analytics.index');
 });
 
-Route::middleware(['auth', 'role:professor'])->prefix('professor')->name('professor.')->group(function () {
+Route::middleware(['auth', 'role:professor', 'check.contract'])->prefix('professor')->name('professor.')->group(function () {
     Route::get('/dashboard', [\App\Http\Controllers\Professor\ProfessorController::class, 'index'])->name('dashboard');
     Route::get('/schedule', [\App\Http\Controllers\ScheduleController::class, 'professorSchedule'])->name('schedule');
     Route::get('/grades', [\App\Http\Controllers\GradeController::class, 'index'])->name('grades.index');
@@ -306,6 +308,7 @@ Route::middleware(['auth', 'role:student'])->prefix('student')->name('student.')
 
     // Attestation de Réussite
     Route::get('/attestation/download', [\App\Http\Controllers\Student\StudentController::class, 'downloadAttestation'])->name('attestation.download');
+    Route::get('/diplome/download', [\App\Http\Controllers\Student\StudentController::class, 'downloadDiplome'])->name('diplome.download');
 
     // Réinscriptions
     Route::get('/reinscription', [\App\Http\Controllers\Student\StudentController::class, 'showReinscriptionForm'])->name('reinscription.form');

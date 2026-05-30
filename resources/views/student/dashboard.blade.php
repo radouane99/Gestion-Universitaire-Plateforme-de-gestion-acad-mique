@@ -296,10 +296,26 @@
                                 <p class="text-blue-200/70 dark:text-slate-400 text-sm max-w-md">{{ __('Téléchargez vos attestations et relevés de notes validés par l\'administration.') }}</p>
                             </div>
                             <div class="flex flex-wrap items-center gap-3">
-                                @if(Auth::user()->student && Auth::user()->student->getYearlyGpa() >= 10 && Auth::user()->student->getFailedModules()->isEmpty())
+                                @php
+                                    $studentObj = Auth::user()->student;
+                                    $lvl = $studentObj->group->level ?? null;
+                                    $isPvApproved = $studentObj ? \App\Models\PVGlobalApproval::where('filiere_id', $studentObj->filiere_id)
+                                        ->where('academic_year_id', $studentObj->academic_year_id)
+                                        ->where('level', $lvl)
+                                        ->where('is_validated', true)
+                                        ->exists() : false;
+                                @endphp
+
+                                @if($studentObj && $isPvApproved && $studentObj->getYearlyGpa() >= 10 && $studentObj->getFailedModules()->isEmpty())
                                     <a href="{{ route('student.attestation.download') }}" class="px-5 py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-2xl transition-all duration-300 shadow-md hover:scale-105 transform whitespace-nowrap text-xs uppercase tracking-widest flex items-center gap-2">
                                         🎓 {{ __('Attestation de Réussite') }}
                                     </a>
+                                    
+                                    @if($lvl == 3)
+                                        <a href="{{ route('student.diplome.download') }}" class="px-5 py-3.5 bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-white font-black rounded-2xl transition-all duration-300 shadow-md hover:scale-105 transform whitespace-nowrap text-xs uppercase tracking-widest flex items-center gap-2">
+                                            👑 {{ __('Mon Diplôme') }}
+                                        </a>
+                                    @endif
                                 @endif
                                 <a href="{{ route('student.requests.create') }}" class="px-5 py-3.5 bg-white text-upf-navy font-black rounded-2xl hover:bg-upf-magenta hover:text-white transition-all duration-300 shadow-md hover:scale-105 transform whitespace-nowrap text-xs uppercase tracking-widest">
                                     {{ __('Gérer mes demandes') }}

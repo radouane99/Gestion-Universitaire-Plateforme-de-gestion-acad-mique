@@ -28,6 +28,7 @@ class DocumentController extends Controller
         $qrCode = base64_encode(QrCode::format('svg')->size(100)->generate($verifyUrl));
 
         $viewData = compact('request', 'setting', 'qrCode');
+        $viewData['isPdf'] = true;
 
         if ($request->type == 'Transcript' || $request->type == 'Relevé de Notes') {
             $student = $request->user->student;
@@ -94,8 +95,21 @@ class DocumentController extends Controller
 
         $pdf = Pdf::loadView($viewName, $viewData);
         $pdf->setPaper('A4', 'portrait');
+
+        $nameSlug = \Illuminate\Support\Str::slug($request->user->name, '_');
+        if ($request->type == 'Attestation de Travail') {
+            $fileName = "attestation_travail_{$nameSlug}.pdf";
+        } elseif ($request->type == 'Ordre de Mission') {
+            $fileName = "ordre_mission_{$nameSlug}.pdf";
+        } elseif ($request->type == 'Convention de Stage') {
+            $fileName = "convention_stage_{$nameSlug}.pdf";
+        } elseif ($request->type == 'Transcript' || $request->type == 'Relevé de Notes') {
+            $fileName = "releve_notes_{$nameSlug}.pdf";
+        } else {
+            $fileName = "attestation_scolarite_{$nameSlug}.pdf";
+        }
         
-        return $pdf->download('document_' . $request->id . '.pdf');
+        return $pdf->download($fileName);
     }
 
     public function verify($id, $hash)

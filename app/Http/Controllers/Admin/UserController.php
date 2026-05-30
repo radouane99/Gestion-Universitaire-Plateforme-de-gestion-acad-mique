@@ -38,6 +38,8 @@ class UserController extends Controller
             'student_number' => 'nullable|unique:students,student_number',
             // Professor specific
             'department' => 'nullable|string|max:255',
+            'status' => 'nullable|string|in:permanent,vacataire',
+            'contract_end_date' => 'nullable|date',
         ]);
 
         $role = \App\Models\Role::find($validated['role_id']);
@@ -59,6 +61,8 @@ class UserController extends Controller
             \App\Models\Professor::create([
                 'user_id' => $user->id,
                 'department' => $request->department,
+                'status' => $request->status ?? 'permanent',
+                'contract_end_date' => $request->contract_end_date,
             ]);
         }
 
@@ -260,6 +264,8 @@ class UserController extends Controller
             'student_number' => 'nullable',
             // Professor specific
             'department' => 'nullable|string|max:255',
+            'status' => 'nullable|string|in:permanent,vacataire',
+            'contract_end_date' => 'nullable|date',
         ]);
 
         $role = \App\Models\Role::find($validated['role_id']);
@@ -295,6 +301,8 @@ class UserController extends Controller
                 ['user_id' => $user->id],
                 [
                     'department' => $request->department,
+                    'status' => $request->status ?? 'permanent',
+                    'contract_end_date' => $request->status === 'vacataire' ? $request->contract_end_date : null,
                 ]
             );
         } else {

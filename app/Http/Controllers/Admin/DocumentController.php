@@ -54,6 +54,7 @@ class DocumentController extends Controller
         $verificationUrl = url('/verify-document/releve/' . $student->id . '/' . $academicYear->id);
         $qrCode = base64_encode(QrCode::format('svg')->size(100)->generate($verificationUrl));
 
+        $isPdf = true;
         $pdf = Pdf::loadView('pdf.releve_notes', compact(
             'student',
             'academicYear',
@@ -61,11 +62,12 @@ class DocumentController extends Controller
             'modules',
             'studentData',
             'mention',
-            'qrCode'
+            'qrCode',
+            'isPdf'
         ));
 
-        $title = "Releve_Notes_" . str_replace(' ', '_', $student->user->name) . "_" . $academicYear->name . ".pdf";
-        return $pdf->download($title);
+        $nameSlug = \Illuminate\Support\Str::slug($student->user->name, '_');
+        return $pdf->download("releve_notes_{$nameSlug}.pdf");
     }
 
     public function attestationReussite(Student $student, AcademicYear $academicYear)
@@ -104,19 +106,21 @@ class DocumentController extends Controller
         $verificationUrl = url('/verify-document/attestation/' . $student->id . '/' . $academicYear->id);
         $qrCode = base64_encode(QrCode::format('svg')->size(100)->generate($verificationUrl));
 
+        $isPdf = true;
         $pdf = Pdf::loadView('pdf.attestation_reussite', compact(
             'student',
             'academicYear',
             'studentData',
             'mention',
-            'qrCode'
+            'qrCode',
+            'isPdf'
         ));
 
         // Use landscape format for certificate
         $pdf->setPaper('A4', 'landscape');
 
-        $title = "Attestation_Reussite_" . str_replace(' ', '_', $student->user->name) . "_" . $academicYear->name . ".pdf";
-        return $pdf->download($title);
+        $nameSlug = \Illuminate\Support\Str::slug($student->user->name, '_');
+        return $pdf->download("attestation_reussite_{$nameSlug}.pdf");
     }
 
     private function calculateMention($average)

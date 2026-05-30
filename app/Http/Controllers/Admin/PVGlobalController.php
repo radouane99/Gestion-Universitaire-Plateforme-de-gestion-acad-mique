@@ -242,5 +242,65 @@ class PVGlobalController extends Controller
         return $pdf->download(str_replace([' ', '/', '\\'], '_', $title));
     }
 
+    /**
+     * Validate the PV Global for a given cohort.
+     */
+    public function validatePV(Request $request)
+    {
+        $request->validate([
+            'filiere_id' => 'required|exists:filieres,id',
+            'academic_year_id' => 'required|exists:academic_years,id',
+            'level' => 'required|string',
+        ]);
 
+        \App\Models\PVGlobalApproval::updateOrCreate(
+            [
+                'filiere_id' => $request->filiere_id,
+                'academic_year_id' => $request->academic_year_id,
+                'level' => $request->level,
+            ],
+            [
+                'is_validated' => true,
+                'validated_by' => auth()->id(),
+                'validated_at' => now(),
+            ]
+        );
+
+        // Notify all students in this cohort
+        $students = Student::whereHas('group', function ($q) use ($request) {
+            $q->where('filiere_id', $request->filiere_id)->where('level', $request->level);
+        })
+        ->where('academic_year_id', $request->academic_year_id)
+        ->get();
+
+        foreach ($students as $student) {
+            $student->user->notify(new \App\Notifications\AcademicNotification(
+                "🎉 Délibérations Terminées ! Le PV académique de votre niveau (" . $request->level . "ème année) a été officiellement validé. Vos documents officiels sont disponibles.",
+                'success',
+                route('student.dashboard')
+            ));
+        }
+
+        return back()->with('success', 'Le Procès-Verbal Global a été officiellement validé avec succès. Les attestations de réussite et diplômes sont désormais débloqués pour les étudiants éligibles ! 🎓');
+    }
+
+    /**
+     * Cancel the validation of a PV Global.
+     */
+    public function rejectPV(Request $request)
+    {
+        $request->validate([
+            'filiere_id' => 'required|exists:filieres,id',
+            'academic_year_id' => 'required|exists:academic_years,id',
+            'level' => 'required|string',
+        ]);
+
+        \App\Models\PVGlobalApproval::where([
+            'filiere_id' => $request->filiere_id,
+            'academic_year_id' => $request->academic_year_id,
+            'level' => $request->level,
+        ])->delete();
+
+        return back()->with('success', 'La validation du Procès-Verbal Global a été annulée. Les attestations et diplômes sont à nouveau verrouillés.');
+    }
 }

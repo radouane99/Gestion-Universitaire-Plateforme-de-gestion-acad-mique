@@ -22,6 +22,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'role'       => \App\Http\Middleware\RoleMiddleware::class,
             'check.admin' => \App\Http\Middleware\CheckAdmin::class,
             'protect.sensitive' => \App\Http\Middleware\ProtectSensitiveRoutes::class,
+            'check.contract' => \App\Http\Middleware\CheckProfessorContract::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

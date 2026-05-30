@@ -53,6 +53,7 @@
             border: 1px solid #cbd5e1;
             border-radius: 5px;
             padding: 10px;
+            page-break-inside: avoid;
         }
         .student-info table {
             width: 100%;
@@ -65,6 +66,9 @@
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 20px;
+        }
+        .grades-table tr {
+            page-break-inside: avoid;
         }
         .grades-table th {
             background-color: #0f172a;
@@ -96,6 +100,7 @@
             padding: 15px;
             text-align: center;
             background-color: #f8fafc;
+            page-break-inside: avoid;
         }
         .summary-box p {
             margin: 5px 0;
@@ -104,6 +109,7 @@
         .footer {
             margin-top: 40px;
             width: 100%;
+            page-break-inside: avoid;
         }
         .footer table {
             width: 100%;

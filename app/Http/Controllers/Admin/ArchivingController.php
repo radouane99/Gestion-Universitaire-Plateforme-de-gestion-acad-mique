@@ -76,8 +76,11 @@ class ArchivingController extends Controller
                 'is_current' => true,
             ]);
 
-            // 6. Move students to new academic year enrollments
-            Student::query()->update(['academic_year_id' => $newYear->id]);
+            // 6. Move students to new academic year enrollments, resetting their registration_type to 'new' so they can re-register in the new academic year
+            Student::query()->update([
+                'academic_year_id' => $newYear->id,
+                'registration_type' => 'new',
+            ]);
 
             // 7. Update Institution Settings
             if ($settings) {
@@ -89,6 +92,7 @@ class ArchivingController extends Controller
             ActivityLog::create([
                 'user_id' => Auth::id(),
                 'action' => 'ANNUAL_ARCHIVING_ROLLOVER',
+                'model_type' => 'AcademicYear',
                 'description' => "Clôture annuelle et archivage de l'année {$currentYear->name}. Ouverture de la nouvelle année académique {$newYear->name}.",
                 'ip_address' => $request->ip(),
             ]);

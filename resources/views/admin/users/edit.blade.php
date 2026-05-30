@@ -96,10 +96,26 @@
                         </div>
 
                         <!-- Attributs Enseignants (Dynamique) -->
-                        <div class="md:col-span-2 space-y-2 bg-emerald-50/20 p-6 rounded-2xl border border-emerald-100/30" 
-                             x-show="roleName === 'professor'" x-transition>
-                            <label for="department" class="text-[10px] font-black uppercase tracking-widest text-gray-400 block">Département d'Enseignement</label>
-                            <input type="text" name="department" id="department" value="{{ old('department', $user->professor->department ?? '') }}" class="w-full border-gray-200 rounded-2xl focus:ring-amber-500 focus:border-amber-500 p-4 font-bold text-gray-900 bg-white">
+                        <div class="md:col-span-2 space-y-4 bg-emerald-50/20 p-6 rounded-2xl border border-emerald-100/30" 
+                             x-show="roleName === 'professor'" x-transition
+                             x-data="{ status: '{{ $user->professor->status ?? 'permanent' }}' }">
+                            <div class="space-y-2">
+                                <label for="department" class="text-[10px] font-black uppercase tracking-widest text-gray-400 block">Département d'Enseignement</label>
+                                <input type="text" name="department" id="department" value="{{ old('department', $user->professor->department ?? '') }}" class="w-full border-gray-200 rounded-2xl focus:ring-amber-500 focus:border-amber-500 p-4 font-bold text-gray-900 bg-white">
+                            </div>
+                            
+                            <div class="space-y-2">
+                                <label for="status" class="text-[10px] font-black uppercase tracking-widest text-gray-400 block">Type de Contrat</label>
+                                <select name="status" id="status" x-model="status" class="w-full border-gray-200 rounded-2xl focus:ring-amber-500 focus:border-amber-500 p-4 font-bold text-gray-900 bg-white">
+                                    <option value="permanent">Permanent</option>
+                                    <option value="vacataire">Vacataire</option>
+                                </select>
+                            </div>
+
+                            <div class="space-y-2" x-show="status === 'vacataire'" x-transition>
+                                <label for="contract_end_date" class="text-[10px] font-black uppercase tracking-widest text-gray-400 block">Date de Fin de Contrat</label>
+                                <input type="date" name="contract_end_date" id="contract_end_date" value="{{ old('contract_end_date', $user->professor && $user->professor->contract_end_date ? $user->professor->contract_end_date->format('Y-m-d') : '') }}" class="w-full border-gray-200 rounded-2xl focus:ring-amber-500 focus:border-amber-500 p-4 font-bold text-gray-900 bg-white">
+                            </div>
                         </div>
                     </div>
 

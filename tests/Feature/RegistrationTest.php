@@ -257,12 +257,26 @@ class RegistrationTest extends TestCase
             'password' => Hash::make('password'),
             'role_id' => Role::where('name', 'student')->first()->id,
         ]);
+        
+        $academicYear = AcademicYear::where('is_current', true)->first();
+        $group = Group::create(['name' => 'GI-1', 'level' => '1', 'filiere_id' => $filiere->id]);
+
         $student = Student::create([
             'user_id' => $studentUser->id,
             'student_number' => 'EST-2025-999',
             'cin' => 'K112233',
             'filiere_id' => $filiere->id,
+            'group_id' => $group->id,
+            'academic_year_id' => $academicYear->id,
             'registration_status' => 'approved',
+        ]);
+
+        // Seed PV validation approval
+        \App\Models\PVGlobalApproval::create([
+            'filiere_id' => $filiere->id,
+            'academic_year_id' => $academicYear->id,
+            'level' => '1',
+            'is_validated' => true,
         ]);
 
         // Gpa of 15.00, no failed modules
@@ -300,5 +314,124 @@ class RegistrationTest extends TestCase
         $response->assertStatus(200);
         $response->assertViewIs('public.verify_document');
         $response->assertSee('Graduating Student');
+    }
+
+    public function test_expired_professor_vacataire_is_blocked_by_middleware()
+    {
+        $roleProf = Role::firstOrCreate(['name' => 'professor']);
+        
+        $user = User::create([
+            'name' => 'Prof Vacataire Expire',
+            'email' => 'vacataire.expire@upf.ac.ma',
+            'password' => Hash::make('password'),
+            'role_id' => $roleProf->id,
+        ]);
+
+        \App\Models\Professor::create([
+            'user_id' => $user->id,
+            'department' => 'Génie Informatique',
+            'status' => 'vacataire',
+            'contract_end_date' => now()->subDay(), // Expired yesterday
+        ]);
+
+        // Accessing professor dashboard should redirect to login with contract error
+        $response = $this->actingAs($user)->get(route('professor.dashboard'));
+        $response->assertRedirect(route('login'));
+        $response->assertSessionHas('error', 'Votre contrat de vacataire a expiré. Veuillez contacter l\'administration.');
+    }
+
+    public function test_student_can_download_diploma_when_eligible_level_3()
+    {
+        // Mock PDF
+        $pdfMock = \Mockery::mock(\Barryvdh\DomPDF\PDF::class);
+        $pdfMock->shouldReceive('setPaper')
+            ->once()
+            ->with('A4', 'landscape')
+            ->andReturnSelf();
+        $pdfMock->shouldReceive('download')
+            ->once()
+            ->andReturn(response('mock diplome pdf', 200, ['content-type' => 'application/pdf']));
+
+        \Barryvdh\DomPDF\Facade\Pdf::shouldReceive('loadView')
+            ->once()
+            ->with('pdf.diplome', \Mockery::any())
+            ->andReturn($pdfMock);
+
+        $filiere = Filiere::create(['name' => 'Génie Informatique', 'code' => 'GI']);
+        $studentUser = User::create([
+            'name' => 'Graduating Laureate',
+            'email' => 'laureate@upf.ac.ma',
+            'password' => Hash::make('password'),
+            'role_id' => Role::where('name', 'student')->first()->id,
+        ]);
+        
+        $academicYear = AcademicYear::where('is_current', true)->first();
+        $group = Group::create(['name' => 'GI-3', 'level' => '3', 'filiere_id' => $filiere->id]);
+
+        $student = Student::create([
+            'user_id' => $studentUser->id,
+            'student_number' => 'EST-2025-888',
+            'cin' => 'K112244',
+            'filiere_id' => $filiere->id,
+            'group_id' => $group->id,
+            'academic_year_id' => $academicYear->id,
+            'registration_status' => 'approved',
+        ]);
+
+        $module = Module::create(['name' => 'Module 1', 'code' => 'MOD-1', 'filiere_id' => $filiere->id]);
+        Grade::create([
+            'student_id' => $student->id,
+            'module_id' => $module->id,
+            'final_grade' => 16.00,
+        ]);
+
+        // Seed PV validation approval
+        \App\Models\PVGlobalApproval::create([
+            'filiere_id' => $filiere->id,
+            'academic_year_id' => $academicYear->id,
+            'level' => '3',
+            'is_validated' => true,
+        ]);
+
+        $response = $this->actingAs($studentUser)->get(route('student.diplome.download'));
+        $response->assertStatus(200);
+    }
+
+    public function test_archiving_rollover_resets_student_registration_type()
+    {
+        $admin = User::create([
+            'name' => 'Admin User',
+            'email' => 'admin@upf.ac.ma',
+            'password' => Hash::make('password'),
+            'role_id' => Role::where('name', 'admin')->first()->id,
+        ]);
+
+        $filiere = Filiere::create(['name' => 'Génie Informatique', 'code' => 'GI']);
+        
+        $studentUser = User::create([
+            'name' => 'Active Student',
+            'email' => 'active@upf.ac.ma',
+            'password' => Hash::make('password'),
+            'role_id' => Role::where('name', 'student')->first()->id,
+        ]);
+
+        $student = Student::create([
+            'user_id' => $studentUser->id,
+            'student_number' => 'EST-2025-001',
+            'cin' => 'K112255',
+            'filiere_id' => $filiere->id,
+            'registration_type' => 'reinscription',
+            'registration_status' => 'approved',
+        ]);
+
+        $response = $this->actingAs($admin)->post(route('admin.archiving.rollover'), [
+            'confirmation' => 'ARCHIVER 2025/2026',
+            'next_year_name' => '2026/2027',
+        ]);
+
+        $response->assertRedirect();
+        
+        // Assert student registration_type is reset to 'new'
+        $this->assertEquals('new', $student->fresh()->registration_type);
     }
 }
