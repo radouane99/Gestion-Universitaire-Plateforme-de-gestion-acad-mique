@@ -118,19 +118,22 @@
         <div class="min-h-screen">
             @include('layouts.navigation')
 
-            <!-- Page Heading -->
-            @isset($header)
-                <header class="bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800 transition-colors duration-300">
-                    <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-                        {{ $header }}
-                    </div>
-                </header>
-            @endisset
+            <!-- Main Content Area (offset by sidebar + top bar) -->
+            <div class="{{ app()->getLocale() == 'ar' ? 'lg:mr-[280px]' : 'lg:ml-[280px]' }} pt-16 min-h-screen transition-all duration-300">
+                <!-- Page Heading -->
+                @isset($header)
+                    <header class="bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800 transition-colors duration-300">
+                        <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+                            {{ $header }}
+                        </div>
+                    </header>
+                @endisset
 
-            <!-- Page Content -->
-            <main>
-                {{ $slot }}
-            </main>
+                <!-- Page Content -->
+                <main>
+                    {{ $slot }}
+                </main>
+            </div>
 
             <!-- AI Chat Widget for Students -->
             @if(Auth::check() && Auth::user()->isStudent())
