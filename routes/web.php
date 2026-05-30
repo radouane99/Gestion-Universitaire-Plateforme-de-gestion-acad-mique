@@ -42,6 +42,14 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/students/import/template', [\App\Http\Controllers\Admin\StudentController::class, 'downloadTemplate'])->name('students.import.template');
     Route::resource('students', \App\Http\Controllers\Admin\StudentController::class);
 
+    // Gestion des Crédits Modules & Dérogations exceptionnelles
+    Route::get('/students-credits', [\App\Http\Controllers\Admin\StudentCreditController::class, 'index'])->name('student_credits.index');
+    Route::get('/students-credits/{student}/manage', [\App\Http\Controllers\Admin\StudentCreditController::class, 'manage'])->name('student_credits.manage');
+    Route::post('/students-credits/{student}/add', [\App\Http\Controllers\Admin\StudentCreditController::class, 'addCredit'])->name('student_credits.add');
+    Route::put('/students-credits/{student}/credits/{module}', [\App\Http\Controllers\Admin\StudentCreditController::class, 'updateCredit'])->name('student_credits.update');
+    Route::delete('/students-credits/{student}/credits/{module}', [\App\Http\Controllers\Admin\StudentCreditController::class, 'removeCredit'])->name('student_credits.remove');
+    Route::put('/students-credits/{student}/derogation', [\App\Http\Controllers\Admin\StudentCreditController::class, 'updateDerogation'])->name('student_credits.update_derogation');
+
     // Importation Modules Excel/CSV
     Route::get('/modules/import', [\App\Http\Controllers\Admin\ModuleController::class, 'showImportForm'])->name('modules.import.form');
     Route::post('/modules/import', [\App\Http\Controllers\Admin\ModuleController::class, 'importModules'])->name('modules.import');

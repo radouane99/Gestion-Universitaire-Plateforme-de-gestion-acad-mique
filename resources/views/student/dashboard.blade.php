@@ -285,6 +285,61 @@
                 {{-- RIGHT COLUMN --}}
                 <div class="space-y-8">
 
+                    {{-- Status Académique Spécial & Crédits --}}
+                    @if(Auth::user()->student && (Auth::user()->student->has_derogation || Auth::user()->student->is_last_chance || Auth::user()->student->creditModules->isNotEmpty()))
+                    <x-card class="p-6 border-2 border-amber-500/30 bg-amber-500/[0.02]">
+                        <h4 class="text-[10px] uppercase font-black text-amber-600 dark:text-amber-400 tracking-widest mb-4">🛡️ {{ __('Suivi de Progression & Crédits') }}</h4>
+                        
+                        <!-- Derogation active -->
+                        @if(Auth::user()->student->has_derogation)
+                            <div class="mb-4 p-3 bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 rounded-xl text-xs font-bold space-y-1">
+                                <p class="font-black">⭐ {{ __('Dérogation Administrative Active') }}</p>
+                                <p class="text-[10px] opacity-80 leading-normal">{{ Auth::user()->student->derogation_note ?? __('Votre réinscription exceptionnelle a été validée par la direction.') }}</p>
+                            </div>
+                        @endif
+
+                        <!-- Last chance -->
+                        @if(Auth::user()->student->is_last_chance)
+                            <div class="mb-4 p-3 bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-400 rounded-xl text-xs font-bold">
+                                ⚠️ <strong>{{ __('Avertissement : Statut "Dernière Chance"') }}</strong>
+                                <p class="text-[10px] opacity-80 mt-1 leading-normal">{{ __('Vous bénéficiez d\'une ultime chance de valider vos modules restants ce semestre.') }}</p>
+                            </div>
+                        @endif
+
+                        <!-- Credit Modules list -->
+                        @if(Auth::user()->student->creditModules->isNotEmpty())
+                            <div class="space-y-2">
+                                <p class="text-[10px] uppercase font-black text-slate-400 tracking-wider">{{ __('Mes Crédits Modules à Valider :') }}</p>
+                                <div class="space-y-1.5">
+                                    @foreach(Auth::user()->student->creditModules as $credit)
+                                        @php
+                                            $creditBadge = match($credit->pivot->status) {
+                                                'validated' => 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20',
+                                                'not_validated' => 'bg-rose-500/10 text-rose-500 border-rose-500/20',
+                                                default => 'bg-blue-500/10 text-blue-500 border-blue-500/20'
+                                            };
+                                            $creditStatus = match($credit->pivot->status) {
+                                                'validated' => __('Validé'),
+                                                'not_validated' => __('Non Validé'),
+                                                default => __('En cours de crédit')
+                                            };
+                                        @endphp
+                                        <div class="flex items-center justify-between p-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-850 rounded-xl">
+                                            <div class="min-w-0">
+                                                <p class="text-xs font-bold text-slate-700 dark:text-slate-350 truncate">{{ $credit->name }}</p>
+                                                <span class="text-[8px] font-black text-slate-400 uppercase tracking-wider block mt-0.5">{{ $credit->code }}</span>
+                                            </div>
+                                            <span class="px-2 py-0.5 text-[8px] font-black border rounded {{ $creditBadge }} uppercase tracking-wider">
+                                                {{ $creditStatus }}
+                                            </span>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endif
+                    </x-card>
+                    @endif
+
                     {{-- Today Schedule --}}
                     <x-card class="p-0">
                         <div class="px-6 py-5 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/20 flex items-center justify-between">

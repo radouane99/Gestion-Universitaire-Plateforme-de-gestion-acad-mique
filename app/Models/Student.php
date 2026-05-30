@@ -6,9 +6,30 @@ use Illuminate\Database\Eloquent\Model;
 
 class Student extends Model
 {
-    protected $fillable = ['user_id', 'group_id', 'student_number', 'cin', 'academic_year_id'];
+    protected $fillable = [
+        'user_id', 
+        'group_id', 
+        'student_number', 
+        'cin', 
+        'academic_year_id',
+        'has_derogation',
+        'derogation_note',
+        'is_last_chance'
+    ];
+
+    protected $casts = [
+        'has_derogation' => 'boolean',
+        'is_last_chance' => 'boolean',
+    ];
 
     // ─── Relations ───────────────────────────────────────────────────────────
+
+    public function creditModules()
+    {
+        return $this->belongsToMany(Module::class, 'student_credit_modules')
+                    ->withPivot('id', 'academic_year_id', 'status')
+                    ->withTimestamps();
+    }
 
     public function academicYear()
     {

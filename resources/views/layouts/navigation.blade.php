@@ -262,7 +262,8 @@
                         || request()->routeIs('admin.filieres.*')
                         || request()->routeIs('admin.groups.*')
                         || request()->routeIs('admin.schedules.*')
-                        || request()->routeIs('admin.reservations.*');
+                        || request()->routeIs('admin.reservations.*')
+                        || request()->routeIs('admin.student_credits.*');
                     $isExamsActive = request()->routeIs('admin.exams.*')
                         || request()->routeIs('admin.convocations.*')
                         || request()->routeIs('admin.exam_justifications.*')
@@ -325,6 +326,9 @@
                         </a>
                         <a href="{{ route('admin.reservations.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] transition-all duration-150 {{ request()->routeIs('admin.reservations.*') ? 'text-white bg-white/10 font-semibold' : 'text-slate-400 hover:text-white hover:bg-white/[0.05]' }}">
                             <span class="text-sm">🔑</span> <span>{{ __('Réservations') }}</span>
+                        </a>
+                        <a href="{{ route('admin.student_credits.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] transition-all duration-150 {{ request()->routeIs('admin.student_credits.*') ? 'text-white bg-white/10 font-semibold' : 'text-slate-400 hover:text-white hover:bg-white/[0.05]' }}">
+                            <span class="text-sm">🛡️</span> <span>{{ __('Crédits & Dérogations') }}</span>
                         </a>
                     </div>
                 </div>
