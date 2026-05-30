@@ -28,11 +28,54 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         <script>
+            // Dark mode support
             if (localStorage.getItem('darkMode') === 'true' || (!('darkMode' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                 document.documentElement.classList.add('dark');
             } else {
                 document.documentElement.classList.remove('dark');
             }
+
+            // Accent color theme customizer
+            window.applyThemeAccent = function (accent) {
+                accent = accent || localStorage.getItem('themeAccent') || 'blue';
+                const colors = {
+                    'blue': { primary: '#003893', hover: '#002a6f', text: 'text-upf-blue', bg: 'bg-upf-blue', glow: 'rgba(0, 56, 147, 0.15)' },
+                    'magenta': { primary: '#E6007E', hover: '#c10067', text: 'text-upf-magenta', bg: 'bg-upf-magenta', glow: 'rgba(230, 0, 126, 0.15)' },
+                    'indigo': { primary: '#6366F1', hover: '#4f46e5', text: 'text-indigo-600', bg: 'bg-indigo-600', glow: 'rgba(99, 102, 241, 0.15)' },
+                    'emerald': { primary: '#10B981', hover: '#059669', text: 'text-emerald-600', bg: 'bg-emerald-600', glow: 'rgba(16, 185, 129, 0.15)' }
+                };
+                const theme = colors[accent] || colors['blue'];
+                let styleTag = document.getElementById('theme-accent-inline');
+                if (!styleTag) {
+                    styleTag = document.createElement('style');
+                    styleTag.id = 'theme-accent-inline';
+                    document.head.appendChild(styleTag);
+                }
+                styleTag.innerHTML = `
+                    :root {
+                        --upf-primary: ${theme.primary};
+                        --upf-primary-hover: ${theme.hover};
+                        --upf-primary-glow: ${theme.glow};
+                    }
+                    .text-upf-blue, .text-upf-magenta, .text-indigo-600, .text-emerald-600,
+                    .group:hover .group-hover\\:text-upf-blue, .group:hover .group-hover\\:text-upf-magenta {
+                        color: var(--upf-primary) !important;
+                    }
+                    .bg-upf-blue, .bg-upf-magenta, .bg-indigo-600, .bg-emerald-600,
+                    .group:hover .group-hover\\:bg-upf-blue, .group:hover .group-hover\\:bg-upf-magenta {
+                        background-color: var(--upf-primary) !important;
+                    }
+                    .hover\\:bg-upf-blue:hover, .hover\\:bg-upf-magenta:hover, .hover\\:bg-indigo-650:hover, .hover\\:bg-emerald-650:hover {
+                        background-color: var(--upf-primary-hover) !important;
+                    }
+                    .border-upf-blue, .border-upf-magenta, .border-indigo-600, .border-emerald-600 {
+                        border-color: var(--upf-primary) !important;
+                    }
+                `;
+                localStorage.setItem('themeAccent', accent);
+                window.dispatchEvent(new CustomEvent('accent-changed', { detail: accent }));
+            }
+            window.applyThemeAccent();
         </script>
         
         <!-- Service Worker Registration -->
@@ -119,7 +162,7 @@
             @include('layouts.navigation')
 
             <!-- Main Content Area (offset by sidebar + top bar) -->
-            <div class="{{ app()->getLocale() == 'ar' ? 'lg:mr-[280px]' : 'lg:ml-[280px]' }} pt-16 min-h-screen transition-all duration-300">
+            <div class="{{ app()->getLocale() == 'ar' ? 'lg:mr-[280px]' : 'lg:ml-[280px]' }} pt-16 pb-16 lg:pb-0 min-h-screen transition-all duration-300">
                 <!-- Page Heading -->
                 @isset($header)
                     <header class="bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800 transition-colors duration-300">

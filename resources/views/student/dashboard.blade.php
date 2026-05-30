@@ -187,6 +187,86 @@
                     </x-card>
                     @endif
 
+                    {{-- GPA Target Mention Simulator --}}
+                    <x-card class="p-8">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-lg font-black text-slate-850 dark:text-white italic tracking-tighter">{{ __('Simulateur de Mention & Moyenne') }} 🎯</h3>
+                            <span class="text-[9px] font-black text-pink-500 bg-pink-50 dark:bg-pink-950/30 px-2.5 py-1 rounded-lg uppercase tracking-wider">{{ __('Simulateur Interactif') }}</span>
+                        </div>
+                        <div x-data="{
+                            currentGpa: {{ $gpa }},
+                            gradesCount: {{ $grades->count() || 1 }},
+                            targetCC1: 12,
+                            targetCC2: 12,
+                            targetExam: 12,
+                            get simulatedGrade() {
+                                return ((parseFloat(this.targetCC1) * 0.2) + (parseFloat(this.targetCC2) * 0.2) + (parseFloat(this.targetExam) * 0.6)).toFixed(2);
+                            },
+                            get simulatedGpa() {
+                                const totalPoints = (this.currentGpa * this.gradesCount) + parseFloat(this.simulatedGrade);
+                                return (totalPoints / (this.gradesCount + 1)).toFixed(2);
+                            },
+                            get mention() {
+                                const avg = parseFloat(this.simulatedGpa);
+                                if (avg >= 16) return { name: 'Très Bien', color: 'text-emerald-500 bg-emerald-500/10' };
+                                if (avg >= 14) return { name: 'Bien', color: 'text-teal-500 bg-teal-500/10' };
+                                if (avg >= 12) return { name: 'Assez Bien', color: 'text-blue-500 bg-blue-500/10' };
+                                if (avg >= 10) return { name: 'Passable', color: 'text-amber-500 bg-amber-500/10' };
+                                return { name: 'Ajourné / Rattrapage', color: 'text-rose-500 bg-rose-500/10' };
+                            }
+                        }" class="space-y-6">
+                            
+                            <p class="text-xs text-slate-500 dark:text-slate-400">
+                                {{ __('Estimez les notes requises pour vos prochains modules et visualisez instantanément l\'impact sur votre moyenne académique globale.') }}
+                            </p>
+
+                            <!-- Live Results Display -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 p-5 bg-slate-50/50 dark:bg-slate-950/40 border border-slate-100 dark:border-slate-800/80 rounded-3xl">
+                                <!-- Simulated Module Average -->
+                                <div class="text-center md:text-left space-y-1">
+                                    <span class="text-[9px] uppercase font-black text-slate-400 dark:text-slate-550 tracking-wider block">{{ __('Note Simulée du Module') }}</span>
+                                    <span class="text-3xl font-black text-slate-850 dark:text-white block" x-text="simulatedGrade + ' / 20'"></span>
+                                </div>
+                                <!-- Simulated Cumulative GPA -->
+                                <div class="text-center md:text-right space-y-1 border-t md:border-t-0 md:border-l border-slate-150 dark:border-slate-800 pt-3 md:pt-0 md:pl-4 rtl:md:pl-0 rtl:md:pr-4">
+                                    <span class="text-[9px] uppercase font-black text-slate-400 dark:text-slate-550 tracking-wider block">{{ __('Nouvelle Moyenne Générale') }}</span>
+                                    <span class="text-3xl font-black text-slate-850 dark:text-white block" x-text="simulatedGpa + ' / 20'"></span>
+                                    <span class="inline-block mt-2 px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest" :class="mention.color" x-text="'Mention: ' + mention.name"></span>
+                                </div>
+                            </div>
+
+                            <!-- Sliders -->
+                            <div class="space-y-4">
+                                <!-- CC1 Slider -->
+                                <div class="space-y-2">
+                                    <div class="flex justify-between items-center text-xs font-bold text-slate-700 dark:text-slate-350">
+                                        <span>{{ __('Contrôle Continu 1 (Coefficient 20%)') }}</span>
+                                        <span class="px-2 py-0.5 bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white rounded-lg text-[11px] font-black" x-text="targetCC1 + ' / 20'"></span>
+                                    </div>
+                                    <input type="range" min="0" max="20" step="0.25" x-model="targetCC1" class="w-full h-1.5 bg-slate-200 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-upf-blue">
+                                </div>
+
+                                <!-- CC2 Slider -->
+                                <div class="space-y-2">
+                                    <div class="flex justify-between items-center text-xs font-bold text-slate-700 dark:text-slate-350">
+                                        <span>{{ __('Contrôle Continu 2 (Coefficient 20%)') }}</span>
+                                        <span class="px-2 py-0.5 bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white rounded-lg text-[11px] font-black" x-text="targetCC2 + ' / 20'"></span>
+                                    </div>
+                                    <input type="range" min="0" max="20" step="0.25" x-model="targetCC2" class="w-full h-1.5 bg-slate-200 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-upf-blue">
+                                </div>
+
+                                <!-- Exam Slider -->
+                                <div class="space-y-2">
+                                    <div class="flex justify-between items-center text-xs font-bold text-slate-700 dark:text-slate-350">
+                                        <span>{{ __('Examen Final (Coefficient 60%)') }}</span>
+                                        <span class="px-2 py-0.5 bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white rounded-lg text-[11px] font-black" x-text="targetExam + ' / 20'"></span>
+                                    </div>
+                                    <input type="range" min="0" max="20" step="0.25" x-model="targetExam" class="w-full h-1.5 bg-slate-200 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-upf-blue">
+                                </div>
+                            </div>
+                        </div>
+                    </x-card>
+
                     {{-- Documents Banner --}}
                     <div class="bg-gradient-to-br from-upf-navy to-black dark:from-slate-900 dark:to-slate-950 rounded-[2.5rem] p-8 text-white shadow-lg relative overflow-hidden group border border-white/5">
                         <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">

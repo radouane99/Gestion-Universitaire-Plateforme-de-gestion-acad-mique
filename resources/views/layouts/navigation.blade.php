@@ -51,13 +51,72 @@
                 <div class="relative flex items-center p-5">
                     <svg class="h-6 w-6 text-slate-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                     <input type="text" x-model="query" @keydown.escape="isOpen = false"
+                        @keydown.enter="if(query.startsWith('/')) { const urls = {'/edt':'{{ route('calendar') }}', '/notes':'{{ Auth::user()->isStudent() ? route('student.grades') : (Auth::user()->isProfessor() ? route('professor.grades.index') : route('admin.grades.index')) }}', '/abs':'{{ Auth::user()->isStudent() ? route('student.absences') : (Auth::user()->isProfessor() ? route('professor.absences.index') : route('admin.absences.index')) }}', '/doc':'{{ Auth::user()->isStudent() ? route('student.requests.index') : (Auth::user()->isProfessor() ? route('professor.requests.create') : route('admin.requests.index')) }}', '/chat':'{{ route('chat.index') }}', '/profil':'{{ route('profile.edit') }}', '/classroom':'{{ route('classroom.index') }}'}; const cmd = query.toLowerCase().trim(); if(urls[cmd]) { isOpen = false; window.location.href = urls[cmd]; } }"
                         class="h-12 w-full border-0 bg-transparent text-slate-900 dark:text-white placeholder-slate-400 focus:ring-0 text-lg font-bold outline-none" 
-                        placeholder="Recherche instantanée (Étudiants, Salles, Examens...)" autofocus>
+                        placeholder="Recherche ou /commandes (ex: /edt, /notes, /profil)..." autofocus>
                     <button @click="isOpen = false" type="button" class="text-xs font-black text-slate-400 hover:text-red-500 uppercase tracking-widest ml-3">Fermer</button>
                 </div>
 
                 <!-- Results container -->
-                <div class="max-h-96 overflow-y-auto p-4 space-y-4" x-show="query.length >= 2">
+                <div class="max-h-96 overflow-y-auto p-4 space-y-4" x-show="query.length >= 2 || query.startsWith('/')">
+
+                    <!-- Group: Commands -->
+                    <template x-if="query.startsWith('/')">
+                        <div>
+                            <h4 class="text-[10px] font-black uppercase text-upf-magenta dark:text-pink-400 tracking-widest mb-2">🛠️ Raccourcis Command Center</h4>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
+                                <a href="{{ route('calendar') }}" class="flex items-center gap-3 p-3 rounded-2xl bg-slate-50/50 dark:bg-slate-800/50 hover:bg-indigo-50 dark:hover:bg-indigo-950/30 border border-slate-100/50 dark:border-slate-800 transition-all">
+                                    <span class="text-xl">📅</span>
+                                    <div class="min-w-0">
+                                        <div class="font-black text-slate-900 dark:text-white text-xs">/edt</div>
+                                        <div class="text-[9px] text-slate-400 font-bold uppercase tracking-wider mt-0.5">{{ __('Mon Emploi du Temps') }}</div>
+                                    </div>
+                                </a>
+                                <a href="{{ Auth::user()->isStudent() ? route('student.grades') : (Auth::user()->isProfessor() ? route('professor.grades.index') : route('admin.grades.index')) }}" class="flex items-center gap-3 p-3 rounded-2xl bg-slate-50/50 dark:bg-slate-800/50 hover:bg-indigo-50 dark:hover:bg-indigo-950/30 border border-slate-100/50 dark:border-slate-800 transition-all">
+                                    <span class="text-xl">📊</span>
+                                    <div class="min-w-0">
+                                        <div class="font-black text-slate-900 dark:text-white text-xs">/notes</div>
+                                        <div class="text-[9px] text-slate-400 font-bold uppercase tracking-wider mt-0.5">{{ __('Consultation des Notes') }}</div>
+                                    </div>
+                                </a>
+                                <a href="{{ Auth::user()->isStudent() ? route('student.absences') : (Auth::user()->isProfessor() ? route('professor.absences.index') : route('admin.absences.index')) }}" class="flex items-center gap-3 p-3 rounded-2xl bg-slate-50/50 dark:bg-slate-800/50 hover:bg-indigo-50 dark:hover:bg-indigo-950/30 border border-slate-100/50 dark:border-slate-800 transition-all">
+                                    <span class="text-xl">🚨</span>
+                                    <div class="min-w-0">
+                                        <div class="font-black text-slate-900 dark:text-white text-xs">/abs</div>
+                                        <div class="text-[9px] text-slate-400 font-bold uppercase tracking-wider mt-0.5">{{ __('Suivi des Absences') }}</div>
+                                    </div>
+                                </a>
+                                <a href="{{ Auth::user()->isStudent() ? route('student.requests.index') : (Auth::user()->isProfessor() ? route('professor.requests.create') : route('admin.requests.index')) }}" class="flex items-center gap-3 p-3 rounded-2xl bg-slate-50/50 dark:bg-slate-800/50 hover:bg-indigo-50 dark:hover:bg-indigo-950/30 border border-slate-100/50 dark:border-slate-800 transition-all">
+                                    <span class="text-xl">📬</span>
+                                    <div class="min-w-0">
+                                        <div class="font-black text-slate-900 dark:text-white text-xs">/doc</div>
+                                        <div class="text-[9px] text-slate-400 font-bold uppercase tracking-wider mt-0.5">{{ __('Demandes Administratives') }}</div>
+                                    </div>
+                                </a>
+                                <a href="{{ route('chat.index') }}" class="flex items-center gap-3 p-3 rounded-2xl bg-slate-50/50 dark:bg-slate-800/50 hover:bg-indigo-50 dark:hover:bg-indigo-950/30 border border-slate-100/50 dark:border-slate-800 transition-all">
+                                    <span class="text-xl">💬</span>
+                                    <div class="min-w-0">
+                                        <div class="font-black text-slate-900 dark:text-white text-xs">/chat</div>
+                                        <div class="text-[9px] text-slate-400 font-bold uppercase tracking-wider mt-0.5">{{ __('Messagerie Instantanée') }}</div>
+                                    </div>
+                                </a>
+                                <a href="{{ route('profile.edit') }}" class="flex items-center gap-3 p-3 rounded-2xl bg-slate-50/50 dark:bg-slate-800/50 hover:bg-indigo-50 dark:hover:bg-indigo-950/30 border border-slate-100/50 dark:border-slate-800 transition-all">
+                                    <span class="text-xl">👤</span>
+                                    <div class="min-w-0">
+                                        <div class="font-black text-slate-900 dark:text-white text-xs">/profil</div>
+                                        <div class="text-[9px] text-slate-400 font-bold uppercase tracking-wider mt-0.5">{{ __('Mon Profil') }}</div>
+                                    </div>
+                                </a>
+                                <a href="{{ route('classroom.index') }}" class="flex items-center gap-3 p-3 rounded-2xl bg-slate-50/50 dark:bg-slate-800/50 hover:bg-indigo-50 dark:hover:bg-indigo-950/30 border border-slate-100/50 dark:border-slate-800 transition-all">
+                                    <span class="text-xl">🖥️</span>
+                                    <div class="min-w-0">
+                                        <div class="font-black text-slate-900 dark:text-white text-xs">/classroom</div>
+                                        <div class="text-[9px] text-slate-400 font-bold uppercase tracking-wider mt-0.5">{{ __('Classroom') }}</div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </template>
                     <!-- Group: Students -->
                     <template x-if="results.students && results.students.length > 0">
                         <div>
@@ -141,14 +200,14 @@
                         </div>
                     </template>
                     <!-- Fallback -->
-                    <div x-show="!results.students.length && !results.professors.length && !results.exams.length && !results.modules.length && !results.rooms.length && !results.requests.length" 
+                    <div x-show="!results.students.length && !results.professors.length && !results.exams.length && !results.modules.length && !results.rooms.length && !results.requests.length && !query.startsWith('/')" 
                          class="p-8 text-center text-slate-400 italic">
                         Aucun résultat correspondant à votre recherche. 🔍
                     </div>
                 </div>
 
                 <!-- Empty State -->
-                <div class="p-8 text-center text-slate-400 italic text-xs font-bold" x-show="query.length < 2">
+                <div class="p-8 text-center text-slate-400 italic text-xs font-bold" x-show="query.length < 2 && !query.startsWith('/')">
                     Saisissez au moins 2 caractères pour lancer la recherche...
                 </div>
                 
@@ -613,6 +672,37 @@
                     </button>
                 </div>
 
+                {{-- Accent Color Selector --}}
+                <x-dropdown align="{{ app()->getLocale() == 'ar' ? 'left' : 'right' }}" width="48" contentClasses="py-1 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl shadow-2xl p-1">
+                    <x-slot name="trigger">
+                        <button class="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-upf-blue dark:hover:text-blue-400 transition-colors rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 border border-transparent hover:border-slate-100 dark:hover:border-slate-700/50"
+                                title="{{ __('Personnaliser le thème') }}">
+                            🎨
+                        </button>
+                    </x-slot>
+                    <x-slot name="content">
+                        <div class="px-3 py-2 border-b border-slate-100 dark:border-slate-800/80 mb-1">
+                            <span class="text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500">{{ __('Couleur d\'accent') }}</span>
+                        </div>
+                        <button onclick="window.applyThemeAccent('blue')" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-slate-750 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors">
+                            <span class="w-3.5 h-3.5 rounded-full bg-[#003893] border border-white dark:border-slate-900 shadow-sm shrink-0"></span>
+                            <span>Classic Blue</span>
+                        </button>
+                        <button onclick="window.applyThemeAccent('magenta')" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-slate-750 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors">
+                            <span class="w-3.5 h-3.5 rounded-full bg-[#E6007E] border border-white dark:border-slate-900 shadow-sm shrink-0"></span>
+                            <span>Creative Magenta</span>
+                        </button>
+                        <button onclick="window.applyThemeAccent('indigo')" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-slate-750 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors">
+                            <span class="w-3.5 h-3.5 rounded-full bg-[#6366F1] border border-white dark:border-slate-900 shadow-sm shrink-0"></span>
+                            <span>Indigo Innovation</span>
+                        </button>
+                        <button onclick="window.applyThemeAccent('emerald')" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-slate-750 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors">
+                            <span class="w-3.5 h-3.5 rounded-full bg-[#10B981] border border-white dark:border-slate-900 shadow-sm shrink-0"></span>
+                            <span>Emerald Success</span>
+                        </button>
+                    </x-slot>
+                </x-dropdown>
+
                 {{-- Notifications Bell --}}
                 <x-dropdown align="{{ app()->getLocale() == 'ar' ? 'left' : 'right' }}" width="80" contentClasses="py-1 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl shadow-2xl overflow-hidden">
                     <x-slot name="trigger">
@@ -725,5 +815,36 @@
             </div>
         </div>
     </header>
+
+    {{-- ══════════════════════════════════════
+         PWA MOBILE BOTTOM NAVIGATION DOCK
+    ══════════════════════════════════════ --}}
+    <div class="lg:hidden fixed bottom-0 left-0 right-0 h-16 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-t border-slate-100 dark:border-slate-800/80 z-45 flex items-center justify-around px-4 shadow-lg transition-colors duration-300">
+        
+        <!-- Home -->
+        <a href="{{ route('dashboard') }}" class="flex flex-col items-center justify-center text-slate-400 hover:text-upf-blue transition-colors {{ request()->routeIs('dashboard') || request()->routeIs('*.dashboard') ? 'text-upf-blue dark:text-blue-400 font-bold' : '' }}">
+            <span class="text-xl">🏠</span>
+            <span class="text-[9px] uppercase tracking-wider font-extrabold mt-0.5">{{ __('Accueil') }}</span>
+        </a>
+
+        <!-- Calendar -->
+        <a href="{{ route('calendar') }}" class="flex flex-col items-center justify-center text-slate-400 hover:text-upf-blue transition-colors {{ request()->routeIs('calendar') ? 'text-upf-blue dark:text-blue-400 font-bold' : '' }}">
+            <span class="text-xl">📅</span>
+            <span class="text-[9px] uppercase tracking-wider font-extrabold mt-0.5">{{ __('Planning') }}</span>
+        </a>
+
+        <!-- Messaging -->
+        <a href="{{ route('chat.index') }}" class="flex flex-col items-center justify-center text-slate-400 hover:text-upf-blue transition-colors {{ request()->routeIs('chat.*') ? 'text-upf-blue dark:text-blue-400 font-bold' : '' }}">
+            <span class="text-xl">💬</span>
+            <span class="text-[9px] uppercase tracking-wider font-extrabold mt-0.5">{{ __('Chat') }}</span>
+        </a>
+
+        <!-- Services -->
+        <a href="{{ Auth::user()->isStudent() ? route('student.requests.index') : (Auth::user()->isProfessor() ? route('professor.requests.create') : route('admin.requests.index')) }}" class="flex flex-col items-center justify-center text-slate-400 hover:text-upf-blue transition-colors {{ request()->routeIs('*requests.*') ? 'text-upf-blue dark:text-blue-400 font-bold' : '' }}">
+            <span class="text-xl">📬</span>
+            <span class="text-[9px] uppercase tracking-wider font-extrabold mt-0.5">{{ __('Services') }}</span>
+        </a>
+
+    </div>
 
 </div>
