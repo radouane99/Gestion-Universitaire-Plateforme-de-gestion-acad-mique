@@ -42,19 +42,38 @@
 
                 <!-- Desktop Menu -->
                 <div class="hidden md:flex items-center space-x-8 bg-white/50 backdrop-blur-sm px-6 py-2.5 rounded-full border border-white/20 shadow-sm">
-                    <a href="#features" class="text-sm font-semibold text-slate-800 hover:text-upf-pink transition-colors">Notre Plateforme</a>
-                    <a href="#ai" class="text-sm font-semibold text-slate-800 hover:text-upf-pink transition-colors">Intelligence Artificielle</a>
+                    <a href="#features" class="text-sm font-semibold text-slate-800 hover:text-upf-pink transition-colors">{{ __('Notre Plateforme') }}</a>
+                    <a href="#ai" class="text-sm font-semibold text-slate-800 hover:text-upf-pink transition-colors">{{ __('Intelligence Artificielle') }}</a>
                 </div>
 
-                <!-- Auth Buttons -->
+                <!-- Auth & Language Buttons -->
                 <div class="hidden md:flex items-center space-x-4">
                     @if (Route::has('login'))
                         @auth
-                            <a href="{{ url('/dashboard') }}" class="text-sm font-bold text-white bg-upf-blue hover:bg-blue-900 px-6 py-3 rounded-full transition shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 border border-blue-800">Mon Espace Académique</a>
+                            <a href="{{ url('/dashboard') }}" class="text-sm font-bold text-white bg-upf-blue hover:bg-blue-900 px-6 py-3 rounded-full transition shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 border border-blue-800">{{ __('Mon Espace Académique') }}</a>
                         @else
-                            <a href="{{ route('login') }}" class="text-sm font-bold text-white bg-upf-pink hover:bg-pink-700 px-6 py-3 rounded-full transition shadow-lg shadow-pink-500/30 hover:shadow-xl transform hover:-translate-y-0.5 border border-pink-600">Connexion au Portail</a>
+                            <a href="{{ route('login') }}" class="text-sm font-bold text-white bg-upf-pink hover:bg-pink-700 px-6 py-3 rounded-full transition shadow-lg shadow-pink-500/30 hover:shadow-xl transform hover:-translate-y-0.5 border border-pink-600">{{ __('Connexion au Portail') }}</a>
                         @endauth
                     @endif
+
+                    <!-- Guest Language Switcher -->
+                    <div x-data="{ open: false }" class="relative z-[60]">
+                        <button @click="open = !open" class="inline-flex items-center gap-1.5 px-3 py-2.5 text-xs font-bold rounded-full text-slate-800 bg-white/60 hover:bg-white border border-slate-200/60 shadow-sm transition-all uppercase">
+                            🌐 {{ strtoupper(App::getLocale()) }}
+                            <svg class="fill-current h-3 w-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                        </button>
+                        <div x-show="open" @click.outside="open = false" x-transition class="absolute right-0 mt-2 w-40 bg-white rounded-2xl shadow-xl border border-slate-100 p-1 z-50">
+                            <a href="{{ route('lang.switch', 'en') }}" class="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 hover:text-upf-pink hover:bg-slate-50 transition-colors">
+                                <span>🇺🇸 English</span><span class="text-[9px] font-black text-slate-350">EN</span>
+                            </a>
+                            <a href="{{ route('lang.switch', 'fr') }}" class="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 hover:text-upf-pink hover:bg-slate-50 transition-colors">
+                                <span>🇫🇷 Français</span><span class="text-[9px] font-black text-slate-350">FR</span>
+                            </a>
+                            <a href="{{ route('lang.switch', 'ar') }}" class="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 hover:text-upf-pink hover:bg-slate-50 transition-colors">
+                                <span dir="rtl">🇲🇦 العربية</span><span class="text-[9px] font-black text-slate-350">AR</span>
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -72,27 +91,27 @@
                   <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                   <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
                 </span>
-                Université Reconnue par l'État
+                {{ __('Université Reconnue par l\'État') }}
             </div>
             
             <h1 class="text-5xl sm:text-7xl font-black tracking-tight mb-6 leading-tight drop-shadow-2xl">
-                Université Privée de Fès <br>
-                <span class="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-rose-200">L'Excellence au Quotidien.</span>
+                {{ __('Université Privée de Fès') }} <br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-rose-200">{{ __('L\'Excellence au Quotidien.') }}</span>
             </h1>
             
             <p class="mt-6 text-lg sm:text-xl text-blue-100 max-w-3xl mx-auto font-light mb-12 leading-relaxed drop-shadow-md">
-                Découvrez la nouvelle plateforme académique intelligente de l'UPF. Gérée par l'Intelligence Artificielle pour vous offrir une expérience universitaire moderne, fluide et connectée.
+                {{ __('Découvrez la nouvelle plateforme académique intelligente de l\'UPF. Gérée par l\'Intelligence Artificielle pour vous offrir une expérience universitaire moderne, fluide et connectée.') }}
             </p>
             
             <div class="flex flex-col sm:flex-row justify-center items-center gap-6">
                 @if (Route::has('login'))
                     @auth
                         <a href="{{ url('/dashboard') }}" class="w-full sm:w-auto px-8 py-4 bg-white text-upf-blue hover:bg-blue-50 font-black rounded-full shadow-2xl transition transform hover:-translate-y-1 text-lg flex justify-center items-center gap-2">
-                            Accéder au Tableau de Bord <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                            {{ __('Accéder au Tableau de Bord') }} <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                         </a>
                     @else
                         <a href="{{ route('login') }}" class="w-full sm:w-auto px-8 py-4 bg-upf-pink hover:bg-pink-600 text-white font-black rounded-full shadow-2xl shadow-pink-500/40 transition transform hover:-translate-y-1 text-lg flex justify-center items-center gap-2 border border-pink-500">
-                            Accéder au Portail Étudiant / Professeur <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                            {{ __('Accéder au Portail Étudiant / Professeur') }} <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                         </a>
                     @endauth
                 @endif
