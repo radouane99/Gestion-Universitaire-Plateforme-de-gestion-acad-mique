@@ -58,17 +58,22 @@
 <div class="page">
 
     <!-- HEADER -->
-    <div class="header">
-        <div>
-            <div class="logo-title">🎓 Université UPF</div>
-            <div class="logo-subtitle">Direction des Affaires Académiques &amp; de la Scolarité</div>
-        </div>
-        <div style="text-align: right;">
-            <div class="doc-label">Document</div>
-            <div class="doc-value">Feuille d'Émargement</div>
-            <div style="font-size:8px; color:#9ca3af; margin-top:2px;">Généré le {{ now()->format('d/m/Y à H:i') }}</div>
-        </div>
-    </div>
+    <table style="width: 100%; border-bottom: 3px solid #1e3a8a; padding-bottom: 14px; margin-bottom: 18px; border-collapse: collapse;">
+        <tr>
+            <td style="width: 60px; vertical-align: middle;">
+                <img src="{{ public_path('images/logo_upf.png') }}" style="height: 45px; display: block;" alt="UPF Logo">
+            </td>
+            <td style="vertical-align: middle; padding-left: 10px; text-align: left;">
+                <div class="logo-title" style="font-size: 16px; font-weight: 900; color: #1e3a8a; letter-spacing: 2px; text-transform: uppercase;">Université Privée de Fès</div>
+                <div class="logo-subtitle" style="font-size: 9px; color: #6b7280; letter-spacing: 1px; margin-top: 2px;">Direction des Affaires Académiques &amp; de la Scolarité</div>
+            </td>
+            <td style="text-align: right; vertical-align: middle;">
+                <div class="doc-label">Document</div>
+                <div class="doc-value" style="font-size: 11px; font-weight: 900; color: #be185d;">Feuille d'Émargement</div>
+                <div style="font-size:8px; color:#9ca3af; margin-top:2px;">Généré le {{ now()->format('d/m/Y à H:i') }}</div>
+            </td>
+        </tr>
+    </table>
 
     <!-- TITLE -->
     <div class="title-bar">
@@ -121,6 +126,7 @@
                 <th class="num-col">#</th>
                 <th>Nom complet</th>
                 <th style="width:100px;">N° Étudiant</th>
+                <th style="width:90px;">CIN</th>
                 <th class="sign-col">Signature</th>
                 <th class="present-col">Présent(e)</th>
             </tr>
@@ -131,6 +137,7 @@
                 <td class="num-col">{{ $i + 1 }}</td>
                 <td><strong>{{ $conv->student->user->name }}</strong></td>
                 <td>{{ $conv->student->student_number ?? '—' }}</td>
+                <td><strong>{{ $conv->student->cin ?? '—' }}</strong></td>
                 <td class="sign-col"><div class="sign-box"></div></td>
                 <td class="present-col">
                     <div style="width:20px; height:20px; border: 1.5px solid #374151; border-radius: 4px; margin: 0 auto;"></div>
@@ -138,7 +145,7 @@
             </tr>
             @empty
             <tr>
-                <td colspan="5" style="text-align: center; color: #9ca3af; padding: 20px;">Aucune convocation générée pour cet examen.</td>
+                <td colspan="6" style="text-align: center; color: #9ca3af; padding: 20px;">Aucune convocation générée pour cet examen.</td>
             </tr>
             @endforelse
         </tbody>

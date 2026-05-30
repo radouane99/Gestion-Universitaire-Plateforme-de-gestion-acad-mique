@@ -21,6 +21,21 @@ class ExamDisplayListController extends Controller
             'convocations.student.user'
         ]);
 
+        // Dynamically assign seat numbers if empty
+        $convocations = $exam->convocations()->with('student.user')->get()->sortBy('student.user.name');
+        $seatNumber = 1;
+        foreach ($convocations as $convocation) {
+            if (empty($convocation->seat_number)) {
+                $convocation->update([
+                    'seat_number' => 'Place ' . $seatNumber
+                ]);
+            }
+            $seatNumber++;
+        }
+
+        // Reload fresh convocations after updates
+        $exam->load(['convocations.student.user']);
+
         return view('admin.exams.display_list.show', compact('exam'));
     }
 
@@ -36,6 +51,21 @@ class ExamDisplayListController extends Controller
             'proctors.user', 
             'convocations.student.user'
         ]);
+
+        // Dynamically assign seat numbers if empty
+        $convocations = $exam->convocations()->with('student.user')->get()->sortBy('student.user.name');
+        $seatNumber = 1;
+        foreach ($convocations as $convocation) {
+            if (empty($convocation->seat_number)) {
+                $convocation->update([
+                    'seat_number' => 'Place ' . $seatNumber
+                ]);
+            }
+            $seatNumber++;
+        }
+
+        // Reload fresh convocations after updates
+        $exam->load(['convocations.student.user']);
 
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pdf.exam_display_list', compact('exam'))
             ->setPaper('a4', 'portrait');

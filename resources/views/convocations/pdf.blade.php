@@ -42,11 +42,14 @@
 <div class="page">
 
     <!-- HEADER -->
-    <table style="width: 100%; border-bottom: 2px solid #000; padding-bottom: 12px; margin-bottom: 20px;">
+    <table style="width: 100%; border-bottom: 2px solid #000; padding-bottom: 12px; margin-bottom: 20px; border-collapse: collapse;">
         <tr>
-            <td style="width: 70%;" valign="top">
-                <div style="font-size: 22px; font-weight: bold; letter-spacing: 0.5px; color: #000;">UNIVERSITÉ PRIVÉE DE FÈS</div>
-                <div style="font-size: 16px; font-weight: bold; margin-top: 5px; color: #000;">الجامعة الخاصة لفاس</div>
+            <td style="width: 65px; vertical-align: middle;">
+                <img src="{{ public_path('images/logo_upf.png') }}" style="height: 50px; display: block;" alt="UPF Logo">
+            </td>
+            <td style="padding-left: 12px; vertical-align: middle;">
+                <div style="font-size: 20px; font-weight: bold; letter-spacing: 0.5px; color: #000;">UNIVERSITÉ PRIVÉE DE FÈS</div>
+                <div style="font-size: 14px; font-weight: bold; margin-top: 3px; color: #000;">الجامعة الخاصة لفاس</div>
             </td>
             <td style="width: 30%;" align="right" valign="top">
                 <div style="margin-bottom: 4px;">

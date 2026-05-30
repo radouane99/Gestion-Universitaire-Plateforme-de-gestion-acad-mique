@@ -22,7 +22,8 @@
 </head>
 <body>
 
-    <div class="header">
+    <div class="header" style="text-align: center; border-bottom: 2px solid #003399; padding-bottom: 10px; margin-bottom: 20px;">
+        <img src="{{ public_path('images/logo_upf.png') }}" style="height: 50px; display: block; margin: 0 auto 10px auto;" alt="UPF Logo">
         <div class="univ-name">{{ App\Models\Setting::first()->institution_name ?? 'UNIVERSITÉ PRIVÉE DE FÈS' }}</div>
         <div class="doc-title">LISTE D'AFFICHAGE DES EXAMENS</div>
     </div>
