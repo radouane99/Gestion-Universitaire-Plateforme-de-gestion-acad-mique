@@ -139,14 +139,32 @@ Architecture des dossiers clés du projet :
 
 ---
 
-## 6. Documentation Visuelle (docs/) 🖼️
+## 6. Documentation Visuelle 🖼️
 
-*(Insérez ici les captures d'écran de votre application)*
+Voici un aperçu visuel des différentes interfaces de l'application et des documents officiels générés en haute définition :
 
-*   **Landing Page SaaS & PWA :** Un design moderne invitant à l'installation.
-*   **Tableau de bord Admin (Analytics) :** Graphiques Chart.js.
-*   **Widget IA Étudiant :** Le chat intelligent.
-*   **Relevé de Note PDF :** Le design académique avec le QR code.
+### 🌟 Interfaces Portails & Dashboards
+| **Landing Page de l'Université (SaaS & PWA)** | **Portail Étudiant (Pro Max Plus)** |
+| :---: | :---: |
+| <img src="public/screenshots/welcome_portal.png" width="100%" alt="Landing Page"> | <img src="public/screenshots/student_dashboard.png" width="100%" alt="Portail Étudiant"> |
+| *Design Premium, Hero Banner glowing, PWA ready* | *GPA Simulator Alpine.js, Accent Theme Switcher, Spotlight Command Center* |
+
+<br>
+
+| **Tableau de Bord Administration (Support RTL Arabe Complet)** |
+| :---: |
+| <img src="public/screenshots/admin_dashboard_ar.png" width="100%" alt="Admin Dashboard Arabe"> |
+| *Mise en page RTL native, Traduction complète, Sidebar et Topbar inversés de manière fluide* |
+
+<br>
+
+### 📄 Documents Officiels Générés (Exports PDF Professionnels avec Logo)
+| **Convocation Officielle d'Examen** | **Feuille d'Émargement des Examens** | **Liste d'Affichage des Examens (Places)** |
+| :---: | :---: | :---: |
+| <img src="public/screenshots/exam_convocation_pdf.png" width="100%" alt="Convocation PDF"> | <img src="public/screenshots/attendance_sheet_pdf.png" width="100%" alt="Émargement PDF"> | <img src="public/screenshots/exam_display_list_pdf.png" width="100%" alt="Affichage PDF"> |
+| *En-tête avec logo officiel local, QR Code anti-fraude, signature et cachet circulaire* | *Logo local, Colonne CIN ajoutée pour conformité académique marocaine* | *Logo local, Arqam de Places auto-générés séquentiellement* |
+
+---
 
 ---
 
