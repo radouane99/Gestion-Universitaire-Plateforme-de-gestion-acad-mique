@@ -188,6 +188,10 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     // Cahier de Textes global consult
     Route::get('/textbooks', [\App\Http\Controllers\TextbookController::class, 'adminIndex'])->name('textbooks.index');
 
+    // Contrôle des Heures (Hours Control)
+    Route::get('/hours', [\App\Http\Controllers\ProfessorSessionController::class, 'adminIndex'])->name('hours.index');
+    Route::get('/hours/professor/{professor}', [\App\Http\Controllers\ProfessorSessionController::class, 'adminShow'])->name('hours.show');
+
     // Validation des Absences
     Route::get('/absences', [\App\Http\Controllers\AbsenceController::class, 'adminIndex'])->name('absences.index');
     Route::post('/absences/{absence}/approve', [\App\Http\Controllers\AbsenceController::class, 'approveJustification'])->name('absences.approve');
@@ -259,6 +263,9 @@ Route::middleware(['auth', 'role:professor', 'check.contract'])->prefix('profess
     Route::get('/absences', [\App\Http\Controllers\AbsenceController::class, 'index'])->name('absences.index');
     Route::get('/absences/create/{schedule}', [\App\Http\Controllers\AbsenceController::class, 'createForm'])->name('absences.create');
     Route::post('/absences/store', [\App\Http\Controllers\AbsenceController::class, 'store'])->name('absences.store');
+
+    // Suivi des Heures (Hours Tracking)
+    Route::get('/hours', [\App\Http\Controllers\ProfessorSessionController::class, 'professorIndex'])->name('hours.index');
 
     // Reservations
     Route::get('/reservations', [\App\Http\Controllers\ReservationController::class, 'index'])->name('reservations.index');

@@ -408,6 +408,9 @@
                         <a href="{{ route('admin.textbooks.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] transition-all duration-150 {{ request()->routeIs('admin.textbooks.*') ? 'text-white bg-white/10 font-semibold' : 'text-slate-400 hover:text-white hover:bg-white/[0.05]' }}">
                             <span class="text-sm">📖</span> <span>{{ __('Cahiers de Textes') }}</span>
                         </a>
+                        <a href="{{ route('admin.hours.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] transition-all duration-150 {{ request()->routeIs('admin.hours.*') ? 'text-white bg-white/10 font-semibold' : 'text-slate-400 hover:text-white hover:bg-white/[0.05]' }}">
+                            <span class="text-sm">⏱️</span> <span>{{ __('Contrôle des Heures') }}</span>
+                        </a>
                         <a href="{{ route('admin.requests.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] transition-all duration-150 {{ request()->routeIs('admin.requests.*') ? 'text-white bg-white/10 font-semibold' : 'text-slate-400 hover:text-white hover:bg-white/[0.05]' }}">
                             <span class="text-sm">📬</span> <span>{{ __('Demandes') }}</span>
                         </a>
@@ -477,6 +480,9 @@
                         </a>
                         <a href="{{ route('professor.textbook.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] transition-all duration-150 {{ request()->routeIs('professor.textbook.*') ? 'text-white bg-white/10 font-semibold' : 'text-slate-400 hover:text-white hover:bg-white/[0.05]' }}">
                             <span class="text-sm">📖</span> <span>{{ __('Cahier de Textes') }}</span>
+                        </a>
+                        <a href="{{ route('professor.hours.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] transition-all duration-150 {{ request()->routeIs('professor.hours.*') ? 'text-white bg-white/10 font-semibold' : 'text-slate-400 hover:text-white hover:bg-white/[0.05]' }}">
+                            <span class="text-sm">⏱️</span> <span>{{ __('Suivi des Heures') }}</span>
                         </a>
                         <a href="{{ route('professor.reclamations.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] transition-all duration-150 {{ request()->routeIs('professor.reclamations.*') ? 'text-white bg-white/10 font-semibold' : 'text-slate-400 hover:text-white hover:bg-white/[0.05]' }}">
                             <span class="text-sm">💬</span> <span>{{ __('Réclamations') }}</span>

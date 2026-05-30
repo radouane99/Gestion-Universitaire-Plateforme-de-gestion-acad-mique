@@ -102,6 +102,19 @@ class AbsenceController extends Controller
             }
         }
 
+        // ✅ Confirmer et enregistrer la séance et ses heures travaillées automatiquement !
+        \App\Models\ConfirmedSession::updateOrCreate([
+            'professor_id' => $professor->id,
+            'schedule_id'  => $schedule->id,
+            'date'         => $validated['date'],
+        ], [
+            'group_id'     => $schedule->group_id,
+            'module_id'    => $schedule->module_id,
+            'start_time'   => $schedule->start_time,
+            'end_time'     => $schedule->end_time,
+            'duration'     => $durationHours,
+        ]);
+
         ActivityLog::log(
             'created',
             'Absence',
