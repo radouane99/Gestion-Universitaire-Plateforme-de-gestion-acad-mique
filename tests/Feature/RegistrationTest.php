@@ -31,6 +31,16 @@ class RegistrationTest extends TestCase
             'name' => '2025/2026',
             'is_current' => true,
         ]);
+
+        // Create default settings with open campaigns
+        \App\Models\Setting::create([
+            'institution_name' => 'Université Privée de Fès',
+            'academic_year' => '2025/2026',
+            'inscription_start_date' => now()->subDays(1),
+            'inscription_end_date' => now()->addDays(30),
+            'reinscription_start_date' => now()->subDays(1),
+            'reinscription_end_date' => now()->addDays(30),
+        ]);
     }
 
     public function test_guest_can_access_inscription_form()

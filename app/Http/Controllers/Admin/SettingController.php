@@ -26,6 +26,10 @@ class SettingController extends Controller
             'exam_rules' => 'nullable|string',
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,svg|max:2048',
             'signature' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'inscription_start_date' => 'nullable|date',
+            'inscription_end_date' => 'nullable|date',
+            'reinscription_start_date' => 'nullable|date',
+            'reinscription_end_date' => 'nullable|date',
         ]);
 
         $setting = Setting::first() ?? new Setting();
@@ -36,6 +40,10 @@ class SettingController extends Controller
         $setting->phone = $request->phone;
         $setting->address = $request->address;
         $setting->exam_rules = $request->exam_rules;
+        $setting->inscription_start_date = $request->inscription_start_date;
+        $setting->inscription_end_date = $request->inscription_end_date;
+        $setting->reinscription_start_date = $request->reinscription_start_date;
+        $setting->reinscription_end_date = $request->reinscription_end_date;
 
         if ($request->hasFile('logo')) {
             if ($setting->logo_path) {

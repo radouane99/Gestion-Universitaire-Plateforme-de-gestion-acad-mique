@@ -29,5 +29,29 @@ class Setting extends Model
     {
         return static::first();
     }
+
+    /**
+     * Vérifie si la campagne d'inscription est ouverte
+     */
+    public static function isInscriptionOpen(): bool
+    {
+        $settings = static::first();
+        if (!$settings || !$settings->inscription_start_date || !$settings->inscription_end_date) {
+            return false;
+        }
+        return now()->between($settings->inscription_start_date, $settings->inscription_end_date);
+    }
+
+    /**
+     * Vérifie si la campagne de réinscription est ouverte
+     */
+    public static function isReinscriptionOpen(): bool
+    {
+        $settings = static::first();
+        if (!$settings || !$settings->reinscription_start_date || !$settings->reinscription_end_date) {
+            return false;
+        }
+        return now()->between($settings->reinscription_start_date, $settings->reinscription_end_date);
+    }
 }
 

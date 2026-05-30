@@ -83,6 +83,52 @@
                             </div>
                         </div>
 
+                        <!-- Campagnes d'Inscription & Réinscription -->
+                        <div class="pt-6 border-t border-gray-100">
+                            <h3 class="text-lg font-black text-upf-blue uppercase tracking-widest mb-4">Dates des Campagnes Académiques</h3>
+                            <p class="text-sm text-slate-500 mb-4">Définissez les périodes d'ouverture et de fermeture des campagnes d'inscription (nouveaux étudiants) et de réinscription (étudiants actuels).</p>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
+                                <!-- Inscription Période -->
+                                <div class="space-y-4 p-5 bg-slate-50 rounded-2xl border border-gray-150">
+                                    <p class="text-xs font-black text-pink-500 uppercase tracking-wider">📝 {{ __('Campagne d\'Inscription (Nouveaux Candidats)') }}</p>
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        <div>
+                                            <x-input-label for="inscription_start_date" :value="__('Date de Début')" />
+                                            <input type="datetime-local" id="inscription_start_date" name="inscription_start_date" 
+                                                   value="{{ old('inscription_start_date', $setting->inscription_start_date ? \Carbon\Carbon::parse($setting->inscription_start_date)->format('Y-m-d\TH:i') : '') }}"
+                                                   class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-xl shadow-sm">
+                                        </div>
+                                        <div>
+                                            <x-input-label for="inscription_end_date" :value="__('Date de Fin')" />
+                                            <input type="datetime-local" id="inscription_end_date" name="inscription_end_date" 
+                                                   value="{{ old('inscription_end_date', $setting->inscription_end_date ? \Carbon\Carbon::parse($setting->inscription_end_date)->format('Y-m-d\TH:i') : '') }}"
+                                                   class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-xl shadow-sm">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Réinscription Période -->
+                                <div class="space-y-4 p-5 bg-slate-50 rounded-2xl border border-gray-150">
+                                    <p class="text-xs font-black text-upf-blue uppercase tracking-wider">🎓 {{ __('Campagne de Réinscription (Étudiants Actuels)') }}</p>
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        <div>
+                                            <x-input-label for="reinscription_start_date" :value="__('Date de Début')" />
+                                            <input type="datetime-local" id="reinscription_start_date" name="reinscription_start_date" 
+                                                   value="{{ old('reinscription_start_date', $setting->reinscription_start_date ? \Carbon\Carbon::parse($setting->reinscription_start_date)->format('Y-m-d\TH:i') : '') }}"
+                                                   class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-xl shadow-sm">
+                                        </div>
+                                        <div>
+                                            <x-input-label for="reinscription_end_date" :value="__('Date de Fin')" />
+                                            <input type="datetime-local" id="reinscription_end_date" name="reinscription_end_date" 
+                                                   value="{{ old('reinscription_end_date', $setting->reinscription_end_date ? \Carbon\Carbon::parse($setting->reinscription_end_date)->format('Y-m-d\TH:i') : '') }}"
+                                                   class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-xl shadow-sm">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Règlement -->
                         <div class="pt-6 border-t border-gray-100">
                             <h3 class="text-lg font-black text-upf-blue uppercase tracking-widest mb-4">Règlement des Examens</h3>

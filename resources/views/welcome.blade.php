@@ -52,6 +52,12 @@
                         @auth
                             <a href="{{ url('/dashboard') }}" class="text-sm font-bold text-white bg-upf-blue hover:bg-blue-900 px-6 py-3 rounded-full transition shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 border border-blue-800">{{ __('Mon Espace Académique') }}</a>
                         @else
+                            @if(\App\Models\Setting::isInscriptionOpen())
+                                <a href="{{ route('inscription') }}" class="text-sm font-bold text-slate-800 bg-white hover:bg-slate-100 hover:text-upf-pink px-6 py-3 rounded-full transition shadow-md hover:shadow-lg transform hover:-translate-y-0.5 border border-slate-200">{{ __('S\'inscrire en ligne') }}</a>
+                            @endif
+                            @if(\App\Models\Setting::isReinscriptionOpen())
+                                <a href="{{ route('student.reinscription.form') }}" class="text-sm font-bold text-slate-800 bg-white hover:bg-slate-100 hover:text-upf-pink px-6 py-3 rounded-full transition shadow-md hover:shadow-lg transform hover:-translate-y-0.5 border border-slate-200">{{ __('Se Réinscrire') }}</a>
+                            @endif
                             <a href="{{ route('login') }}" class="text-sm font-bold text-white bg-upf-pink hover:bg-pink-700 px-6 py-3 rounded-full transition shadow-lg shadow-pink-500/30 hover:shadow-xl transform hover:-translate-y-0.5 border border-pink-600">{{ __('Connexion au Portail') }}</a>
                         @endauth
                     @endif
@@ -110,6 +116,16 @@
                             {{ __('Accéder au Tableau de Bord') }} <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                         </a>
                     @else
+                        @if(\App\Models\Setting::isInscriptionOpen())
+                            <a href="{{ route('inscription') }}" class="w-full sm:w-auto px-8 py-4 bg-white text-upf-blue hover:bg-blue-50 font-black rounded-full shadow-2xl transition transform hover:-translate-y-1 text-lg flex justify-center items-center gap-2">
+                                📝 {{ __('S\'inscrire en Ligne') }}
+                            </a>
+                        @endif
+                        @if(\App\Models\Setting::isReinscriptionOpen())
+                            <a href="{{ route('student.reinscription.form') }}" class="w-full sm:w-auto px-8 py-4 bg-white text-upf-blue hover:bg-blue-50 font-black rounded-full shadow-2xl transition transform hover:-translate-y-1 text-lg flex justify-center items-center gap-2">
+                                🎓 {{ __('Se Réinscrire en Ligne') }}
+                            </a>
+                        @endif
                         <a href="{{ route('login') }}" class="w-full sm:w-auto px-8 py-4 bg-upf-pink hover:bg-pink-600 text-white font-black rounded-full shadow-2xl shadow-pink-500/40 transition transform hover:-translate-y-1 text-lg flex justify-center items-center gap-2 border border-pink-500">
                             {{ __('Accéder au Portail Étudiant / Professeur') }} <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                         </a>

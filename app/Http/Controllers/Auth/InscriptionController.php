@@ -23,12 +23,19 @@ class InscriptionController extends Controller
             return redirect()->route('dashboard');
         }
 
+        if (!\App\Models\Setting::isInscriptionOpen()) {
+            return redirect()->route('welcome')->with('error', "La campagne d'inscription en ligne est actuellement fermée.");
+        }
+
         $filieres = Filiere::all();
         return view('auth.inscription', compact('filieres'));
     }
 
     public function register(Request $request)
     {
+        if (!\App\Models\Setting::isInscriptionOpen()) {
+            return redirect()->route('welcome')->with('error', "La campagne d'inscription en ligne est actuellement fermée.");
+        }
         $request->validate([
             // Personal & Account Info
             'name' => ['required', 'string', 'max:255'],

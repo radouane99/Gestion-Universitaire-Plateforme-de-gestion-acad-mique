@@ -93,7 +93,7 @@
             </div>
 
             {{-- ===================== REINSCRIPTION ALERT BANNER ===================== --}}
-            @if(Auth::user()->student && Auth::user()->student->isEligibleForReinscription())
+            @if(Auth::user()->student && \App\Models\Setting::isReinscriptionOpen() && Auth::user()->student->isEligibleForReinscription())
             <div class="bg-gradient-to-r from-upf-magenta to-indigo-650 dark:from-pink-900 dark:to-slate-900 rounded-[2.5rem] p-6 lg:p-8 text-white shadow-lg flex flex-col sm:flex-row items-center justify-between gap-6 border border-white/5">
                 <div class="flex items-center gap-5">
                     <div class="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center shadow-inner shrink-0">

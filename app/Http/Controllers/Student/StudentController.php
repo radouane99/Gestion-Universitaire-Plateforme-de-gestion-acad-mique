@@ -106,6 +106,10 @@ class StudentController extends Controller
             abort(404);
         }
 
+        if (!\App\Models\Setting::isReinscriptionOpen()) {
+            return redirect()->route('student.dashboard')->with('error', 'La campagne de réinscription est actuellement fermée.');
+        }
+
         if (!$student->isEligibleForReinscription()) {
             return redirect()->route('student.dashboard')->with('error', 'Vous n\'êtes pas éligible pour la réinscription ou vous êtes déjà réinscrit pour cette année.');
         }
@@ -119,6 +123,11 @@ class StudentController extends Controller
     public function processReinscription(Request $request)
     {
         $student = Auth::user()->student;
+        
+        if (!\App\Models\Setting::isReinscriptionOpen()) {
+            return redirect()->route('student.dashboard')->with('error', 'La campagne de réinscription est actuellement fermée.');
+        }
+
         if (!$student || !$student->isEligibleForReinscription()) {
             return redirect()->route('student.dashboard')->with('error', 'Action non autorisée.');
         }
