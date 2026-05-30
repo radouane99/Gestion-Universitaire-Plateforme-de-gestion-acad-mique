@@ -25,7 +25,15 @@ class StudentRiskController extends Controller
             $riskLabel = 'Normal';
             $riskColor = 'bg-emerald-50 text-emerald-700 border-emerald-200';
             
-            if ($absences > 18) {
+            if ($student->is_last_chance) {
+                $riskLevel = 'discipline_council';
+                $riskLabel = 'Dernière Chance (Ajournement exceptionnel)';
+                $riskColor = 'bg-rose-100 text-rose-850 border-rose-300 font-black animate-pulse';
+            } elseif ($student->has_derogation) {
+                $riskLevel = 'pedagogical_risk';
+                $riskLabel = 'Dérogation Administrative';
+                $riskColor = 'bg-amber-100 text-amber-900 border-amber-300 font-extrabold';
+            } elseif ($absences > 18) {
                 $riskLevel = 'discipline_council';
                 $riskLabel = 'Conseil de discipline';
                 $riskColor = 'bg-rose-100 text-rose-800 border-rose-200 font-extrabold animate-pulse';
