@@ -44,71 +44,94 @@
                 <div class="absolute -bottom-16 -right-16 w-56 h-56 bg-upf-magenta/10 rounded-full blur-3xl pointer-events-none"></div>
             </div>
 
-            {{-- Weekly Calendar Grid --}}
-            @php
-                $days = [1 => __('Lundi'), 2 => __('Mardi'), 3 => __('Mercredi'), 4 => __('Jeudi'), 5 => __('Vendredi'), 6 => __('Samedi')];
-                $today = (int) now()->dayOfWeekIso;
-                $colors = ['bg-blue-500', 'bg-emerald-500', 'bg-violet-500', 'bg-amber-500', 'bg-rose-500', 'bg-teal-500', 'bg-pink-500', 'bg-indigo-500'];
-                $moduleColors = [];
-                $colorIdx = 0;
-            @endphp
+            {{-- FullCalendar Container --}}
+            <x-card class="p-6" wire:ignore>
+                <div id="calendar"></div>
+            </x-card>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                @foreach($days as $dayNum => $dayName)
-                @php $daySessions = $byDay->get($dayNum, collect())->sortBy('start_time'); @endphp
-                <div class="bg-white rounded-[2rem] border shadow-sm overflow-hidden transition-all duration-300
-                    {{ $dayNum === $today ? 'border-upf-blue ring-2 ring-upf-blue/20 shadow-md' : 'border-gray-100 hover:shadow-md' }}">
+            {{-- FullCalendar Scripts & Styles --}}
+            <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.11/locales/fr.global.min.js"></script>
+            
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const calendarEl = document.getElementById('calendar');
+                    
+                    const events = @json($schedules->map(function($s) {
+                        $colors = ['#3b82f6', '#10b981', '#8b5cf6', '#f59e0b', '#f43f5e', '#14b8a6', '#ec4899', '#6366f1'];
+                        $color = $colors[$s->module_id % count($colors)];
+                        
+                        return [
+                            'id' => $s->id,
+                            'title' => $s->module->name,
+                            'start' => $s->date . 'T' . $s->start_time,
+                            'end' => $s->date . 'T' . $s->end_time,
+                            'backgroundColor' => $color,
+                            'borderColor' => $color,
+                            'extendedProps' => [
+                                'module' => $s->module->name,
+                                'professor' => $s->professor?->user?->name ?? '—',
+                                'room' => $s->room->name ?? '—',
+                                'duration' => round((strtotime($s->end_time) - strtotime($s->start_time)) / 3600, 1) . 'h'
+                            ]
+                        ];
+                    }));
 
-                    <div class="px-6 py-4 flex items-center justify-between
-                        {{ $dayNum === $today ? 'bg-upf-blue text-white' : 'bg-gray-50/70 text-gray-700' }}">
-                        <div class="flex items-center gap-3">
-                            <span class="font-black text-sm uppercase tracking-wider">{{ $dayName }}</span>
-                            @if($dayNum === $today)
-                                <span class="text-[9px] font-black uppercase tracking-widest bg-white/20 px-2 py-0.5 rounded-full shadow-inner">{{ __('Aujourd\'hui') }}</span>
-                            @endif
-                        </div>
-                        <span class="text-[10px] font-black opacity-60">{{ $daySessions->count() }} {{ __('cours') }}</span>
-                    </div>
-
-                    <div class="p-4 space-y-3">
-                        @forelse($daySessions as $s)
-                        @php
-                            if (!isset($moduleColors[$s->module_id])) {
-                                $moduleColors[$s->module_id] = $colors[$colorIdx % count($colors)];
-                                $colorIdx++;
-                            }
-                            $color = $moduleColors[$s->module_id];
-                        @endphp
-                        <div class="flex gap-3 p-3 bg-gray-50 rounded-2xl border border-gray-100 hover:bg-white hover:shadow-sm transition-all group">
-                            <div class="flex flex-col items-center">
-                                <div class="w-1.5 flex-1 rounded-full {{ $color }} opacity-70"></div>
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <div class="flex items-center justify-between mb-1">
-                                    <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">
-                                        {{ date('H:i', strtotime($s->start_time)) }} – {{ date('H:i', strtotime($s->end_time)) }}
-                                    </span>
-                                    <span class="text-[9px] font-black text-white {{ $color }} px-2 py-0.5 rounded-full shadow-sm">
-                                        {{ round((strtotime($s->end_time) - strtotime($s->start_time)) / 3600, 1) }}h
-                                    </span>
-                                </div>
-                                <p class="font-black text-gray-900 text-sm truncate group-hover:text-upf-blue transition-colors">{{ $s->module->name }}</p>
-                                <div class="flex items-center gap-3 mt-1.5 text-[9px] font-bold text-gray-400 uppercase tracking-widest">
-                                    <span>👨‍🏫 {{ $s->professor?->user?->name ?? '—' }}</span>
-                                    <span>📍 {{ $s->room?->name ?? '—' }}</span>
-                                </div>
-                            </div>
-                        </div>
-                        @empty
-                        <div class="text-center py-8">
-                            <span class="text-2xl">🎈</span>
-                            <p class="text-[10px] font-black text-gray-300 uppercase tracking-widest mt-2">{{ __('Pas de cours') }}</p>
-                        </div>
-                        @endforelse
-                    </div>
-                </div>
-                @endforeach
-            </div>
+                    const calendar = new FullCalendar.Calendar(calendarEl, {
+                        initialView: 'timeGridWeek',
+                        locale: 'fr',
+                        headerToolbar: {
+                            left: 'prev,next today',
+                            center: 'title',
+                            right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+                        },
+                        buttonText: {
+                            today: "{{ __('Aujourd\'hui') }}",
+                            month: "{{ __('Mois') }}",
+                            week: "{{ __('Semaine') }}",
+                            day: "{{ __('Jour') }}",
+                            list: "{{ __('Liste') }}"
+                        },
+                        allDaySlot: false,
+                        slotMinTime: '08:00:00',
+                        slotMaxTime: '20:00:00',
+                        hiddenDays: [0], // Hide Sunday
+                        events: events,
+                        eventContent: function(arg) {
+                            let timeText = document.createElement('div');
+                            timeText.innerHTML = '<span class="font-bold text-[10px]">' + arg.timeText + '</span>';
+                            
+                            let titleText = document.createElement('div');
+                            titleText.innerHTML = '<span class="font-black text-xs leading-tight">' + arg.event.extendedProps.module + '</span>';
+                            
+                            let detailText = document.createElement('div');
+                            detailText.innerHTML = '<span class="text-[9px] font-bold opacity-90">👨‍🏫 ' + arg.event.extendedProps.professor + ' | 📍 ' + arg.event.extendedProps.room + '</span>';
+                            
+                            return { domNodes: [ timeText, titleText, detailText ] }
+                        },
+                        eventClick: function(info) {
+                            const props = info.event.extendedProps;
+                            alert(`{{ __('Module') }}: ${props.module}\n{{ __('Professeur') }}: ${props.professor}\n{{ __('Salle') }}: ${props.room}\n{{ __('Durée') }}: ${props.duration}`);
+                        },
+                        height: 'auto',
+                        slotLabelFormat: { hour: 'numeric', minute: '2-digit', omitZeroMinute: false, meridiem: 'short' }
+                    });
+                    
+                    calendar.render();
+                });
+            </script>
+            
+            <style>
+                .fc-theme-standard td, .fc-theme-standard th { border-color: #f3f4f6; }
+                .fc .fc-toolbar-title { font-weight: 900; font-size: 1.25rem; font-style: italic; color: #1e1b4b; }
+                .fc .fc-button-primary { background-color: #fff !important; color: #4b5563 !important; border-color: #e5e7eb !important; font-weight: 800 !important; font-size: 0.75rem !important; text-transform: uppercase !important; border-radius: 0.75rem !important; padding: 0.5rem 1rem !important; box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05) !important; transition: all 0.2s !important; }
+                .fc .fc-button-primary:hover { background-color: #f9fafb !important; border-color: #d1d5db !important; }
+                .fc .fc-button-primary:not(:disabled).fc-button-active, .fc .fc-button-primary:not(:disabled):active { background-color: #003399 !important; color: #fff !important; border-color: #003399 !important; }
+                .fc-event { border: none !important; border-radius: 0.5rem !important; padding: 0.25rem 0.5rem !important; box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05); }
+                .fc-timegrid-slot { height: 3rem !important; }
+                .fc-col-header-cell-cushion { padding: 0.75rem !important; font-weight: 900 !important; font-size: 0.75rem !important; text-transform: uppercase !important; color: #6b7280 !important; }
+                .fc-day-today { background-color: #fffbeb !important; }
+            </style>
 
             @if($schedules->isNotEmpty())
             <x-card class="p-0">

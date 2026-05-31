@@ -26,8 +26,10 @@
 8. [Core Logic / Business Logic](#8-core-logic--business-logic)
 9. [API & AI Interaction Layer](#9-api--ai-interaction-layer)
 10. [Cartographie des Endpoints & APIs REST](#10-cartographie-des-endpoints--apis-rest)
-11. [Stratégie de Test & Assurance Qualité (PHPUnit)](#11-stratégie-de-test--assurance-qualité-phpunit)
-12. [Installation & Run](#12-installation--run)
+11. [Cartographie des Pages (Vues & Interfaces)](#11-cartographie-des-pages-vues--interfaces)
+12. [Optimisations Finales & Sécurité](#12-optimisations-finales--sécurité)
+13. [Stratégie de Test & Assurance Qualité (PHPUnit)](#13-stratégie-de-test--assurance-qualité-phpunit)
+14. [Installation & Run](#14-installation--run)
 
 ---
 
@@ -507,9 +509,50 @@ L'application expose une série de routes et d'APIs structurées pour supporter 
 *   `POST /student/appointments/request-direct` : Réservation d'un créneau libre avec un professeur.
 *   `GET /verify-document/{token}` : **Route Publique (Open API)**. Permet à n'importe quel recruteur de scanner le QR Code d'un diplôme et de vérifier sa validité via le hash de sécurité unique.
 
+## 11. Cartographie des Pages (Vues & Interfaces) 🗺️
+
+Le portail est divisé en plusieurs espaces de travail (Workspaces) hermétiques selon le rôle de l'utilisateur :
+
+### 👨‍💼 Espace Administrateur (Scolarité)
+*   **Dashboard Analytique (`/admin/dashboard`) :** Statistiques globales (étudiants, modules, absences, décisions).
+*   **Gestion des Salles (`/admin/rooms`) :** Ajout, modification et suppression des locaux.
+*   **Gestion des Réservations (`/admin/reservations`) :** Suivi des demandes de salles (En attente, Approuvées, Rejetées).
+*   **Configuration des Inscriptions (`/admin/settings/inscriptions`) :** Ouverture/fermeture des dates d'inscription officielles.
+*   **Gestion des Emplois du Temps (`/admin/schedules`) :** Planification globale.
+*   **Délibérations & PV (`/admin/pv/global`) :** Lancement du moteur de règles académiques et génération Excel/PDF.
+*   **Archivage & Backup (`/admin/system`) :** Scellement de l'année universitaire et génération de dumps de sécurité.
+
+### 👨‍🏫 Espace Professeur
+*   **Dashboard (`/professor/dashboard`) :** Accès rapide aux modules assignés.
+*   **Mon Planning (`/professor/schedule`) :** Interface **FullCalendar.js** dynamique.
+*   **Cahier de Textes (`/professor/textbook`) :** Saisie officielle des séances d'enseignement.
+*   **Gestion des Absences (`/professor/absences`) :** Interface de pointage ultra-rapide (Checkboxes).
+*   **Saisie des Notes (`/professor/grades`) :** Upload Excel de masse ou saisie manuelle individuelle.
+*   **Hub Pédagogique (`/classroom`) :** Espaces d'échange et dépôt/correction de devoirs.
+*   **Réclamations (`/professor/reclamations`) :** Traitement des contestations étudiantes avec suggestion IA.
+
+### 👨‍🎓 Espace Étudiant
+*   **Dashboard (`/student/dashboard`) :** Résumé des alertes, de la moyenne annuelle (GPA) et du prochain cours.
+*   **Emploi du Temps (`/student/schedule`) :** Interface **FullCalendar.js** détaillée par matière et salle.
+*   **Mes Notes (`/student/grades`) :** Affichage transparent avec possibilité de télécharger le Relevé PDF officiel.
+*   **Mes Absences (`/student/absences`) :** Historique détaillé (justifié/non justifié).
+*   **Demande de RDV (`/student/appointments`) :** Prise de rendez-vous avec un professeur.
+*   **Réclamations (`/student/reclamations`) :** Dépôt formel d'une contestation de note (délai 48h).
+*   **Générateur de Documents (`/student/documents`) :** Téléchargement de l'Attestation de Réussite avec QR Code (Token de vérification publique).
+
 ---
 
-## 11. Stratégie de Test & Assurance Qualité (PHPUnit) 🧪
+## 12. Optimisations Finales & Sécurité 🚀
+
+Pour garantir un niveau de qualité professionnel (Production-Ready), le projet intègre 4 optimisations structurelles majeures :
+*   **Interface Interactive (FullCalendar.js) :** Modernisation du rendu visuel des emplois du temps pour tous les utilisateurs, offrant une navigation calendaire fluide, réactive et intuitive.
+*   **Rate Limiting (Protection API IA) :** Application stricte du middleware `throttle:10,1` sur le point d'entrée de l'Intelligence Artificielle (Smart UPF). Cette sécurité empêche le spam et prévient l'épuisement des quotas d'API Groq.
+*   **Suppression Logique (SoftDeletes) :** Sécurisation vitale de la table `students` contre les pertes accidentelles de données. L'historique académique complet (notes, absences) est préservé et masqué de manière réversible lors d'une suppression par l'administration.
+*   **Mise en Cache Redis/File (Dashboard Analytique) :** Accélération majeure des temps de chargement du back-office. Les calculs complexes (taux de réussite, classements des modules, agrégations) sont mis en cache dynamique pendant 1 heure via `Cache::remember`.
+
+---
+
+## 13. Stratégie de Test & Assurance Qualité (PHPUnit) 🧪
 
 La fiabilité de la plateforme est garantie par une suite de tests unitaires et fonctionnels (Feature Tests) développée avec **PHPUnit**. Nous avons simulé les scénarios critiques pour les trois acteurs principaux afin d'éviter toute régression.
 
@@ -529,7 +572,7 @@ La fiabilité de la plateforme est garantie par une suite de tests unitaires et 
 
 ---
 
-## 12. Installation & Run 🚀
+## 14. Installation & Run 🚀
 
 Suivez ces étapes pour déployer le projet en local :
 

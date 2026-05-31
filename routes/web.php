@@ -451,7 +451,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/api/notifications/latest', [\App\Http\Controllers\NotificationApiController::class, 'latest'])->name('api.notifications.latest');
 
     // Assistant IA (Smart UPF) - Shared across all roles
-    Route::post('/ai/chat', [\App\Http\Controllers\Student\AiChatController::class, 'chat'])->name('ai.chat');
+    Route::post('/ai/chat', [\App\Http\Controllers\Student\AiChatController::class, 'chat'])
+        ->name('ai.chat')
+        ->middleware('throttle:10,1');
 
     // Chat / Messaging
     Route::get('/chat', [\App\Http\Controllers\MessageController::class, 'index'])->name('chat.index');

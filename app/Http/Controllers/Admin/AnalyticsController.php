@@ -15,58 +15,62 @@ class AnalyticsController extends Controller
 {
     public function index()
     {
-        // 1. Taux de présence globale (Absences justifiées vs injustifiées)
-        $totalAbsences = Absence::count();
-        $justifiedAbsences = Absence::where('is_justified', true)->count();
-        $unjustifiedAbsences = $totalAbsences - $justifiedAbsences;
+        $data = \Illuminate\Support\Facades\Cache::remember('admin_analytics_data', 3600, function () {
+            // 1. Taux de présence globale (Absences justifiées vs injustifiées)
+            $totalAbsences = Absence::count();
+            $justifiedAbsences = Absence::where('is_justified', true)->count();
+            $unjustifiedAbsences = $totalAbsences - $justifiedAbsences;
 
-        // 2. Top / Flop Modules (Moyenne des notes par module)
-        $moduleStats = Grade::select('module_id', DB::raw('AVG(final_grade) as avg_grade'))
-            ->whereNotNull('final_grade')
-            ->groupBy('module_id')
-            ->with('module')
-            ->get();
+            // 2. Top / Flop Modules (Moyenne des notes par module)
+            $moduleStats = Grade::select('module_id', DB::raw('AVG(final_grade) as avg_grade'))
+                ->whereNotNull('final_grade')
+                ->groupBy('module_id')
+                ->with('module')
+                ->get();
 
-        $topModules = $moduleStats->sortByDesc('avg_grade')->take(5);
-        $flopModules = $moduleStats->sortBy('avg_grade')->take(5);
+            $topModules = $moduleStats->sortByDesc('avg_grade')->take(5);
+            $flopModules = $moduleStats->sortBy('avg_grade')->take(5);
 
-        // 3. Statistiques des Rattrapages
-        $retakeStats = RetakeEligibility::select('exams.module_id', DB::raw('count(retake_eligibilities.id) as count'))
-            ->join('exams', 'retake_eligibilities.exam_id', '=', 'exams.id')
-            ->groupBy('exams.module_id')
-            ->orderByDesc('count')
-            ->take(5)
-            ->get();
+            // 3. Statistiques des Rattrapages
+            $retakeStats = RetakeEligibility::select('exams.module_id', DB::raw('count(retake_eligibilities.id) as count'))
+                ->join('exams', 'retake_eligibilities.exam_id', '=', 'exams.id')
+                ->groupBy('exams.module_id')
+                ->orderByDesc('count')
+                ->take(5)
+                ->get();
 
-        $modules = Module::whereIn('id', $retakeStats->pluck('module_id'))->get()->keyBy('id');
-        foreach ($retakeStats as $stat) {
-            $stat->setRelation('module', $modules->get($stat->module_id));
-        }
+            $modules = Module::whereIn('id', $retakeStats->pluck('module_id'))->get()->keyBy('id');
+            foreach ($retakeStats as $stat) {
+                $stat->setRelation('module', $modules->get($stat->module_id));
+            }
 
-        // 4. Répartition des Décisions (Estimation simple basée sur les moyennes >= 10)
-        $studentAverages = Grade::select('student_id', DB::raw('AVG(final_grade) as student_avg'))
-            ->whereNotNull('final_grade')
-            ->groupBy('student_id')
-            ->get();
+            // 4. Répartition des Décisions (Estimation simple basée sur les moyennes >= 10)
+            $studentAverages = Grade::select('student_id', DB::raw('AVG(final_grade) as student_avg'))
+                ->whereNotNull('final_grade')
+                ->groupBy('student_id')
+                ->get();
 
-        $admis = $studentAverages->where('student_avg', '>=', 10)->count();
-        $ajournes = $studentAverages->where('student_avg', '<', 10)->count();
+            $admis = $studentAverages->where('student_avg', '>=', 10)->count();
+            $ajournes = $studentAverages->where('student_avg', '<', 10)->count();
 
-        // 5. KPIs
-        $totalStudents = Student::count();
-        $successRate = $studentAverages->count() > 0 ? round(($admis / $studentAverages->count()) * 100) : 0;
-        
-        return view('admin.analytics.index', compact(
-            'totalAbsences',
-            'justifiedAbsences',
-            'unjustifiedAbsences',
-            'topModules',
-            'flopModules',
-            'retakeStats',
-            'admis',
-            'ajournes',
-            'totalStudents',
-            'successRate'
-        ));
+            // 5. KPIs
+            $totalStudents = Student::count();
+            $successRate = $studentAverages->count() > 0 ? round(($admis / $studentAverages->count()) * 100) : 0;
+            
+            return compact(
+                'totalAbsences',
+                'justifiedAbsences',
+                'unjustifiedAbsences',
+                'topModules',
+                'flopModules',
+                'retakeStats',
+                'admis',
+                'ajournes',
+                'totalStudents',
+                'successRate'
+            );
+        });
+
+        return view('admin.analytics.index', $data);
     }
 }
