@@ -112,10 +112,14 @@
                                         </td>
                                         <td class="p-6 text-right">
                                             @if($req->status === 'approved')
-                                                <a href="{{ route('documents.download', $req->id) }}" target="_blank" class="inline-flex items-center text-upf-blue hover:text-white font-black text-[10px] uppercase tracking-widest gap-1 bg-indigo-50 hover:bg-upf-blue px-3 py-2 rounded-xl transition-colors shadow-sm hover:shadow-md">
-                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                                                    {{ __('PDF') }}
-                                                </a>
+                                                <div class="flex items-center justify-end gap-1.5">
+                                                    <a href="{{ route('documents.download', $req->id) }}?preview=1" target="_blank" class="inline-flex items-center text-upf-blue hover:text-white font-black text-[10px] uppercase tracking-widest gap-1 bg-indigo-50 hover:bg-upf-blue px-3.5 py-2.5 rounded-xl transition-colors shadow-sm hover:shadow-md" title="{{ __('Aperçu avant téléchargement') }}">
+                                                        👁️ {{ __('Aperçu') }}
+                                                    </a>
+                                                    <a href="{{ route('documents.download', $req->id) }}" class="inline-flex items-center text-indigo-700 hover:text-white font-black text-[10px] uppercase tracking-widest bg-indigo-100 hover:bg-indigo-600 p-2.5 rounded-xl transition-colors shadow-sm hover:shadow-md" title="{{ __('Télécharger directement') }}">
+                                                        ⬇️
+                                                    </a>
+                                                </div>
                                             @else
                                                 <span class="text-[10px] text-gray-400 italic font-bold">{{ __('Indisponible') }}</span>
                                             @endif

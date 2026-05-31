@@ -167,11 +167,16 @@
 
                                 {{-- Download Button --}}
                                 @if($req->status === 'approved')
-                                    <a href="{{ route('documents.download', $req->id) }}" target="_blank"
-                                       class="inline-flex items-center gap-2 bg-upf-blue text-white hover:bg-upf-navy px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all hover:-translate-y-0.5 shadow-sm hover:shadow-md">
-                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                                        {{ __('Télécharger PDF') }}
-                                    </a>
+                                    <div class="flex items-center gap-1.5 mt-2">
+                                        <a href="{{ route('documents.download', $req->id) }}?preview=1" target="_blank"
+                                           class="inline-flex items-center gap-1.5 bg-indigo-50 text-upf-blue hover:bg-upf-blue hover:text-white px-3.5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-sm hover:shadow-md" title="{{ __('Aperçu avant téléchargement') }}">
+                                            👁️ {{ __('Aperçu') }}
+                                        </a>
+                                        <a href="{{ route('documents.download', $req->id) }}"
+                                           class="inline-flex items-center justify-center bg-upf-blue text-white hover:bg-upf-navy p-2.5 rounded-xl transition-all shadow-sm hover:shadow-md" title="{{ __('Télécharger directement') }}">
+                                            ⬇️
+                                        </a>
+                                    </div>
                                 @else
                                     <span class="text-[10px] text-gray-300 font-bold italic">{{ __('PDF indisponible') }}</span>
                                 @endif

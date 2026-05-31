@@ -325,20 +325,35 @@
                                 @endphp
 
                                 @if($studentObj && $studentObj->registration_status === 'approved')
-                                    <a href="{{ route('student.receipt.download') }}" class="px-5 py-3.5 bg-blue-600 hover:bg-blue-500 text-white font-black rounded-2xl transition-all duration-300 shadow-md hover:scale-105 transform whitespace-nowrap text-xs uppercase tracking-widest flex items-center gap-2">
-                                        📝 {{ __('Reçu d\'Inscription') }}
-                                    </a>
+                                    <div class="flex items-center gap-1 bg-white/10 p-1.5 rounded-2xl shadow-inner border border-white/10">
+                                        <a href="{{ route('student.receipt.download') }}?preview=1" target="_blank" class="px-4 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-black rounded-xl transition-all whitespace-nowrap text-[10px] uppercase tracking-widest flex items-center gap-1.5" title="{{ __('Aperçu avant téléchargement') }}">
+                                            👁️ {{ __('Aperçu') }}
+                                        </a>
+                                        <a href="{{ route('student.receipt.download') }}" class="p-2.5 bg-white/20 hover:bg-blue-700 text-white font-black rounded-xl transition-all flex items-center justify-center" title="{{ __('Télécharger directement') }}">
+                                            ⬇️
+                                        </a>
+                                    </div>
                                 @endif
 
                                 @if($studentObj && $isPvApproved && $studentObj->getYearlyGpa() >= 10 && $studentObj->getFailedModules()->isEmpty())
-                                    <a href="{{ route('student.attestation.download') }}" class="px-5 py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-2xl transition-all duration-300 shadow-md hover:scale-105 transform whitespace-nowrap text-xs uppercase tracking-widest flex items-center gap-2">
-                                        🎓 {{ __('Attestation de Réussite') }}
-                                    </a>
+                                    <div class="flex items-center gap-1 bg-white/10 p-1.5 rounded-2xl shadow-inner border border-white/10">
+                                        <a href="{{ route('student.attestation.download') }}?preview=1" target="_blank" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-xl transition-all whitespace-nowrap text-[10px] uppercase tracking-widest flex items-center gap-1.5" title="{{ __('Aperçu avant téléchargement') }}">
+                                            👁️ {{ __('Aperçu') }}
+                                        </a>
+                                        <a href="{{ route('student.attestation.download') }}" class="p-2.5 bg-white/20 hover:bg-emerald-700 text-white font-black rounded-xl transition-all flex items-center justify-center" title="{{ __('Télécharger directement') }}">
+                                            ⬇️
+                                        </a>
+                                    </div>
                                     
                                     @if($lvl == 3)
-                                        <a href="{{ route('student.diplome.download') }}" class="px-5 py-3.5 bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-white font-black rounded-2xl transition-all duration-300 shadow-md hover:scale-105 transform whitespace-nowrap text-xs uppercase tracking-widest flex items-center gap-2">
-                                            👑 {{ __('Mon Diplôme') }}
-                                        </a>
+                                        <div class="flex items-center gap-1 bg-white/10 p-1.5 rounded-2xl shadow-inner border border-white/10">
+                                            <a href="{{ route('student.diplome.download') }}?preview=1" target="_blank" class="px-4 py-2.5 bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-white font-black rounded-xl transition-all whitespace-nowrap text-[10px] uppercase tracking-widest flex items-center gap-1.5" title="{{ __('Aperçu avant téléchargement') }}">
+                                                👁️ {{ __('Aperçu') }}
+                                            </a>
+                                            <a href="{{ route('student.diplome.download') }}" class="p-2.5 bg-white/20 hover:bg-amber-700 text-white font-black rounded-xl transition-all flex items-center justify-center" title="{{ __('Télécharger directement') }}">
+                                                ⬇️
+                                            </a>
+                                        </div>
                                     @endif
                                 @endif
                                 <a href="{{ route('student.requests.create') }}" class="px-5 py-3.5 bg-white text-upf-navy font-black rounded-2xl hover:bg-upf-magenta hover:text-white transition-all duration-300 shadow-md hover:scale-105 transform whitespace-nowrap text-xs uppercase tracking-widest">
@@ -488,7 +503,14 @@
                                         <p class="text-[9px] text-slate-400 dark:text-slate-550 uppercase font-bold mt-0.5">{{ $req->updated_at->format('d/m/Y') }}</p>
                                     </div>
                                 </div>
-                                <a href="{{ route('documents.download', $req) }}" target="_blank" class="px-3 py-1.5 bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-600 dark:hover:bg-emerald-600 hover:text-white font-black rounded-lg text-[9px] uppercase transition-all flex-shrink-0 ml-2 shadow-sm">{{ __('PDF') }}</a>
+                                <div class="flex items-center gap-1 bg-emerald-100/50 dark:bg-emerald-900/20 p-1 rounded-xl">
+                                    <a href="{{ route('documents.download', $req) }}?preview=1" target="_blank" class="px-2.5 py-1.5 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-600 hover:text-white font-black rounded-lg text-[9px] uppercase transition-all shadow-sm flex items-center gap-1" title="{{ __('Aperçu') }}">
+                                        👁️ {{ __('Aperçu') }}
+                                    </a>
+                                    <a href="{{ route('documents.download', $req) }}" class="p-1.5 text-emerald-700 hover:bg-emerald-600 hover:text-white font-black rounded-lg text-[9px] transition-all flex items-center justify-center" title="{{ __('Télécharger PDF') }}">
+                                        ⬇️
+                                    </a>
+                                </div>
                             </div>
                             @endforeach
                         </div>

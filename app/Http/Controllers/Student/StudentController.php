@@ -227,7 +227,7 @@ class StudentController extends Controller
     /**
      * Téléchargement de l'Attestation de Réussite officielle en PDF avec QR Code.
      */
-    public function downloadAttestation()
+    public function downloadAttestation(Request $request)
     {
         $student = Auth::user()->student;
         if (!$student) {
@@ -266,13 +266,17 @@ class StudentController extends Controller
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pdf.attestation', compact('student', 'gpa', 'mention', 'verifyUrl', 'isPdf'));
         
         $nameSlug = \Illuminate\Support\Str::slug($student->user->name, '_');
-        return $pdf->download("attestation_reussite_{$nameSlug}.pdf");
+        $fileName = "attestation_reussite_{$nameSlug}.pdf";
+        if ($request->query('preview') == 1) {
+            return $pdf->stream($fileName);
+        }
+        return $pdf->download($fileName);
     }
 
     /**
      * Téléchargement du Reçu d'Inscription.
      */
-    public function downloadReceipt()
+    public function downloadReceipt(Request $request)
     {
         $student = Auth::user()->student;
         if (!$student) {
@@ -289,13 +293,17 @@ class StudentController extends Controller
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pdf.registration_receipt', compact('student', 'verifyUrl', 'isPdf'));
         
         $nameSlug = \Illuminate\Support\Str::slug($student->user->name, '_');
-        return $pdf->download("recu_inscription_{$nameSlug}.pdf");
+        $fileName = "recu_inscription_{$nameSlug}.pdf";
+        if ($request->query('preview') == 1) {
+            return $pdf->stream($fileName);
+        }
+        return $pdf->download($fileName);
     }
 
     /**
      * Téléchargement du Diplôme de Réussite officielle en PDF.
      */
-    public function downloadDiplome()
+    public function downloadDiplome(Request $request)
     {
         $student = Auth::user()->student;
         if (!$student) {
@@ -339,6 +347,10 @@ class StudentController extends Controller
         $pdf->setPaper('A4', 'landscape');
         
         $nameSlug = \Illuminate\Support\Str::slug($student->user->name, '_');
-        return $pdf->download("diplome_{$nameSlug}.pdf");
+        $fileName = "diplome_{$nameSlug}.pdf";
+        if ($request->query('preview') == 1) {
+            return $pdf->stream($fileName);
+        }
+        return $pdf->download($fileName);
     }
 }

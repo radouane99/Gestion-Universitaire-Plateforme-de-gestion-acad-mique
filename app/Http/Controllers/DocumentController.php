@@ -11,7 +11,7 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class DocumentController extends Controller
 {
-    public function downloadPdf(DocRequest $documentRequest)
+    public function downloadPdf(Request $request, DocRequest $documentRequest)
     {
         if ($documentRequest->status !== 'approved') {
             return abort(403, 'Document non approuvé.');
@@ -21,17 +21,21 @@ class DocumentController extends Controller
             return abort(403, 'Action non autorisée.');
         }
 
-        $request = $documentRequest->load('user');
+        $requestData = $documentRequest->load('user');
         $setting = Setting::first() ?? new Setting();
         
-        $verifyUrl = route('documents.verify', ['id' => $request->id, 'hash' => md5($request->id . $request->created_at)]);
+        $verifyUrl = route('documents.verify', ['id' => $requestData->id, 'hash' => md5($requestData->id . $requestData->created_at)]);
         $qrCode = base64_encode(QrCode::format('svg')->size(100)->generate($verifyUrl));
 
-        $viewData = compact('request', 'setting', 'qrCode');
+        $viewData = [
+            'request' => $requestData,
+            'setting' => $setting,
+            'qrCode' => $qrCode
+        ];
         $viewData['isPdf'] = true;
 
-        if ($request->type == 'Transcript' || $request->type == 'Relevé de Notes') {
-            $student = $request->user->student;
+        if ($requestData->type == 'Transcript' || $requestData->type == 'Relevé de Notes') {
+            $student = $requestData->user->student;
             $gradesBySemester = collect();
             $yearlyGPA = 0;
             $isAnnual = false;
@@ -83,11 +87,11 @@ class DocumentController extends Controller
             $viewData['isAnnual'] = $isAnnual;
             $viewData['transcriptTitle'] = $transcriptTitle;
             $viewName = 'documents.transcript';
-        } elseif ($request->type == 'Attestation de Travail') {
+        } elseif ($requestData->type == 'Attestation de Travail') {
             $viewName = 'documents.work_certificate';
-        } elseif ($request->type == 'Ordre de Mission') {
+        } elseif ($requestData->type == 'Ordre de Mission') {
             $viewName = 'documents.mission_order';
-        } elseif ($request->type == 'Convention de Stage') {
+        } elseif ($requestData->type == 'Convention de Stage') {
             $viewName = 'documents.internship_agreement';
         } else {
             $viewName = 'documents.certificate';
@@ -96,19 +100,22 @@ class DocumentController extends Controller
         $pdf = Pdf::loadView($viewName, $viewData);
         $pdf->setPaper('A4', 'portrait');
 
-        $nameSlug = \Illuminate\Support\Str::slug($request->user->name, '_');
-        if ($request->type == 'Attestation de Travail') {
+        $nameSlug = \Illuminate\Support\Str::slug($requestData->user->name, '_');
+        if ($requestData->type == 'Attestation de Travail') {
             $fileName = "attestation_travail_{$nameSlug}.pdf";
-        } elseif ($request->type == 'Ordre de Mission') {
+        } elseif ($requestData->type == 'Ordre de Mission') {
             $fileName = "ordre_mission_{$nameSlug}.pdf";
-        } elseif ($request->type == 'Convention de Stage') {
+        } elseif ($requestData->type == 'Convention de Stage') {
             $fileName = "convention_stage_{$nameSlug}.pdf";
-        } elseif ($request->type == 'Transcript' || $request->type == 'Relevé de Notes') {
+        } elseif ($requestData->type == 'Transcript' || $requestData->type == 'Relevé de Notes') {
             $fileName = "releve_notes_{$nameSlug}.pdf";
         } else {
             $fileName = "attestation_scolarite_{$nameSlug}.pdf";
         }
         
+        if ($request->query('preview') == 1) {
+            return $pdf->stream($fileName);
+        }
         return $pdf->download($fileName);
     }
 
