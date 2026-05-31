@@ -25,7 +25,8 @@
 7. [Documentation Visuelle](#7-documentation-visuelle)
 8. [Core Logic / Business Logic](#8-core-logic--business-logic)
 9. [API & AI Interaction Layer](#9-api--ai-interaction-layer)
-10. [Installation & Run](#10-installation--run)
+10. [Stratégie de Test & Assurance Qualité (PHPUnit)](#10-stratégie-de-test--assurance-qualité-phpunit)
+11. [Installation & Run](#11-installation--run)
 
 ---
 
@@ -87,9 +88,10 @@ Un centre de commande visuel pour la direction de la Faculté (Chart.js) :
 ### ⚖️ 9. Module de "Demande de Recours" (Réclamations)
 *   Dépôt d'un recours par l'étudiant en cas de contestation de note post-affichage (délai de 48h). Tableaux de gestion pour le back-office (En attente, Traité, Rejeté).
 
-### ☁️ 10. Notifications, Temps Réel & Déploiement
+### ☁️ 10. Notifications par E-mail, Temps Réel & Déploiement
+*   **Envoi Automatisé d'E-mails (Convocations & Alertes) :** Chaque étudiant reçoit sa **Convocation d'Examen au format PDF directement par E-mail**. Le système utilise le trait `SendsEmailNotification` pour expédier simultanément une notification Push (Navbar) et un e-mail HTML officiel (lors de la publication des notes, des absences, ou des réponses aux réclamations).
 *   **Badges Temps Réel (Navbar) :** Une cloche de notification qui vibre via interrogation asynchrone (Alpine.js) lors d'une nouvelle alerte.
-*   **Hébergement (Railway) & E-mails (Resend) :** Déploiement robuste en production. Envoi immédiat d'e-mails professionnels (HTML stylisé) lors de la publication de notes ou l'enregistrement d'une absence via le trait `SendsEmailNotification`.
+*   **Hébergement (Railway) & Serveur Mail (Resend) :** Déploiement robuste en production. Configuration de `Resend` avec le nom de domaine de l'université pour garantir une délivrabilité parfaite (0 spam) des e-mails transactionnels.
 
 ### 🛡️ 11. Sécurité Militaire & Expérience PWA
 *   **Google 2FA :** Verrouillage de l'accès Administrateur avec code dynamique (QR Code).
@@ -471,7 +473,27 @@ Nous utilisons la technique **RAG (Retrieval-Augmented Generation)** : avant d'i
 
 ---
 
-## 10. Installation & Run 🚀
+## 10. Stratégie de Test & Assurance Qualité (PHPUnit) 🧪
+
+La fiabilité de la plateforme est garantie par une suite de tests unitaires et fonctionnels (Feature Tests) développée avec **PHPUnit**. Nous avons simulé les scénarios critiques pour les trois acteurs principaux afin d'éviter toute régression.
+
+### 🛡️ Tests de Sécurité & Authentification (Admin)
+*   **Test de la 2FA (Double Authentification) :** Vérification stricte qu'un administrateur possédant le bon mot de passe est systématiquement bloqué s'il ne fournit pas le code *Google Authenticator* valide.
+*   **Test d'Autorisation (Middlewares) :** Vérification qu'un étudiant essayant d'accéder à la route `/admin/dashboard` ou `/professor/textbook` reçoit une erreur 403 (Unauthorized), garantissant l'étanchéité des rôles.
+
+### 🎓 Tests de la Logique Métier (Système Apogée)
+*   **Test du Moteur de Délibération (`PVCompilerTrait`) :**
+    *   **Scénario de Validation :** Vérification qu'un étudiant avec une moyenne de 12/20 obtient le statut "Admis".
+    *   **Scénario de Compensation :** Vérification qu'un étudiant avec 8/20 dans un module et 13/20 de moyenne générale voit son module validé par compensation.
+    *   **Scénario de Note Éliminatoire :** Vérification qu'une note de 4/20 bloque la validation du semestre (NV), même si la moyenne générale est de 14/20.
+
+### 👨‍🏫 Tests Fonctionnels : Professeurs & Étudiants
+*   **Scénarios Professeurs :** Simulation de création d'une séance dans le Cahier de Textes et soumission d'une liste d'absences. Vérification de l'insertion correcte en base de données.
+*   **Scénarios Étudiants :** Simulation du dépôt d'une réclamation de note. Vérification que le statut passe bien à "en attente" (`pending`) et qu'une notification en base de données (ainsi qu'un e-mail) est générée pour le professeur concerné.
+
+---
+
+## 11. Installation & Run 🚀
 
 Suivez ces étapes pour déployer le projet en local :
 
