@@ -25,28 +25,40 @@
         .bg-upf-pink { background-color: #b50060; }
         .text-upf-pink { color: #b50060; }
         .gradient-upf { background: linear-gradient(135deg, #003893 0%, #001f54 100%); }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .animated-announcement {
+            background: linear-gradient(-45deg, #b50060, #003893, #b50060, #001f54);
+            background-size: 400% 400%;
+            animation: gradientShift 10s ease infinite;
+        }
     </style>
 </head>
 <body class="font-sans antialiased bg-slate-50 text-slate-900 selection:bg-upf-pink selection:text-white" x-data="landingPage()">
 
     <!-- Admissions Top Announcement Bar -->
     @if(\App\Models\Setting::isInscriptionOpen() || \App\Models\Setting::isReinscriptionOpen())
-        <div class="bg-gradient-to-r from-upf-pink to-upf-blue text-white text-xs sm:text-sm font-bold py-2.5 px-4 text-center relative z-[60] shadow-sm flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 transition-all">
-            <span class="flex items-center gap-1.5">
-                <span class="relative flex h-2 w-2">
-                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                  <span class="relative inline-flex rounded-full h-2 w-2 bg-green-400"></span>
+        <div class="animated-announcement text-white py-2.5 px-4 text-center relative z-[60] shadow-md flex flex-col md:flex-row items-center justify-center gap-2 md:gap-6 transition-all border-b border-white/10">
+            <span class="flex items-center flex-wrap justify-center gap-2 text-white">
+                <span class="inline-flex items-center gap-1.5 bg-yellow-400 text-slate-900 border border-yellow-300/40 px-2 py-0.5 rounded-full text-[9px] uppercase font-black tracking-widest shadow-sm animate-pulse">
+                    🔥 {{ __('Ouvert') }}
                 </span>
-                📢 <strong>{{ __('Admissions & Campagnes Académiques :') }}</strong> {{ __('Les inscriptions et réinscriptions sont ouvertes !') }}
+                <span class="text-white font-extrabold text-xs sm:text-sm tracking-wide drop-shadow-sm flex items-center gap-1">
+                    📢 <strong>{{ __('Admissions & Campagnes Académiques :') }}</strong> {{ __('Les inscriptions et réinscriptions sont ouvertes !') }}
+                </span>
             </span>
             <div class="flex gap-2">
                 @if(\App\Models\Setting::isInscriptionOpen())
-                    <a href="{{ route('inscription') }}" class="bg-white text-upf-blue hover:text-upf-pink hover:bg-slate-100 px-3 py-1 rounded-full text-[10px] font-black uppercase transition-all shadow-sm transform hover:scale-105">
+                    <a href="{{ route('inscription') }}" class="bg-white text-[#003893] hover:text-[#b50060] hover:bg-slate-100 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider transition-all shadow-md transform hover:scale-105">
                         📝 {{ __('Inscription') }}
                     </a>
                 @endif
                 @if(\App\Models\Setting::isReinscriptionOpen())
-                    <a href="{{ route('student.reinscription.form') }}" class="bg-white text-upf-pink hover:text-upf-blue hover:bg-slate-100 px-3 py-1 rounded-full text-[10px] font-black uppercase transition-all shadow-sm transform hover:scale-105">
+                    <a href="{{ route('student.reinscription.form') }}" class="bg-white text-[#b50060] hover:text-[#003893] hover:bg-slate-100 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider transition-all shadow-md transform hover:scale-105">
                         🎓 {{ __('Réinscription') }}
                     </a>
                 @endif
