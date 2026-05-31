@@ -63,4 +63,21 @@ class SettingController extends Controller
 
         return redirect()->route('admin.settings.index')->with('success', 'Paramètres mis à jour avec succès.');
     }
+
+    /**
+     * Exécute les migrations de base de données par l'administrateur sans terminal.
+     */
+    public function runMigrations()
+    {
+        try {
+            \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+            $output = \Illuminate\Support\Facades\Artisan::output();
+            
+            \App\Models\ActivityLog::log('updated', 'System', "Migrations de la base de données exécutées manuellement via l'interface d'administration.");
+            
+            return redirect()->route('admin.settings.index')->with('success', 'Base de données mise à jour avec succès !<br><pre class="text-xs text-left bg-gray-900 text-green-400 p-3 rounded-lg mt-2 overflow-auto" style="font-family: monospace; line-height: 1.4;">' . e($output) . '</pre>');
+        } catch (\Exception $e) {
+            return redirect()->route('admin.settings.index')->with('error', 'Erreur lors de la migration : ' . $e->getMessage());
+        }
+    }
 }

@@ -195,6 +195,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     // Paramètres Institution
     Route::get('/settings', [\App\Http\Controllers\Admin\SettingController::class, 'index'])->name('settings.index');
     Route::post('/settings', [\App\Http\Controllers\Admin\SettingController::class, 'update'])->name('settings.update');
+    Route::post('/settings/run-migrations', [\App\Http\Controllers\Admin\SettingController::class, 'runMigrations'])->name('settings.run_migrations');
 
     // Cahier de Textes global consult
     Route::get('/textbooks', [\App\Http\Controllers\TextbookController::class, 'adminIndex'])->name('textbooks.index');

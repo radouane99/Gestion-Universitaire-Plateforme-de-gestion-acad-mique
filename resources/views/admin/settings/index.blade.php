@@ -146,6 +146,30 @@
                 </form>
             </div>
 
+            <!-- Maintenance & Système -->
+            <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden mt-8">
+                <div class="p-8 space-y-6">
+                    <h3 class="text-lg font-black text-upf-blue uppercase tracking-widest border-b border-gray-100 pb-2">🛠️ Maintenance du Système &amp; Base de données</h3>
+                    <p class="text-sm text-slate-500">
+                        Exécutez les dernières mises à jour de structure de la base de données (migrations) en ligne pour activer et synchroniser toutes les nouvelles fonctionnalités de la plateforme (Prise de RDV, Messagerie, Devoirs, etc.).
+                    </p>
+                    
+                    <div class="flex items-center gap-4 p-5 bg-amber-50/60 rounded-2xl border border-amber-100">
+                        <span class="text-2xl">⚠️</span>
+                        <div class="text-xs text-amber-800">
+                            <strong>Note de sécurité :</strong> Cette action applique les changements de table en toute sécurité. Les données existantes (étudiants, professeurs, notes, etc.) ne seront pas altérées ni modifiées.
+                        </div>
+                    </div>
+
+                    <form action="{{ route('admin.settings.run_migrations') }}" method="POST" onsubmit="return confirm('Êtes-vous sûr de vouloir mettre à jour la base de données en ligne ?');">
+                        @csrf
+                        <button type="submit" class="inline-flex items-center px-5 py-3 bg-upf-blue text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-blue-700 transition-all shadow-md gap-2">
+                            🔄 Mettre à jour la base de données
+                        </button>
+                    </form>
+                </div>
+            </div>
+
         </div>
     </div>
 </x-app-layout>
