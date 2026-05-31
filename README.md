@@ -228,6 +228,105 @@ graph TD
     Views --> Client
 ```
 
+### 3.5. Modèle de Base de Données (Entité-Relation / ERD)
+La base de données est hautement normalisée pour supporter toutes les exigences académiques. Voici le dictionnaire des données principal (Entity Relationship Diagram) :
+
+```mermaid
+erDiagram
+    USERS ||--o| ROLES : has
+    USERS ||--o| STUDENTS : "is a"
+    USERS ||--o| PROFESSORS : "is a"
+    
+    FILIERES ||--o{ GROUPS : contains
+    FILIERES ||--o{ MODULES : includes
+    
+    STUDENTS ||--o| FILIERES : "enrolled in"
+    STUDENTS ||--o| GROUPS : "belongs to"
+    
+    PROFESSORS ||--o{ SCHEDULES : teaches
+    MODULES ||--o{ SCHEDULES : "scheduled for"
+    GROUPS ||--o{ SCHEDULES : "attends"
+    
+    STUDENTS ||--o{ GRADES : receives
+    MODULES ||--o{ GRADES : "assessed in"
+    
+    STUDENTS ||--o{ ABSENCES : commits
+    SCHEDULES ||--o{ ABSENCES : "recorded in"
+    
+    PROFESSORS ||--o{ TEXTBOOKS : fills
+    GROUPS ||--o{ TEXTBOOKS : "logged for"
+    MODULES ||--o{ TEXTBOOKS : "logged for"
+    
+    STUDENTS ||--o{ RECLAMATIONS : opens
+    GRADES ||--o{ RECLAMATIONS : "disputed on"
+    
+    EXAMS ||--o{ EXAM_ATTENDANCES : "tracked by"
+    STUDENTS ||--o{ EXAM_ATTENDANCES : "takes"
+
+    USERS {
+        bigint id PK
+        string name
+        string email
+        string password
+        boolean google2fa_enabled
+    }
+    
+    STUDENTS {
+        bigint id PK
+        bigint user_id FK
+        string cne
+        string cin
+        string phone
+        string status
+    }
+    
+    PROFESSORS {
+        bigint id PK
+        bigint user_id FK
+        string specialty
+        string contract_type
+    }
+    
+    GRADES {
+        bigint id PK
+        bigint student_id FK
+        bigint module_id FK
+        decimal cc1
+        decimal cc2
+        decimal exam
+        decimal final_grade
+        string status "Validé, Rattrapage, etc."
+    }
+    
+    ABSENCES {
+        bigint id PK
+        bigint student_id FK
+        bigint schedule_id FK
+        date date
+        decimal duration
+        boolean is_justified
+        string justification_status "pending, approved, rejected"
+    }
+    
+    TEXTBOOKS {
+        bigint id PK
+        bigint professor_id FK
+        bigint group_id FK
+        bigint module_id FK
+        date date
+        time start_time
+        string type "Cours, TD, TP"
+        text objective
+    }
+```
+
+#### Dictionnaire des Tables Clés :
+Le projet compte plus de **35 tables**, classées en 4 grands pôles :
+1. **Pôle Utilisateurs & Accès :** `users`, `roles`, `personal_access_tokens` (Sécurité API & 2FA).
+2. **Pôle Académique (Scolarité) :** `filieres` (Filières d'études), `modules` (Matières), `groups` (Classes), `academic_years`, `semesters` (Gestion temporelle).
+3. **Pôle Pédagogique (Cours & Examens) :** `schedules` (Emplois du temps), `textbooks` (Cahiers de textes), `absences`, `grades` (Notes & CC), `exams` (Planification des examens), `exam_attendances` (Émargements).
+4. **Pôle Communication & Démarches :** `reclamations` (Réclamations de notes), `appointments` (Rendez-vous étudiants-profs), `classroom_posts` & `classroom_messages` (Communication).
+
 ---
 
 ## 4. User Flow / System Flow 🔄
