@@ -200,8 +200,22 @@ class AbsenceController extends Controller
         if ($request->filled('module_id')) {
             $query->where('module_id', $request->module_id);
         }
+        if ($request->filled('filiere_id')) {
+            $query->whereHas('student.group', function ($q) use ($request) {
+                $q->where('filiere_id', $request->filiere_id);
+            });
+        }
+        if ($request->filled('group_id')) {
+            $query->whereHas('student', function ($q) use ($request) {
+                $q->where('group_id', $request->group_id);
+            });
+        }
 
         $absences = $query->orderBy('date', 'desc')->paginate(30);
+
+        // Fetch options for the filters
+        $filieres = \App\Models\Filiere::all();
+        $groups = \App\Models\Group::all();
 
         // Seuil configurable depuis settings
         $threshold      = \App\Models\Setting::get('absence_discipline_threshold', 120);
@@ -209,7 +223,7 @@ class AbsenceController extends Controller
             fn($s) => $s->absence_score >= $threshold
         );
 
-        return view('admin.absences.index', compact('absences', 'studentsAtRisk', 'threshold'));
+        return view('admin.absences.index', compact('absences', 'studentsAtRisk', 'threshold', 'filieres', 'groups'));
     }
 
     /**

@@ -51,15 +51,35 @@
 
             <!-- Filtres -->
             <div class="bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
-                <form method="GET" action="{{ route('admin.absences.index') }}" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <form method="GET" action="{{ route('admin.absences.index') }}" class="grid grid-cols-1 md:grid-cols-4 gap-6">
                     <div class="space-y-2">
-                        <label for="status" class="text-[10px] font-black uppercase tracking-widest text-gray-400 block">Filtrer par Justificatif</label>
+                        <label for="status" class="text-[10px] font-black uppercase tracking-widest text-gray-400 block">État du Justificatif</label>
                         <select name="status" id="status" class="w-full border-gray-200 rounded-2xl focus:ring-rose-500 focus:border-rose-500 p-4 font-bold text-gray-900 bg-gray-50">
                             <option value="">Tous les états</option>
                             <option value="none" {{ request('status') === 'none' ? 'selected' : '' }}>Aucun justificatif déposé</option>
                             <option value="pending" {{ request('status') === 'pending' ? 'selected' : '' }}>Justificatif en attente</option>
                             <option value="approved" {{ request('status') === 'approved' ? 'selected' : '' }}>Justificatif approuvé</option>
                             <option value="rejected" {{ request('status') === 'rejected' ? 'selected' : '' }}>Justificatif rejeté</option>
+                        </select>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label for="filiere_id" class="text-[10px] font-black uppercase tracking-widest text-gray-400 block">Filière</label>
+                        <select name="filiere_id" id="filiere_id" class="w-full border-gray-200 rounded-2xl focus:ring-rose-500 focus:border-rose-500 p-4 font-bold text-gray-900 bg-gray-50">
+                            <option value="">Toutes les filières</option>
+                            @foreach($filieres as $filiere)
+                                <option value="{{ $filiere->id }}" {{ request('filiere_id') == $filiere->id ? 'selected' : '' }}>{{ $filiere->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label for="group_id" class="text-[10px] font-black uppercase tracking-widest text-gray-400 block">Groupe</label>
+                        <select name="group_id" id="group_id" class="w-full border-gray-200 rounded-2xl focus:ring-rose-500 focus:border-rose-500 p-4 font-bold text-gray-900 bg-gray-50">
+                            <option value="">Tous les groupes</option>
+                            @foreach($groups as $group)
+                                <option value="{{ $group->id }}" {{ request('group_id') == $group->id ? 'selected' : '' }}>{{ $group->name }}</option>
+                            @endforeach
                         </select>
                     </div>
 
