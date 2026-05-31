@@ -11,6 +11,13 @@ class Setting extends Model
 
     protected $guarded = [];
 
+    protected $casts = [
+        'inscription_start_date' => 'datetime',
+        'inscription_end_date' => 'datetime',
+        'reinscription_start_date' => 'datetime',
+        'reinscription_end_date' => 'datetime',
+    ];
+
     /**
      * Récupère une valeur de setting par clé avec une valeur par défaut.
      * Exemple: Setting::get('absence_discipline_threshold', 120)

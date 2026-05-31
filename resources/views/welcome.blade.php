@@ -29,6 +29,31 @@
 </head>
 <body class="font-sans antialiased bg-slate-50 text-slate-900 selection:bg-upf-pink selection:text-white" x-data="landingPage()">
 
+    <!-- Admissions Top Announcement Bar -->
+    @if(\App\Models\Setting::isInscriptionOpen() || \App\Models\Setting::isReinscriptionOpen())
+        <div class="bg-gradient-to-r from-upf-pink to-upf-blue text-white text-xs sm:text-sm font-bold py-2.5 px-4 text-center relative z-[60] shadow-sm flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 transition-all">
+            <span class="flex items-center gap-1.5">
+                <span class="relative flex h-2 w-2">
+                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                  <span class="relative inline-flex rounded-full h-2 w-2 bg-green-400"></span>
+                </span>
+                📢 <strong>{{ __('Admissions & Campagnes Académiques :') }}</strong> {{ __('Les inscriptions et réinscriptions sont ouvertes !') }}
+            </span>
+            <div class="flex gap-2">
+                @if(\App\Models\Setting::isInscriptionOpen())
+                    <a href="{{ route('inscription') }}" class="bg-white text-upf-blue hover:text-upf-pink hover:bg-slate-100 px-3 py-1 rounded-full text-[10px] font-black uppercase transition-all shadow-sm transform hover:scale-105">
+                        📝 {{ __('Inscription') }}
+                    </a>
+                @endif
+                @if(\App\Models\Setting::isReinscriptionOpen())
+                    <a href="{{ route('student.reinscription.form') }}" class="bg-white text-upf-pink hover:text-upf-blue hover:bg-slate-100 px-3 py-1 rounded-full text-[10px] font-black uppercase transition-all shadow-sm transform hover:scale-105">
+                        🎓 {{ __('Réinscription') }}
+                    </a>
+                @endif
+            </div>
+        </div>
+    @endif
+
     <!-- Navbar -->
     <nav class="fixed w-full z-50 transition-all duration-300" :class="scrolled ? 'bg-white/90 backdrop-blur-md shadow-sm py-3' : 'bg-transparent py-5'">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -163,6 +188,45 @@
             </div>
         </div>
     </div>
+
+    <!-- Active Campaigns Banner Section -->
+    @if(\App\Models\Setting::isInscriptionOpen() || \App\Models\Setting::isReinscriptionOpen())
+        <div class="py-10 bg-slate-50 relative z-20">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="bg-gradient-to-r from-upf-blue to-upf-pink rounded-[2.5rem] shadow-2xl p-8 sm:p-12 text-white relative overflow-hidden transition-all duration-500 hover:shadow-pink-500/10">
+                    <!-- Background Glow Elements -->
+                    <div class="absolute top-0 right-0 w-80 h-80 bg-white/10 rounded-full blur-3xl -mr-20 -mt-20"></div>
+                    <div class="absolute bottom-0 left-0 w-80 h-80 bg-pink-500/20 rounded-full blur-3xl -ml-20 -mb-20"></div>
+
+                    <div class="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                        <div class="lg:col-span-8 space-y-4 text-left">
+                            <span class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/20 backdrop-blur-md text-[10px] font-black uppercase tracking-wider text-pink-200 border border-white/10 animate-pulse">
+                                📢 {{ __('Campagne Académique Ouverte') }}
+                            </span>
+                            <h2 class="text-3xl sm:text-4xl font-black tracking-tight leading-tight">
+                                {{ __('Rejoignez l\'Université Privée de Fès') }}
+                            </h2>
+                            <p class="text-blue-100 text-sm sm:text-base max-w-2xl font-light">
+                                {{ __('Les inscriptions pour les nouveaux bacheliers et les réinscriptions pour nos étudiants actuels sont officiellement ouvertes pour l\'année universitaire') }} <strong class="font-bold text-white">{{ \App\Models\Setting::first()->academic_year ?? '2025-2026' }}</strong>. {{ __('Profitez de notre accompagnement personnalisé pour bâtir votre avenir d\'excellence.') }}
+                            </p>
+                        </div>
+                        <div class="lg:col-span-4 flex flex-col sm:flex-row lg:flex-col gap-4 justify-end">
+                            @if(\App\Models\Setting::isInscriptionOpen())
+                                <a href="{{ route('inscription') }}" class="px-6 py-4 bg-white text-upf-blue hover:bg-slate-100 hover:text-upf-pink font-black rounded-2xl shadow-xl transition transform hover:-translate-y-0.5 text-center text-sm flex items-center justify-center gap-2">
+                                    📝 {{ __('Inscrire Nouveau Candidat') }}
+                                </a>
+                            @endif
+                            @if(\App\Models\Setting::isReinscriptionOpen())
+                                <a href="{{ route('student.reinscription.form') }}" class="px-6 py-4 bg-upf-pink text-white hover:bg-pink-700 font-black rounded-2xl shadow-xl transition transform hover:-translate-y-0.5 text-center text-sm flex items-center justify-center gap-2 border border-pink-500">
+                                    🎓 {{ __('Faire ma Réinscription') }}
+                                </a>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
 
     <!-- Features Section - 3 Espaces -->
     <div id="features" class="py-32 bg-white relative">
