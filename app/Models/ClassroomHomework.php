@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class ClassroomHomework extends Model
 {
+    protected $table = 'classroom_homeworks';
+
     protected $fillable = [
         'professor_id',
         'group_id',
