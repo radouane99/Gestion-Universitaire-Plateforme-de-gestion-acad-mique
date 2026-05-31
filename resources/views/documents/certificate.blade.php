@@ -20,20 +20,23 @@
         /* ======================== PAGE WRAPPER ======================== */
         .page-wrapper {
             width: 210mm;
-            min-height: 297mm;
-            max-height: 297mm;
+            height: 297mm;
             overflow: hidden;
-            padding: 8mm 12mm;
             position: relative;
             background: #ffffff;
+            box-sizing: border-box;
         }
 
         /* ======================== BORDER ======================== */
         .doc-border {
             border: 7px double #003399;
             padding: 12px 16px 10px 16px;
-            height: 272mm;
-            position: relative;
+            position: absolute;
+            top: 8mm;
+            bottom: 8mm;
+            left: 12mm;
+            right: 12mm;
+            box-sizing: border-box;
             overflow: hidden;
         }
 
