@@ -88,12 +88,17 @@ Un centre de commande visuel pour la direction de la Faculté (Chart.js) :
 ### ⚖️ 9. Module de "Demande de Recours" (Réclamations)
 *   Dépôt d'un recours par l'étudiant en cas de contestation de note post-affichage (délai de 48h). Tableaux de gestion pour le back-office (En attente, Traité, Rejeté).
 
-### ☁️ 10. Notifications par E-mail, Temps Réel & Déploiement
+### 🗓️ 10. Gestion des Inscriptions, Réinscriptions & Archivage
+*   **Contrôle des Périodes d'Inscription :** L'administrateur dispose d'une console de configuration globale pour ouvrir et fermer les dates officielles d'inscription ou de réinscription. Si un étudiant tente de soumettre son dossier hors de cette fenêtre temporelle, le système bloque automatiquement l'accès.
+*   **Archivage Annuel (Clôture) :** En fin d'année, après l'édition des PV finaux, le système procède à un archivage complet de l'année universitaire. Les données (Notes, PV, Absences) sont scellées et conservées dans l'historique de l'étudiant, permettant de lancer une nouvelle année académique avec des données fraîches.
+*   **Système de Sauvegarde (Backup) :** Génération automatisée et stockage sécurisé de sauvegardes (Dumps) de la base de données relationnelle pour prévenir toute perte de données académiques critiques en cas de crash.
+
+### ☁️ 11. Notifications par E-mail, Temps Réel & Déploiement
 *   **Envoi Automatisé d'E-mails (Convocations & Alertes) :** Chaque étudiant reçoit sa **Convocation d'Examen au format PDF directement par E-mail**. Le système utilise le trait `SendsEmailNotification` pour expédier simultanément une notification Push (Navbar) et un e-mail HTML officiel (lors de la publication des notes, des absences, ou des réponses aux réclamations).
 *   **Badges Temps Réel (Navbar) :** Une cloche de notification qui vibre via interrogation asynchrone (Alpine.js) lors d'une nouvelle alerte.
 *   **Hébergement (Railway) & Serveur Mail (Resend) :** Déploiement robuste en production. Configuration de `Resend` avec le nom de domaine de l'université pour garantir une délivrabilité parfaite (0 spam) des e-mails transactionnels.
 
-### 🛡️ 11. Sécurité Militaire & Expérience PWA
+### 🛡️ 12. Sécurité Militaire & Expérience PWA
 *   **Google 2FA :** Verrouillage de l'accès Administrateur avec code dynamique (QR Code).
 *   **PWA (Progressive Web App) :** Bouton "Installer l'Application" pour les étudiants, accès direct depuis l'écran d'accueil du smartphone et gestion du cache hors-ligne via un *Service Worker*.
 
