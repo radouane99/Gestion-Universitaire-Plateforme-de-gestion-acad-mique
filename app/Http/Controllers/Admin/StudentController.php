@@ -31,7 +31,7 @@ class StudentController extends Controller
             });
         }
 
-        $students = $query->get();
+        $students = $query->paginate(15)->withQueryString();
         $filieres = \App\Models\Filiere::all();
         $groups = \App\Models\Group::all();
         

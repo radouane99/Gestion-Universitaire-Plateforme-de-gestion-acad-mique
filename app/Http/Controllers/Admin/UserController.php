@@ -15,7 +15,7 @@ class UserController extends Controller
         $roleStudent = \App\Models\Role::where('name', 'student')->first();
         $users = \App\Models\User::with(['role', 'professor'])
             ->where('role_id', '!=', $roleStudent->id)
-            ->get();
+            ->paginate(15);
         return view('admin.users.index', compact('users'));
     }
 

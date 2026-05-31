@@ -426,6 +426,9 @@
                         <a href="{{ route('admin.internships.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] transition-all duration-150 {{ request()->routeIs('admin.internships.*') ? 'text-white bg-white/10 font-semibold' : 'text-slate-400 hover:text-white hover:bg-white/[0.05]' }}">
                             <span class="text-sm">🏛️</span> <span>{{ __('Gestion des Stages') }}</span>
                         </a>
+                        <a href="{{ route('admin.appointments.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] transition-all duration-150 {{ request()->routeIs('admin.appointments.*') ? 'text-white bg-white/10 font-semibold' : 'text-slate-400 hover:text-white hover:bg-white/[0.05]' }}">
+                            <span class="text-sm">🗓️</span> <span>{{ __('Prise de Rendez-vous') }}</span>
+                        </a>
                         <a href="{{ route('admin.settings.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] transition-all duration-150 {{ request()->routeIs('admin.settings.*') ? 'text-white bg-white/10 font-semibold' : 'text-slate-400 hover:text-white hover:bg-white/[0.05]' }}">
                             <span class="text-sm">⚙️</span> <span>{{ __('Paramètres') }}</span>
                         </a>
@@ -537,6 +540,9 @@
                         <a href="{{ route('professor.reservations.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] transition-all duration-150 {{ request()->routeIs('professor.reservations.*') ? 'text-white bg-white/10 font-semibold' : 'text-slate-400 hover:text-white hover:bg-white/[0.05]' }}">
                             <span class="text-sm">🔑</span> <span>{{ __('Réservations Salles') }}</span>
                         </a>
+                        <a href="{{ route('professor.appointments.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] transition-all duration-150 {{ request()->routeIs('professor.appointments.*') ? 'text-white bg-white/10 font-semibold' : 'text-slate-400 hover:text-white hover:bg-white/[0.05]' }}">
+                            <span class="text-sm">🗓️</span> <span>{{ __('Prise de Rendez-vous') }}</span>
+                        </a>
                     </div>
                 </div>
             @endif
@@ -604,6 +610,9 @@
                     @endif
                     <a href="{{ route('student.internships.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] transition-all duration-150 {{ request()->routeIs('student.internships.*') ? 'text-white bg-white/10 font-semibold' : 'text-slate-400 hover:text-white hover:bg-white/[0.05]' }}">
                         <span class="text-sm">💼</span> <span>{{ __('Mon Stage') }}</span>
+                    </a>
+                    <a href="{{ route('student.appointments.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] transition-all duration-150 {{ request()->routeIs('student.appointments.*') ? 'text-white bg-white/10 font-semibold' : 'text-slate-400 hover:text-white hover:bg-white/[0.05]' }}">
+                        <span class="text-sm">🗓️</span> <span>{{ __('Prise de Rendez-vous') }}</span>
                     </a>
                 </div>
             @endif

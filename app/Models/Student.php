@@ -103,6 +103,11 @@ class Student extends Model
         return $this->hasMany(Reclamation::class);
     }
 
+    public function appointments()
+    {
+        return $this->hasMany(Appointment::class);
+    }
+
     // ─── Absence Helpers ──────────────────────────────────────────────────────
 
     /**

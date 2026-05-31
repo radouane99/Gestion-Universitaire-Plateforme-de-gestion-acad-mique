@@ -263,6 +263,11 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 
     // Statistiques Avancées
     Route::get('/analytics', [\App\Http\Controllers\Admin\AnalyticsController::class, 'index'])->name('analytics.index');
+
+    // Appointments (Option 12)
+    Route::get('/appointments', [\App\Http\Controllers\AppointmentController::class, 'hostIndex'])->name('appointments.index');
+    Route::post('/appointments/slots', [\App\Http\Controllers\AppointmentController::class, 'storeSlot'])->name('appointments.slot.store');
+    Route::delete('/appointments/slots/{slot}', [\App\Http\Controllers\AppointmentController::class, 'destroySlot'])->name('appointments.slot.destroy');
 });
 
 Route::middleware(['auth', 'role:professor', 'check.contract'])->prefix('professor')->name('professor.')->group(function () {
@@ -326,6 +331,11 @@ Route::middleware(['auth', 'role:professor', 'check.contract'])->prefix('profess
     
     // Assistant IA (Génération de Brouillon)
     Route::post('/reclamations/{reclamation}/ai-draft', [\App\Http\Controllers\Professor\AiProfessorController::class, 'generateDraft'])->name('ai.draft');
+
+    // Appointments (Option 12)
+    Route::get('/appointments', [\App\Http\Controllers\AppointmentController::class, 'hostIndex'])->name('appointments.index');
+    Route::post('/appointments/slots', [\App\Http\Controllers\AppointmentController::class, 'storeSlot'])->name('appointments.slot.store');
+    Route::delete('/appointments/slots/{slot}', [\App\Http\Controllers\AppointmentController::class, 'destroySlot'])->name('appointments.slot.destroy');
 });
 
 Route::middleware(['auth', 'role:student'])->prefix('student')->name('student.')->group(function () {
@@ -373,6 +383,10 @@ Route::middleware(['auth', 'role:student'])->prefix('student')->name('student.')
 
     // Assistant IA (Smart UPF)
     Route::post('/ai/chat', [\App\Http\Controllers\Student\AiChatController::class, 'chat'])->name('ai.chat');
+
+    // Appointments (Option 12)
+    Route::get('/appointments', [\App\Http\Controllers\AppointmentController::class, 'studentIndex'])->name('appointments.index');
+    Route::post('/appointments/book/{slot}', [\App\Http\Controllers\AppointmentController::class, 'book'])->name('appointments.book');
 });
 
 // Shared Classroom
@@ -406,6 +420,9 @@ Route::middleware('auth')->group(function () {
         return view('faq');
     })->name('faq');
     Route::get('/admin/requests/show/{adminRequest}', [\App\Http\Controllers\RequestController::class, 'show'])->name('admin.requests.show');
+
+    // Appointments cancel (Option 12)
+    Route::post('/appointments/{appointment}/cancel', [\App\Http\Controllers\AppointmentController::class, 'cancel'])->name('appointments.cancel');
 
     // Notifications
     Route::post('/notifications/{id}/read', function ($id) {

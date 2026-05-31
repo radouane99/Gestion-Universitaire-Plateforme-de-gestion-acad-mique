@@ -46,6 +46,11 @@ class User extends Authenticatable
         return $this->hasOne(Professor::class);
     }
 
+    public function appointmentSlots()
+    {
+        return $this->hasMany(AppointmentSlot::class, 'host_id');
+    }
+
     public function classroomPosts()
     {
         return $this->hasMany(ClassroomPost::class);

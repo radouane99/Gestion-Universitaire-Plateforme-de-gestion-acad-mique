@@ -4,10 +4,12 @@ namespace App\Notifications;
 
 use Illuminate\Notifications\Notification;
 use App\Traits\SendsEmailNotification;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Bus\Queueable;
 
-class GradePublished extends Notification
+class GradePublished extends Notification implements ShouldQueue
 {
-    use SendsEmailNotification;
+    use Queueable, SendsEmailNotification;
 
     public string $moduleName;
     public float $finalGrade;

@@ -106,6 +106,12 @@
                     </table>
                 </div>
 
+                @if($students->hasPages())
+                    <div class="px-6 py-4 border-t border-gray-100 bg-gray-50/40">
+                        {{ $students->links() }}
+                    </div>
+                @endif
+
                 @if($students->isEmpty())
                 <div class="p-16 text-center">
                     <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-50 mb-4">
