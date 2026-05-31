@@ -17,10 +17,10 @@
             box-sizing: border-box;
         }
         body {
-            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            font-family: 'DejaVu Sans', Arial, sans-serif;
             background: #ffffff;
             color: #1a1a2e;
-            font-size: 13.5px;
+            font-size: 11.5px;
             line-height: 1.5;
         }
         .page {
@@ -52,6 +52,123 @@
             bottom: 12px;
             left: 25px;
             right: 25px;
+        }
+
+        /* ======================== HEADER ======================== */
+        .header-table {
+            width: 100%;
+            border-collapse: collapse;
+            border-bottom: 2px solid #003399;
+            padding-bottom: 8px;
+            margin-bottom: 8px;
+        }
+        .header-table td {
+            vertical-align: middle;
+            padding: 0;
+        }
+        .hdr-left {
+            width: 35%;
+            text-align: left;
+            font-size: 7.5px;
+            font-weight: bold;
+            color: #003399;
+            line-height: 1.5;
+        }
+        .hdr-center {
+            width: 25%;
+            text-align: center;
+        }
+        .hdr-center img {
+            height: 50px;
+            display: block;
+            margin: 0 auto 2px auto;
+        }
+        .hdr-center-name {
+            font-size: 8px;
+            font-weight: bold;
+            color: #003399;
+            letter-spacing: 0.3px;
+        }
+        .hdr-right {
+            width: 40%;
+            text-align: right;
+            font-size: 7.5px;
+            font-weight: bold;
+            color: #B00D5D;
+            line-height: 1.5;
+            white-space: nowrap;
+        }
+
+        /* Reference box */
+        .ref-box {
+            text-align: right;
+            font-size: 9.5px;
+            margin-bottom: 8px;
+        }
+        .ref-box span {
+            font-weight: bold;
+            color: #003399;
+            font-family: monospace;
+        }
+
+        /* Stamp */
+        .stamp-circle {
+            width: 95px;
+            height: 95px;
+            border: 2px double #003399;
+            border-radius: 50%;
+            display: inline-block;
+            position: relative;
+            background: rgba(0,51,153,0.02);
+        }
+        .stamp-inner {
+            width: 83px;
+            height: 83px;
+            border: 1px solid #003399;
+            border-radius: 50%;
+            position: absolute;
+            top: 5px;
+            left: 5px;
+        }
+        .stamp-top {
+            position: absolute;
+            top: 11px;
+            width: 83px;
+            text-align: center;
+            font-size: 5.5px;
+            font-weight: bold;
+            color: #003399;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .stamp-mid {
+            position: absolute;
+            top: 30px;
+            width: 83px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: bold;
+            color: #003399;
+            letter-spacing: 1px;
+        }
+        .stamp-sub {
+            position: absolute;
+            top: 52px;
+            width: 83px;
+            text-align: center;
+            font-size: 5.5px;
+            font-weight: bold;
+            color: #003399;
+        }
+        .stamp-arabic {
+            position: absolute;
+            bottom: 11px;
+            width: 83px;
+            text-align: center;
+            font-size: 6.5px;
+            font-weight: bold;
+            color: #003399;
+            white-space: nowrap;
         }
     </style>
     @else
@@ -129,6 +246,14 @@
 </head>
 <body>
 
+@php
+    $logoPath = public_path('images/logo_upf.png');
+    $logoBase64 = '';
+    if (file_exists($logoPath)) {
+        $logoBase64 = base64_encode(file_get_contents($logoPath));
+    }
+@endphp
+
     @if(!isset($isPdf) || !$isPdf)
     <!-- Print Toolbar (Only visible in web browser preview) -->
     <div class="toolbar">
@@ -144,29 +269,40 @@
         <div class="border-container">
             <div class="accent-bar"></div>
 
-            <!-- Header Grid (DomPDF-friendly borderless table) -->
-            <table style="width: 100%; border-collapse: collapse; border-bottom: 2px solid #003399; padding-bottom: 12px; margin-bottom: 25px;">
+            <!-- ===== HEADER ===== -->
+            <table class="header-table">
                 <tr>
-                    <td style="width: 55%; vertical-align: middle; text-align: left; padding-bottom: 10px;">
-                        <table style="border-collapse: collapse; border: none;">
-                            <tr>
-                                <td style="padding-right: 12px; border: none;">
-                                    <div style="width: 52px; height: 52px; background: linear-gradient(135deg, #003399, #001A66); border-radius: 12px; color: white; font-weight: 900; font-size: 18px; line-height: 52px; text-align: center;">UPF</div>
-                                </td>
-                                <td style="border: none; vertical-align: middle;">
-                                    <div style="font-size: 14px; font-weight: 900; color: #003399; text-transform: uppercase; letter-spacing: 0.5px; line-height: 1.2;">Université Privée de Fès</div>
-                                    <div style="font-size: 8.5px; color: #B00D5D; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; margin-top: 2px;">Excellence &amp; Innovation · Fès, Maroc</div>
-                                </td>
-                            </tr>
-                        </table>
+                    <td class="hdr-left">
+                        ROYAUME DU MAROC<br>
+                        UNIVERSITÉ PRIVÉE DE FÈS<br>
+                        École Supérieure d'Ingénierie<br>
+                        et de Technologie de Fès
                     </td>
-                    <td style="width: 45%; text-align: right; vertical-align: top; padding-bottom: 10px;">
-                        <div style="font-size: 11px; font-weight: bold; color: #003399; font-family: monospace;">Réf : {{ date('Y') }}/ATT-TRAV/{{ str_pad($request->id, 4, '0', STR_PAD_LEFT) }}</div>
-                        <div style="font-size: 9.5px; color: #666; margin-top: 2px;">Émis le : {{ now()->format('d F Y') }}</div>
-                        <div style="display: inline-block; background: #eef2ff; border: 1px solid #c7d2fe; color: #003399; font-size: 8px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; padding: 2px 8px; border-radius: 20px; margin-top: 4px;">✓ Document Officiel Validé</div>
+                    <td class="hdr-center">
+                        @if($logoBase64)
+                            <img src="data:image/png;base64,{{ $logoBase64 }}" alt="Logo UPF">
+                        @else
+                            <img src="{{ public_path('images/logo_upf.png') }}" alt="Logo UPF">
+                        @endif
+                        <div class="hdr-center-name">UNIVERSITÉ PRIVÉE DE FÈS</div>
+                    </td>
+                    <td class="hdr-right">
+                        @arabic('المملكة المغربية')<br>
+                        @arabic('الجامعة الخاصة لفاس')<br>
+                        @arabic('المدرسة العليا للهندسة')<br>
+                        @arabic('والتكنولوجيا بفاس')
                     </td>
                 </tr>
             </table>
+
+            <!-- Reference + Date + Status -->
+            <div class="ref-box">
+                <span>Réf : {{ date('Y') }}/ATT-TRAV/{{ str_pad($request->id, 4, '0', STR_PAD_LEFT) }}</span>
+                &nbsp;&nbsp;&nbsp;
+                <span style="font-weight:normal; color:#475569; font-family:sans-serif;">Émis le : {{ now()->format('d/m/Y') }}</span>
+                &nbsp;&nbsp;&nbsp;
+                <span style="display: inline-block; background: #eef2ff; border: 1px solid #c7d2fe; color: #003399; font-size: 8px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; padding: 1px 8px; border-radius: 20px;">✓ Document Officiel Validé</span>
+            </div>
 
             <!-- Title Area -->
             <div style="text-align: center; margin: 25px 0; padding: 15px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
@@ -217,17 +353,22 @@
                     <tr>
                         <td style="width: 33%; text-align: center; vertical-align: top;">
                             <div style="font-size: 9px; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">Signature de l'Intéressé(e)</div>
-                            <div style="height: 40px;"></div>
+                            <div style="height: 45px;"></div>
                             <div style="font-size: 11px; font-weight: 700; color: #0f172a;">Prof. {{ $request->user->name }}</div>
                         </td>
                         <td style="width: 34%; text-align: center; vertical-align: middle;">
-                            <div style="width: 80px; height: 80px; border: 2px dashed #003399; border-radius: 50%; margin: 0 auto; display: block; color: #003399; opacity: 0.5;">
-                                <div style="padding-top: 20px; font-size: 9px; font-weight: 700; line-height: 1.3;">Sceau<br>Officiel<br>UPF</div>
+                            <div class="stamp-circle">
+                                <div class="stamp-inner">
+                                    <div class="stamp-top">UNIVERSITE PRIVEE DE FES</div>
+                                    <div class="stamp-mid">★ UPF ★</div>
+                                    <div class="stamp-sub">R. H.</div>
+                                    <div class="stamp-arabic">@arabic('الجامعة الخاصة لفاس')</div>
+                                </div>
                             </div>
                         </td>
                         <td style="width: 33%; text-align: center; vertical-align: top;">
                             <div style="font-size: 9px; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">Fait à Fès, le {{ now()->format('d/m/Y') }}</div>
-                            <div style="height: 40px;"></div>
+                            <div style="height: 45px;"></div>
                             <div style="font-size: 11px; font-weight: 700; color: #0f172a; text-transform: uppercase; letter-spacing: 0.5px;">Le Directeur des RH</div>
                         </td>
                     </tr>
