@@ -26,17 +26,17 @@
             width: 210mm;
             min-height: 297mm;
             max-height: 297mm;
-            overflow: hidden;
-            padding: 8mm 12mm 8mm 12mm;
             position: relative;
-            background: #ffffff;
+            background: white;
+            overflow: hidden;
+            padding: 10mm 15mm;
         }
 
         /* ======================== BORDER ======================== */
         .doc-border {
             border: 7px double #003893;
-            padding: 10px 14px 8px 14px;
-            height: 270mm;
+            padding: 15px 20px;
+            height: 265mm;
             position: relative;
             overflow: hidden;
         }
@@ -173,9 +173,11 @@
         /* ======================== FOOTER AREA ======================== */
         .footer-section {
             position: absolute;
-            bottom: 10px;
-            left: 14px;
-            right: 14px;
+            bottom: 15px;
+            left: 0;
+            width: 100%;
+            padding: 0 20px;
+            box-sizing: border-box;
         }
 
         /* Signature table */
