@@ -25,8 +25,9 @@
 7. [Documentation Visuelle](#7-documentation-visuelle)
 8. [Core Logic / Business Logic](#8-core-logic--business-logic)
 9. [API & AI Interaction Layer](#9-api--ai-interaction-layer)
-10. [Stratégie de Test & Assurance Qualité (PHPUnit)](#10-stratégie-de-test--assurance-qualité-phpunit)
-11. [Installation & Run](#11-installation--run)
+10. [Cartographie des Endpoints & APIs REST](#10-cartographie-des-endpoints--apis-rest)
+11. [Stratégie de Test & Assurance Qualité (PHPUnit)](#11-stratégie-de-test--assurance-qualité-phpunit)
+12. [Installation & Run](#12-installation--run)
 
 ---
 
@@ -478,7 +479,37 @@ Nous utilisons la technique **RAG (Retrieval-Augmented Generation)** : avant d'i
 
 ---
 
-## 10. Stratégie de Test & Assurance Qualité (PHPUnit) 🧪
+## 10. Cartographie des Endpoints & APIs REST 🌐
+
+L'application expose une série de routes et d'APIs structurées pour supporter toutes les fonctionnalités asynchrones (AJAX/Alpine.js) et les traitements lourds.
+
+### 🤖 Endpoints d'Intelligence Artificielle (RAG)
+*   `POST /api/chat` : API publique sécurisée pour le Chatbot étudiant ("Smart UPF"). Reçoit les questions et retourne le flux de réponse généré par LLaMA 3.3.
+*   `POST /professor/ai/suggest` : Appel asynchrone utilisé par le professeur pour générer une réponse automatique à une réclamation.
+*   `POST /admin/ai/report` : Génération à la volée d'un bilan pédagogique pour un étudiant spécifique.
+
+### 👨‍💼 Routes Administration (Scolarité)
+*   `GET /admin/analytics` : Charge le Dashboard Analytique avancé avec les données Chart.js agrégées (Top/Flop modules).
+*   `POST /admin/appointments/generate-slots` : Exécute le générateur automatique de créneaux horaires (10h-16h30) pour la prise de rendez-vous.
+*   `POST /admin/pv/global/generate` : Endpoint critique qui déclenche le moteur de délibération (`PVCompilerTrait`) pour calculer les moyennes de toute l'université.
+*   `POST /admin/academic-years/archive` : Déclenche le script de scellement et d'archivage d'une année universitaire clôturée.
+*   `POST /admin/backups/create` : Lance la génération d'un *Database Dump* SQL de sécurité.
+
+### 👨‍🏫 Routes Professeur
+*   `POST /professor/absences` : Enregistrement en masse (Bulk insert) des étudiants marqués absents lors d'une séance.
+*   `POST /professor/grades/import` : Point d'entrée pour l'upload et le parsing du fichier Excel des notes (CC1, CC2, Exam).
+*   `POST /classroom/{module}/post` : Publication asynchrone d'un nouveau devoir/fichier dans le hub interactif.
+*   `POST /appointments/{id}/suggest-alternative` : Permet au professeur de soumettre une contre-proposition de date pour un rendez-vous étudiant.
+
+### 👨‍🎓 Routes Étudiant & APIs Publiques
+*   `GET /api/notifications` : Endpoint interrogé (Polling) toutes les 5 secondes par Alpine.js pour mettre à jour le badge rouge des alertes temps réel.
+*   `POST /student/reclamation` : Soumission formelle d'une contestation de note.
+*   `POST /student/appointments/request-direct` : Réservation d'un créneau libre avec un professeur.
+*   `GET /verify-document/{token}` : **Route Publique (Open API)**. Permet à n'importe quel recruteur de scanner le QR Code d'un diplôme et de vérifier sa validité via le hash de sécurité unique.
+
+---
+
+## 11. Stratégie de Test & Assurance Qualité (PHPUnit) 🧪
 
 La fiabilité de la plateforme est garantie par une suite de tests unitaires et fonctionnels (Feature Tests) développée avec **PHPUnit**. Nous avons simulé les scénarios critiques pour les trois acteurs principaux afin d'éviter toute régression.
 
@@ -498,7 +529,7 @@ La fiabilité de la plateforme est garantie par une suite de tests unitaires et 
 
 ---
 
-## 11. Installation & Run 🚀
+## 12. Installation & Run 🚀
 
 Suivez ces étapes pour déployer le projet en local :
 
