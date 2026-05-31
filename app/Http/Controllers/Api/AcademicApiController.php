@@ -224,4 +224,56 @@ class AcademicApiController extends Controller
             })
         ], 200);
     }
+
+    /**
+     * Get appointments for the authenticated user.
+     */
+    public function appointments()
+    {
+        $user = Auth::user();
+        
+        $query = \App\Models\Appointment::with(['slot.host', 'student.user']);
+
+        if ($user->isStudent()) {
+            if (!$user->student) {
+                return response()->json(['status' => 'error', 'message' => 'Student profile not found.'], 404);
+            }
+            $query->where('student_id', $user->student->id);
+        } elseif ($user->isProfessor()) {
+            if (!$user->professor) {
+                return response()->json(['status' => 'error', 'message' => 'Professor profile not found.'], 404);
+            }
+            $query->whereHas('slot', function ($q) use ($user) {
+                $q->where('host_id', $user->id);
+            });
+        } elseif (!$user->isAdmin()) {
+            return response()->json(['status' => 'error', 'message' => 'Unauthorized.'], 403);
+        } else {
+            // Admins can see appointments where they are the host
+            $query->whereHas('slot', function ($q) use ($user) {
+                $q->where('host_id', $user->id);
+            });
+        }
+
+        // Return all active/pending appointments for the calendar
+        $appointments = $query->whereIn('status', ['scheduled', 'requested', 'suggested'])->get();
+
+        return response()->json([
+            'status' => 'success',
+            'role' => $user->role->name ?? 'unknown',
+            'appointments' => $appointments->map(function ($appt) {
+                return [
+                    'id' => $appt->id,
+                    'status' => $appt->status,
+                    'purpose' => $appt->purpose,
+                    'start_time' => $appt->slot?->start_time?->toIso8601String() ?? ($appt->slot?->start_time ?? ''),
+                    'end_time' => $appt->slot?->end_time?->toIso8601String() ?? ($appt->slot?->end_time ?? ''),
+                    'host_name' => $appt->slot?->host?->name ?? 'Intervenant',
+                    'student_name' => $appt->student?->user?->name ?? 'Étudiant',
+                    'group_name' => $appt->student?->group?->name ?? 'Sans groupe',
+                ];
+            })
+        ], 200);
+    }
 }
+

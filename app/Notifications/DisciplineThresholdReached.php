@@ -5,10 +5,12 @@ namespace App\Notifications;
 use App\Models\Student;
 use Illuminate\Notifications\Notification;
 use App\Traits\SendsEmailNotification;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Bus\Queueable;
 
-class DisciplineThresholdReached extends Notification
+class DisciplineThresholdReached extends Notification implements ShouldQueue
 {
-    use SendsEmailNotification;
+    use Queueable, SendsEmailNotification;
 
     public function __construct(
         private float   $currentHours,

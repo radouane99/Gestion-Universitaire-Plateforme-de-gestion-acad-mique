@@ -4,10 +4,12 @@ namespace App\Notifications;
 
 use Illuminate\Notifications\Notification;
 use App\Traits\SendsEmailNotification;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Bus\Queueable;
 
-class AbsenceRecorded extends Notification
+class AbsenceRecorded extends Notification implements ShouldQueue
 {
-    use SendsEmailNotification;
+    use Queueable, SendsEmailNotification;
 
     public string $moduleName;
     public string $date;

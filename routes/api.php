@@ -16,4 +16,5 @@ Route::middleware(['auth:sanctum', 'throttle:api'])->group(function () {
     Route::get('/schedule', [AcademicApiController::class, 'schedule']);
     Route::get('/absences', [AcademicApiController::class, 'absences']);
     Route::get('/exams', [AcademicApiController::class, 'exams']);
+    Route::get('/appointments', [AcademicApiController::class, 'appointments']);
 });

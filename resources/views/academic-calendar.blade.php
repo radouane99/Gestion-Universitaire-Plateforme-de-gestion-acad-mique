@@ -266,13 +266,28 @@
             },
             eventClick: function(info) {
                 const p = info.event.extendedProps;
-                const color = getColor(p.moduleName || '');
-                document.getElementById('modal-title').textContent = p.moduleName || info.event.title;
-                document.getElementById('modal-time').textContent = info.event.startStr ? formatTime(info.event.start) + ' → ' + formatTime(info.event.end) : '';
-                document.getElementById('modal-prof').textContent = p.profName || 'Non assigné';
-                document.getElementById('modal-room').textContent = p.roomName || '—';
-                document.getElementById('modal-group').textContent = p.groupName || '—';
-                document.getElementById('modal-color-dot').style.background = color.bg;
+                if (p.isAppointment) {
+                    document.getElementById('modal-title').textContent = p.moduleName || info.event.title;
+                    document.getElementById('modal-time').textContent = info.event.startStr ? formatTime(info.event.start) + ' → ' + formatTime(info.event.end) : '';
+                    document.getElementById('modal-prof').textContent = p.profName + ' (Hôte) • ' + p.studentName + ' (Étudiant)';
+                    document.getElementById('modal-room').textContent = p.roomName;
+                    
+                    // Customize group label for appointment status
+                    document.querySelector('#modal-group').previousElementSibling.textContent = 'Statut';
+                    document.getElementById('modal-group').textContent = p.status;
+                    document.getElementById('modal-color-dot').style.background = info.event.backgroundColor;
+                } else {
+                    const color = getColor(p.moduleName || '');
+                    document.getElementById('modal-title').textContent = p.moduleName || info.event.title;
+                    document.getElementById('modal-time').textContent = info.event.startStr ? formatTime(info.event.start) + ' → ' + formatTime(info.event.end) : '';
+                    document.getElementById('modal-prof').textContent = p.profName || 'Non assigné';
+                    document.getElementById('modal-room').textContent = p.roomName || '—';
+                    
+                    // Restore label
+                    document.querySelector('#modal-group').previousElementSibling.textContent = 'Groupe';
+                    document.getElementById('modal-group').textContent = p.groupName || '—';
+                    document.getElementById('modal-color-dot').style.background = color.bg;
+                }
                 document.getElementById('event-modal-overlay').classList.add('show');
             },
             eventSources: [
@@ -362,6 +377,61 @@
                                             roomName: item.room?.name || 'Salle non définie',
                                             profName: item.proctors?.map(p => p.user?.name).join(', ') || 'Non assigné',
                                             groupName: item.group?.name || '—',
+                                        }
+                                    };
+                                });
+                                successCallback(events);
+                            } else {
+                                successCallback([]);
+                            }
+                        })
+                        .catch(err => {
+                            console.error(err);
+                            failureCallback(err);
+                        });
+                    }
+                },
+                {
+                    events: function(fetchInfo, successCallback, failureCallback) {
+                        fetch('/api/appointments', {
+                            headers: {
+                                'Accept': 'application/json',
+                                'Authorization': 'Bearer ' + '{{ Auth::user()->createToken("cal-view")->plainTextToken }}'
+                            }
+                        })
+                        .then(r => r.json())
+                        .then(data => {
+                            if (data.status === 'success' && Array.isArray(data.appointments)) {
+                                const events = data.appointments.map(item => {
+                                    let bgColor = '#7c3aed'; // Violet for scheduled
+                                    let borderColor = '#6d28d9';
+                                    let statusText = 'Confirmé';
+
+                                    if (item.status === 'requested') {
+                                        bgColor = '#d97706'; // Orange for requested
+                                        borderColor = '#b45309';
+                                        statusText = 'En attente prof';
+                                    } else if (item.status === 'suggested') {
+                                        bgColor = '#B00D5D'; // Magenta for suggested
+                                        borderColor = '#9d174d';
+                                        statusText = 'À valider étudiant';
+                                    }
+
+                                    return {
+                                        title: 'RDV: ' + item.purpose,
+                                        start: item.start_time,
+                                        end: item.end_time,
+                                        backgroundColor: bgColor,
+                                        borderColor: borderColor,
+                                        extendedProps: {
+                                            isAppointment: true,
+                                            moduleName: 'RDV: ' + item.purpose,
+                                            roomName: 'Bureau de ' + item.host_name,
+                                            profName: item.host_name,
+                                            groupName: item.group_name,
+                                            studentName: item.student_name,
+                                            status: statusText,
+                                            purpose: item.purpose
                                         }
                                     };
                                 });

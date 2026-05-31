@@ -751,10 +751,30 @@
                         try {
                             const countRes = await fetch('{{ route('api.notifications.unread_count') }}');
                             const countData = await countRes.json();
-                            this.unreadCount = countData.unread_count;
+                            const newCount = countData.unread_count;
 
-                            const listRes = await fetch('{{ route('api.notifications.latest') }}');
-                            this.notifications = await listRes.json();
+                            if (newCount > this.unreadCount) {
+                                const listRes = await fetch('{{ route('api.notifications.latest') }}');
+                                const newList = await listRes.json();
+                                this.notifications = newList;
+
+                                if (typeof Notification !== 'undefined' && Notification.permission === 'granted' && newList.length > 0) {
+                                    const latestNotif = newList[0];
+                                    const notification = new Notification('UPF — ' + latestNotif.title, {
+                                        body: latestNotif.message || 'Nouvelle notification académique',
+                                        icon: 'https://www.upf.ac.ma/images/logo_upf.png'
+                                    });
+                                    notification.onclick = () => {
+                                        window.focus();
+                                        this.markRead(latestNotif.id, latestNotif.url);
+                                    };
+                                }
+                                this.unreadCount = newCount;
+                            } else {
+                                this.unreadCount = newCount;
+                                const listRes = await fetch('{{ route('api.notifications.latest') }}');
+                                this.notifications = await listRes.json();
+                            }
                         } catch (e) {
                             console.error('Error fetching notifications:', e);
                         }
@@ -770,6 +790,9 @@
                     },
                     init() {
                         this.updateNotifications();
+                        if (typeof Notification !== 'undefined' && Notification.permission === 'default') {
+                            Notification.requestPermission();
+                        }
                         // Poll every 5 seconds for a dynamic, real-time feel
                         setInterval(() => { this.updateNotifications() }, 5000);
                     }
