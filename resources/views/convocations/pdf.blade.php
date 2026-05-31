@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Convocation — {{ $convocation->reference }}</title>
+    <title>Convocation aux Examens — {{ $convocation->reference }}</title>
     <style>
         @page {
             size: A4 portrait;
@@ -11,10 +11,10 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'DejaVu Sans', Arial, sans-serif;
-            color: #000;
-            background: #fff;
-            font-size: 11.5px;
-            line-height: 1.4;
+            color: #1e293b;
+            background: #ffffff;
+            font-size: 11px;
+            line-height: 1.45;
         }
 
         /* ======================== PAGE WRAPPER ======================== */
@@ -23,99 +23,152 @@
             min-height: 297mm;
             max-height: 297mm;
             overflow: hidden;
-            padding: 7mm 10mm 7mm 10mm;
+            padding: 8mm 12mm 8mm 12mm;
             position: relative;
+            background: #ffffff;
+        }
+
+        /* ======================== DOUBLE GOLD BORDER ======================== */
+        .doc-border {
+            border: 7px double #c9a227;
+            padding: 10px 14px 8px 14px;
+            height: 270mm;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* ======================== WATERMARK ======================== */
+        .watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-30deg);
+            font-size: 70px;
+            color: rgba(0, 56, 147, 0.035);
+            font-weight: bold;
+            z-index: 0;
+            white-space: nowrap;
+            letter-spacing: 2px;
         }
 
         /* ======================== HEADER ======================== */
         .header-table {
             width: 100%;
             border-collapse: collapse;
-            border-bottom: 2px solid #000;
-            padding-bottom: 8px;
-            margin-bottom: 10px;
+            border-bottom: 1.5px solid #c9a227;
+            padding-bottom: 6px;
+            margin-bottom: 6px;
         }
         .header-table td {
             vertical-align: middle;
             padding: 0;
         }
-        .hdr-logo-cell {
-            width: 60px;
-            vertical-align: middle;
-        }
-        .hdr-logo-cell img {
-            height: 48px;
-            display: block;
-        }
-        .hdr-text-cell {
-            padding-left: 10px;
-            vertical-align: middle;
-        }
-        .hdr-univ-name {
-            font-size: 19px;
-            font-weight: bold;
-            letter-spacing: 0.3px;
-            color: #000;
-            line-height: 1.1;
-        }
-        .hdr-univ-arabic {
-            font-size: 13px;
-            font-weight: bold;
-            margin-top: 2px;
-            color: #000;
-        }
-        .hdr-right-cell {
-            width: 28%;
-            text-align: right;
-            vertical-align: top;
-        }
-        .hdr-ref {
+        .hdr-left {
+            width: 32%;
+            text-align: left;
             font-size: 7.5px;
-            color: #444;
             font-weight: bold;
-            text-transform: uppercase;
-            margin-top: 3px;
+            color: #003893;
+            line-height: 1.5;
+        }
+        .hdr-center {
+            width: 36%;
+            text-align: center;
+        }
+        .hdr-center img {
+            height: 52px;
+            display: block;
+            margin: 0 auto 2px auto;
+        }
+        .hdr-center-title {
+            font-size: 8px;
+            font-weight: bold;
+            color: #003893;
+            letter-spacing: 0.3px;
+            line-height: 1.3;
+        }
+        .hdr-right {
+            width: 32%;
+            text-align: right;
+            font-size: 7.5px;
+            font-weight: bold;
+            color: #9b1d6e;
+            line-height: 1.5;
+            direction: rtl;
+        }
+
+        /* Sub-line under institution names */
+        .sub-divider {
+            height: 2px;
+            background: linear-gradient(to right, #003893, #c9a227, #9b1d6e);
+            border-radius: 2px;
+            margin-bottom: 8px;
         }
 
         /* ======================== TITLE ======================== */
         .conv-title {
             text-align: center;
-            margin-bottom: 12px;
+            margin: 6px 0 8px 0;
         }
         .conv-title-main {
-            font-size: 22px;
+            font-size: 18px;
             font-weight: bold;
+            color: #003893;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 1.5px;
+            border-bottom: 2px solid #9b1d6e;
+            display: inline-block;
+            padding-bottom: 3px;
         }
         .conv-title-session {
-            font-size: 16px;
+            font-size: 11px;
             font-weight: bold;
+            color: #475569;
             margin-top: 3px;
         }
 
         /* ======================== STUDENT INFO ======================== */
         .student-table {
             width: 100%;
-            margin-bottom: 10px;
-            font-size: 12.5px;
+            margin: 6px 0 10px 0;
             border-collapse: collapse;
+            border: 1px solid rgba(201,162,39,0.3);
+            background: rgba(201,162,39,0.02);
+            position: relative;
+            z-index: 1;
         }
         .student-table td {
-            padding: 3px 0;
+            padding: 5px 10px;
+            font-size: 11px;
+            border-bottom: 1px solid rgba(201,162,39,0.15);
+        }
+        .student-table tr:last-child td {
+            border-bottom: none;
         }
         .s-label {
             font-weight: bold;
-            width: 22%;
+            width: 25%;
+            color: #475569;
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
         }
         .s-value {
-            width: 78%;
+            font-weight: bold;
+            color: #0f172a;
+        }
+        .s-value.blue {
+            color: #003893;
         }
 
-        /* ======================== NOTICE TEXT ======================== */
+        /* ======================== NOTICE ======================== */
         .notice {
-            font-size: 12.5px;
-            margin-bottom: 10px;
+            font-size: 11.5px;
+            color: #334155;
+            margin-bottom: 8px;
+            font-style: italic;
+            position: relative;
+            z-index: 1;
         }
 
         /* ======================== EXAMS TABLE ======================== */
@@ -123,61 +176,96 @@
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 10px;
-            font-size: 10.5px;
+            font-size: 10px;
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
         .exams-table thead tr {
-            background-color: #f0f0f0;
-            border-top: 1.5px solid #000;
-            border-bottom: 1.5px solid #000;
+            background-color: #003893;
+            color: #ffffff;
         }
         .exams-table th {
-            border: 1px solid #000;
-            padding: 6px 4px;
+            border: 1px solid rgba(201,162,39,0.3);
+            padding: 6px 5px;
             text-align: center;
             font-weight: bold;
+            font-size: 9.5px;
+            text-transform: uppercase;
+            letter-spacing: 0.2px;
+        }
+        .exams-table tbody tr {
+            background: #ffffff;
+        }
+        .exams-table tbody tr:nth-child(even) {
+            background: rgba(0,56,147,0.02);
         }
         .exams-table td {
-            border: 1px solid #000;
-            padding: 6px 4px;
+            border: 1px solid rgba(0,56,147,0.1);
+            padding: 6px 5px;
             text-align: center;
+            color: #1e293b;
         }
         .exams-table td.text-left {
             text-align: left;
-            padding-left: 7px;
+            padding-left: 8px;
+        }
+        .exams-table td.bold {
+            font-weight: bold;
+            color: #0f172a;
         }
 
         /* ======================== RULES ======================== */
         .rules-section {
-            margin-bottom: 10px;
+            margin-bottom: 8px;
+            border-left: 3px solid #c9a227;
+            background: rgba(201,162,39,0.03);
+            padding: 6px 10px;
+            position: relative;
+            z-index: 1;
         }
         .rules-title {
-            font-size: 12.5px;
+            font-size: 11px;
             font-weight: bold;
-            border-bottom: 1.5px solid #000;
-            padding-bottom: 3px;
-            margin-bottom: 5px;
+            color: #9b1d6e;
+            margin-bottom: 4px;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
         .rules-text {
-            font-size: 7.8px;
-            line-height: 1.4;
-            color: #111;
+            font-size: 7.5px;
+            line-height: 1.45;
+            color: #334155;
             text-align: justify;
         }
-        .rules-text li {
-            margin-bottom: 1px;
+        .rules-text ul {
             list-style: none;
-            padding-left: 0;
+        }
+        .rules-text li {
+            margin-bottom: 2px;
+            padding-left: 8px;
+            position: relative;
         }
         .rules-text li::before {
-            content: "- ";
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #c9a227;
+            font-weight: bold;
         }
 
-        /* ======================== FOOTER / SIGNATURE ======================== */
+        /* ======================== SIGNATURE & CACHET ======================== */
+        .footer-section {
+            position: absolute;
+            bottom: 10px;
+            left: 14px;
+            right: 14px;
+        }
+
         .footer-sig-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 6px;
+            margin-bottom: 6px;
         }
         .footer-sig-table td {
             vertical-align: bottom;
@@ -185,11 +273,23 @@
         }
         .footer-left-cell {
             width: 45%;
+            text-align: left;
             vertical-align: bottom;
         }
         .footer-left-note {
-            font-size: 8px;
-            color: #555;
+            font-size: 7px;
+            color: #64748b;
+            font-weight: bold;
+        }
+        .footer-left-note p {
+            margin-bottom: 2px;
+        }
+        .footer-left-note img {
+            border: 1px solid #c9a227;
+            padding: 3px;
+            background: white;
+            border-radius: 4px;
+            display: block;
         }
         .footer-right-cell {
             width: 55%;
@@ -197,25 +297,27 @@
             vertical-align: top;
         }
         .sig-name-title {
-            font-size: 11px;
+            font-size: 10px;
             font-weight: bold;
-            margin-bottom: 6px;
+            color: #003893;
+            margin-bottom: 4px;
+            text-decoration: underline;
         }
 
         /* Stamp circle */
         .stamp-circle {
-            width: 100px;
-            height: 100px;
-            border: 2px double #1d4ed8;
+            width: 95px;
+            height: 95px;
+            border: 2px double #003893;
             border-radius: 50%;
             display: inline-block;
             position: relative;
-            background: rgba(29,78,216,0.02);
+            background: rgba(0,56,147,0.02);
         }
         .stamp-inner {
-            width: 88px;
-            height: 88px;
-            border: 1px solid #1d4ed8;
+            width: 83px;
+            height: 83px;
+            border: 1px solid #003893;
             border-radius: 50%;
             position: absolute;
             top: 5px;
@@ -223,61 +325,61 @@
         }
         .stamp-top {
             position: absolute;
-            top: 12px;
-            width: 88px;
+            top: 11px;
+            width: 83px;
             text-align: center;
-            font-size: 6px;
+            font-size: 5.5px;
             font-weight: bold;
-            color: #1d4ed8;
+            color: #003893;
             text-transform: uppercase;
             letter-spacing: 0.3px;
         }
         .stamp-mid {
             position: absolute;
-            top: 32px;
-            width: 88px;
+            top: 30px;
+            width: 83px;
             text-align: center;
             font-size: 14px;
             font-weight: bold;
-            color: #1d4ed8;
+            color: #003893;
             letter-spacing: 1px;
         }
         .stamp-sub {
             position: absolute;
-            top: 54px;
-            width: 88px;
+            top: 52px;
+            width: 83px;
             text-align: center;
             font-size: 5.5px;
             font-weight: bold;
-            color: #1d4ed8;
+            color: #003893;
         }
         .stamp-arabic {
             position: absolute;
-            bottom: 12px;
-            width: 88px;
+            bottom: 11px;
+            width: 83px;
             text-align: center;
-            font-size: 7px;
+            font-size: 6.5px;
             font-weight: bold;
-            color: #1d4ed8;
+            color: #003893;
         }
         .sig-person {
-            font-size: 11px;
+            font-size: 10px;
             font-weight: bold;
-            color: #1d4ed8;
-            margin-top: 4px;
+            color: #003893;
+            margin-top: 3px;
         }
 
         /* Page footer bar */
         .page-footer {
-            border-top: 1px solid #ccc;
-            padding-top: 3px;
+            border-top: 1px solid rgba(201,162,39,0.4);
+            padding-top: 4px;
             text-align: center;
             font-size: 7px;
-            color: #777;
-            margin-top: 6px;
+            color: #94a3b8;
+            line-height: 1.4;
         }
         .page-footer strong {
-            color: #000;
+            color: #003893;
         }
     </style>
 </head>
@@ -308,149 +410,187 @@
         5 => 'Cinquième année',
         default => ($student->group->level ? $student->group->level . 'ème année' : 'Troisième année')
     };
+
+    // Bulletproof Base64 Logo Loading
+    $logoPath = public_path('images/logo_upf.png');
+    $logoBase64 = '';
+    if (file_exists($logoPath)) {
+        $logoBase64 = base64_encode(file_get_contents($logoPath));
+    }
+
+    // Dynamic URL and offline-friendly QR code encoding
+    $verifyUrl = route('admin.convocations.verify', $convocation->reference);
+    $qrCodeBase64 = '';
+    try {
+        $qrCodeBase64 = base64_encode(\SimpleSoftwareIO\QrCode\Facades\QrCode::format('png')->size(100)->generate($verifyUrl));
+    } catch (\Exception $e) {
+        $qrCodeBase64 = '';
+    }
 @endphp
 
 <div class="page-wrapper">
+    <div class="doc-border">
+        <div class="watermark">UPF CONVOCATION</div>
 
-    <!-- ===== HEADER ===== -->
-    <table class="header-table">
-        <tr>
-            <td class="hdr-logo-cell">
-                <img src="{{ public_path('images/logo_upf.png') }}" alt="UPF Logo">
-            </td>
-            <td class="hdr-text-cell">
-                <div class="hdr-univ-name">UNIVERSITÉ PRIVÉE DE FÈS</div>
-                <div class="hdr-univ-arabic">الجامعة الخاصة لفاس</div>
-            </td>
-            <td class="hdr-right-cell">
-                <div style="margin-bottom: 3px;">
-                    {!! \SimpleSoftwareIO\QrCode\Facades\QrCode::format('svg')->size(60)->generate(route('admin.convocations.verify', $convocation->reference)) !!}
-                </div>
-                <div class="hdr-ref">Réf : {{ $convocation->reference }}</div>
-            </td>
-        </tr>
-    </table>
-
-    <!-- ===== CONVOCATION TITLE ===== -->
-    <div class="conv-title">
-        <div class="conv-title-main">Convocation aux Examens</div>
-        <div class="conv-title-session">{{ $academicYearName }} — Session {{ $sessionName }}</div>
-    </div>
-
-    <!-- ===== STUDENT INFO ===== -->
-    <table class="student-table">
-        <tr>
-            <td class="s-label">Matricule</td>
-            <td class="s-value">: {{ $student->student_number ?? 'N/A' }}</td>
-        </tr>
-        <tr>
-            <td class="s-label">Nom &amp; Prénom</td>
-            <td class="s-value" style="text-transform: uppercase;">: {{ $student->user->name ?? 'N/A' }}</td>
-        </tr>
-        <tr>
-            <td class="s-label">Filière</td>
-            <td class="s-value">: {{ $student->group->filiere->name ?? 'N/A' }}</td>
-        </tr>
-        <tr>
-            <td class="s-label">Niveau</td>
-            <td class="s-value">: {{ $levelText }}</td>
-        </tr>
-    </table>
-
-    <!-- ===== NOTICE ===== -->
-    <div class="notice">
-        Vous êtes prié(e) de vous présenter aux dates et heures suivantes pour les épreuves ci-dessous :
-    </div>
-
-    <!-- ===== EXAMS TABLE ===== -->
-    <table class="exams-table">
-        <thead>
+        <!-- ===== HEADER ===== -->
+        <table class="header-table">
             <tr>
-                <th style="width:11%;">Date</th>
-                <th style="width:13%;">Horaire</th>
-                <th style="width:35%;" class="text-left" style="text-align:left; padding-left:7px;">Matière</th>
-                <th style="width:20%;" class="text-left" style="text-align:left; padding-left:7px;">Enseignant</th>
-                <th style="width:12%;">Salle</th>
-                <th style="width:9%;">Place</th>
+                <td class="hdr-left">
+                    ROYAUME DU MAROC<br>
+                    UNIVERSITÉ PRIVÉE DE FÈS<br>
+                    École Supérieure d'Ingénierie<br>
+                    et de Technologie de Fès
+                </td>
+                <td class="hdr-center">
+                    @if($logoBase64)
+                        <img src="data:image/png;base64,{{ $logoBase64 }}" alt="Logo UPF">
+                    @else
+                        <img src="{{ public_path('images/logo_upf.png') }}" alt="Logo UPF">
+                    @endif
+                    <div class="hdr-center-title">UNIVERSITÉ PRIVÉE DE FÈS</div>
+                </td>
+                <td class="hdr-right">
+                    المملكة المغربية<br>
+                    الجامعة الخاصة لفاس<br>
+                    المدرسة العليا للهندسة<br>
+                    والتكنولوجيا بفاس
+                </td>
             </tr>
-        </thead>
-        <tbody>
-            @foreach($allConvocations as $c)
-                @php
-                    $sched = \App\Models\Schedule::where('group_id', $c->exam->group_id)
-                        ->where('module_id', $c->exam->module_id)
-                        ->with('professor.user')
-                        ->first();
-                    $profName = $sched && $sched->professor && $sched->professor->user
-                        ? $sched->professor->user->name
-                        : 'Non spécifié';
-                    $seatNumberStr = $c->seat_number
-                        ? str_replace('Place ', '', $c->seat_number)
-                        : ((($student->id * 17) + ($c->exam->id * 11)) % 55 + 1);
-                @endphp
-                <tr>
-                    <td>{{ \Carbon\Carbon::parse($c->exam->date)->format('d/m/Y') }}</td>
-                    <td>{{ date('H:i', strtotime($c->exam->start_time)) }} - {{ $c->exam->end_time }}</td>
-                    <td class="text-left" style="font-weight:bold;">{{ $c->exam->module->name }}</td>
-                    <td class="text-left" style="text-transform:uppercase; font-size:9.5px;">{{ $profName }}</td>
-                    <td style="font-weight:bold;">{{ $c->exam->room->name ?? 'TBD' }}</td>
-                    <td>{{ $seatNumberStr }}</td>
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
+        </table>
 
-    <!-- ===== RÈGLEMENT ===== -->
-    <div class="rules-section">
-        <div class="rules-title">Règlement des Examens</div>
-        <div class="rules-text">
-            <ul>
-                <li>L'usage des téléphones portables, tablettes ou autres appareils électroniques est strictement interdit en salle d'examen.</li>
-                <li>Chaque étudiant doit se munir de tous les articles de bureau nécessaires (stylos, crayons, gomme, règle, etc.). L'échange entre étudiants est interdit.</li>
-                <li>Tout étudiant en retard de plus de 20 minutes après la distribution des sujets ne peut être admis en salle d'examen.</li>
-                <li>Aucun étudiant ne peut quitter définitivement la salle que 30 minutes au moins après la distribution des sujets, sur autorisation de l'enseignant.</li>
-                <li>Il est strictement interdit de quitter temporairement la salle pendant le déroulement de l'épreuve.</li>
-                <li>Toute fraude dûment constatée donne lieu à un zéro et à un rapport disciplinaire transmis à la Direction dans un délai de 48 heures.</li>
-                <li>Toute copie non rendue à l'heure fixée par les surveillants est affectée d'un zéro.</li>
-            </ul>
+        <div class="sub-divider"></div>
+
+        <!-- ===== CONVOCATION TITLE ===== -->
+        <div class="conv-title">
+            <h1 class="conv-title-main">Convocation aux Examens</h1>
+            <div class="conv-title-session">Année Académique : {{ $academicYearName }} — Session : {{ $sessionName }}</div>
         </div>
-    </div>
 
-    <!-- ===== SIGNATURE & CACHET ===== -->
-    <table class="footer-sig-table">
-        <tr>
-            <td class="footer-left-cell">
-                <div class="footer-left-note">
-                    Université Privée de Fès — Service Scolarité<br>
-                    Route d'Aïn Chkef, B.P. 1357, Fès 30000, Maroc
-                </div>
-            </td>
-            <td class="footer-right-cell">
-                <div style="display:inline-block; text-align:center;">
-                    <div class="sig-name-title">Chargée de la Scolarité et des Affaires Estudiantines</div>
+        <!-- ===== STUDENT INFO ===== -->
+        <table class="student-table">
+            <tr>
+                <td class="s-label">Code d'Inscription (CNE)</td>
+                <td class="s-value blue">: {{ $student->student_number ?? 'N/A' }}</td>
+                <td class="s-label">N° de C.I.N</td>
+                <td class="s-value">: {{ $student->cin ?? 'Non renseigné' }}</td>
+            </tr>
+            <tr>
+                <td class="s-label">Nom &amp; Prénom</td>
+                <td class="s-value blue" style="text-transform: uppercase;">: {{ $student->user->name ?? 'N/A' }}</td>
+                <td class="s-label">Niveau d'Études</td>
+                <td class="s-value">: {{ $levelText }}</td>
+            </tr>
+            <tr>
+                <td class="s-label">Filière d'Études</td>
+                <td class="s-value blue" colspan="3">: {{ $student->group->filiere->name ?? 'N/A' }}</td>
+            </tr>
+        </table>
 
-                    <!-- Stamp -->
-                    <div class="stamp-circle">
-                        <div class="stamp-inner">
-                            <div class="stamp-top">UNIVERSITE PRIVEE DE FES</div>
-                            <div class="stamp-mid">★ UPF ★</div>
-                            <div class="stamp-sub">SCOLARITÉ</div>
-                            <div class="stamp-arabic">الجامعة الخاصة لفاس</div>
+        <!-- ===== NOTICE ===== -->
+        <div class="notice">
+            Vous êtes prié(e) de vous présenter aux dates et heures fixées ci-dessous pour passer vos épreuves :
+        </div>
+
+        <!-- ===== EXAMS TABLE ===== -->
+        <table class="exams-table">
+            <thead>
+                <tr>
+                    <th style="width: 12%;">Date</th>
+                    <th style="width: 13%;">Horaire</th>
+                    <th style="width: 32%;" class="text-left">Module / Matière</th>
+                    <th style="width: 21%;" class="text-left">Enseignant</th>
+                    <th style="width: 13%;">Salle</th>
+                    <th style="width: 9%;">Place</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($allConvocations as $c)
+                    @php
+                        $sched = \App\Models\Schedule::where('group_id', $c->exam->group_id)
+                            ->where('module_id', $c->exam->module_id)
+                            ->with('professor.user')
+                            ->first();
+                        $profName = $sched && $sched->professor && $sched->professor->user
+                            ? $sched->professor->user->name
+                            : 'Non spécifié';
+                        $seatNumberStr = $c->seat_number
+                            ? str_replace('Place ', '', $c->seat_number)
+                            : ((($student->id * 17) + ($c->exam->id * 11)) % 55 + 1);
+                    @endphp
+                    <tr>
+                        <td>{{ \Carbon\Carbon::parse($c->exam->date)->format('d/m/Y') }}</td>
+                        <td class="bold">{{ date('H:i', strtotime($c->exam->start_time)) }} - {{ $c->exam->end_time }}</td>
+                        <td class="text-left bold" style="color: #003893;">{{ $c->exam->module->name }}</td>
+                        <td class="text-left" style="text-transform: uppercase; font-size: 8.5px;">{{ $profName }}</td>
+                        <td class="bold" style="color: #9b1d6e;">{{ $c->exam->room->name ?? 'TBD' }}</td>
+                        <td class="bold" style="font-size: 11px; background: rgba(201,162,39,0.06);">{{ $seatNumberStr }}</td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+
+        <!-- ===== RÈGLEMENT ===== -->
+        <div class="rules-section">
+            <div class="rules-title">Règlement des Examens — Extraits</div>
+            <div class="rules-text">
+                <ul>
+                    <li>L'usage des téléphones portables et de tout appareil connecté est strictement interdit et assimilé à une tentative de fraude.</li>
+                    <li>Chaque étudiant doit se munir de sa propre carte d'étudiant ou de sa CIN. Aucun prêt de matériel n'est autorisé entre candidats.</li>
+                    <li>Tout retard supérieur à 20 minutes après l'ouverture des enveloppes exclut le candidat de l'épreuve.</li>
+                    <li>La sortie définitive de la salle n'est permise qu'après l'écoulement des 30 premières minutes de l'épreuve.</li>
+                    <li>Toute absence non justifiée médicalement dans les 48 heures entraîne l'attribution de la note zéro.</li>
+                    <li>Toute tentative de fraude fera l'objet d'un rapport immédiat et d'une comparution devant le Conseil de Discipline.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- ===== FOOTER / SIGNATURE ===== -->
+        <div class="footer-section">
+            <table class="footer-sig-table">
+                <tr>
+                    <!-- QR Code left -->
+                    <td class="footer-left-cell">
+                        @if($qrCodeBase64)
+                            <img src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="QR Code" width="70" height="70">
+                        @else
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data={{ urlencode($verifyUrl) }}" alt="QR Code" width="70" height="70">
+                        @endif
+                        <div class="footer-left-note" style="margin-top: 4px;">
+                            <p>Vérification Officielle UPF</p>
+                            <p style="font-size: 6px; color: #94a3b8; font-family: monospace;">Réf : {{ $convocation->reference }}</p>
                         </div>
-                    </div>
+                    </td>
 
-                    <div class="sig-person">FADOUA KHALOUQ</div>
-                </div>
-            </td>
-        </tr>
-    </table>
+                    <!-- Signature + Stamp right -->
+                    <td class="footer-right-cell">
+                        <div style="display: inline-block; text-align: center;">
+                            <div class="sig-name-title">Le Directeur des Études &amp; des Affaires Académiques</div>
 
-    <!-- ===== PAGE FOOTER ===== -->
-    <div class="page-footer">
-        <strong>Université Privée de Fès</strong> — Route d'Aïn Chkef, B.P. 1357, Fès 30000, Maroc &nbsp;|&nbsp;
-        Tél : +212 5 35 61 21 21 &nbsp;|&nbsp; Web : upf.ac.ma &nbsp;|&nbsp; Email : contact@upf.ac.ma
-    </div>
+                            <!-- Stamp -->
+                            <div class="stamp-circle">
+                                <div class="stamp-inner">
+                                    <div class="stamp-top">UNIVERSITE PRIVEE DE FES</div>
+                                    <div class="stamp-mid">★ UPF ★</div>
+                                    <div class="stamp-sub">SCOLARITÉ</div>
+                                    <div class="stamp-arabic">الجامعة الخاصة لفاس</div>
+                                </div>
+                            </div>
 
-</div>
+                            <div class="sig-person">FADOUA KHALOUQ</div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+
+            <!-- Page footer bar -->
+            <div class="page-footer">
+                <strong>Université Privée de Fès</strong> — Route d'Aïn Chkef, B.P. 1357, Fès 30000, Maroc &nbsp;|&nbsp;
+                Tél : +212 5 35 61 21 21 &nbsp;|&nbsp; Web : upf.ac.ma &nbsp;|&nbsp; Email : contact@upf.ac.ma
+            </div>
+        </div>
+
+    </div><!-- /doc-border -->
+</div><!-- /page-wrapper -->
+
 </body>
 </html>

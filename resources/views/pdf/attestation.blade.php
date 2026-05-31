@@ -41,6 +41,21 @@
             overflow: hidden;
         }
 
+        /* Watermark */
+        .watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-30deg);
+            font-size: 70px;
+            color: rgba(0, 56, 147, 0.035);
+            font-weight: bold;
+            z-index: 0;
+            white-space: nowrap;
+            letter-spacing: 2px;
+            font-family: 'DejaVu Sans', sans-serif;
+        }
+
         /* ======================== HEADER ======================== */
         .header-table {
             width: 100%;
@@ -289,9 +304,17 @@
     </style>
 </head>
 <body>
+@php
+    $logoPath = public_path('images/logo_upf.png');
+    $logoBase64 = '';
+    if (file_exists($logoPath)) {
+        $logoBase64 = base64_encode(file_get_contents($logoPath));
+    }
+@endphp
 
 <div class="page-wrapper">
     <div class="doc-border">
+        <div class="watermark">UPF OFFICIEL</div>
 
         <!-- ===== HEADER ===== -->
         <table class="header-table">
@@ -303,7 +326,11 @@
                     et de Technologie de Fès
                 </td>
                 <td class="hdr-center">
-                    <img src="{{ public_path('images/logo_upf.png') }}" alt="Logo UPF">
+                    @if($logoBase64)
+                        <img src="data:image/png;base64,{{ $logoBase64 }}" alt="Logo UPF">
+                    @else
+                        <img src="{{ public_path('images/logo_upf.png') }}" alt="Logo UPF">
+                    @endif
                     <div class="hdr-center-title">UNIVERSITÉ PRIVÉE DE FÈS</div>
                 </td>
                 <td class="hdr-right">

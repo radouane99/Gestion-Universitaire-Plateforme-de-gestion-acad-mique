@@ -140,6 +140,13 @@
     </style>
 </head>
 <body>
+@php
+    $logoPath = public_path('images/logo_upf.png');
+    $logoBase64 = '';
+    if (file_exists($logoPath)) {
+        $logoBase64 = base64_encode(file_get_contents($logoPath));
+    }
+@endphp
 
     <div class="header">
         <table>
@@ -151,7 +158,11 @@
                     et de Technologie de Fès
                 </td>
                 <td class="hdr-center">
-                    <img src="{{ public_path('images/logo_upf.png') }}" alt="Logo UPF">
+                    @if($logoBase64)
+                        <img src="data:image/png;base64,{{ $logoBase64 }}" alt="Logo UPF">
+                    @else
+                        <img src="{{ public_path('images/logo_upf.png') }}" alt="Logo UPF">
+                    @endif
                     <div class="hdr-center-name">UNIVERSITÉ PRIVÉE DE FÈS</div>
                 </td>
                 <td class="hdr-right">

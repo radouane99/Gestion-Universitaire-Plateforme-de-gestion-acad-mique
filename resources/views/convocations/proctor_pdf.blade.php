@@ -20,6 +20,12 @@
     $session      = $currentExam->examSession;
     $academicYearName = $session?->academicYear?->name ?? '2025-2026';
     $sessionName  = $session?->name ?? 'Session d\'examens';
+
+    $logoPath = public_path('images/logo_upf.png');
+    $logoBase64 = '';
+    if (file_exists($logoPath)) {
+        $logoBase64 = base64_encode(file_get_contents($logoPath));
+    }
 @endphp
 
 <div class="page">
@@ -28,7 +34,11 @@
     <table style="width: 100%; border-bottom: 2px solid #000; padding-bottom: 12px; margin-bottom: 20px; border-collapse: collapse;">
         <tr>
             <td style="width: 65px; vertical-align: middle;">
-                <img src="{{ public_path('images/logo_upf.png') }}" style="height: 50px; display: block;" alt="UPF Logo">
+                @if($logoBase64)
+                    <img src="data:image/png;base64,{{ $logoBase64 }}" style="height: 50px; display: block;" alt="UPF Logo">
+                @else
+                    <img src="{{ public_path('images/logo_upf.png') }}" style="height: 50px; display: block;" alt="UPF Logo">
+                @endif
             </td>
             <td style="padding-left: 12px; vertical-align: middle;">
                 <div style="font-size: 20px; font-weight: bold; letter-spacing: 0.5px; color: #000;">UNIVERSITÉ PRIVÉE DE FÈS</div>

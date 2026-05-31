@@ -184,6 +184,13 @@
     </style>
 </head>
 <body>
+@php
+    $logoPath = public_path('images/logo_upf.png');
+    $logoBase64 = '';
+    if (file_exists($logoPath)) {
+        $logoBase64 = base64_encode(file_get_contents($logoPath));
+    }
+@endphp
 
 <div class="page">
     <div class="border-container">
@@ -198,7 +205,11 @@
                         et de Technologie de Fès
                     </td>
                     <td class="header-center">
-                        <img src="{{ public_path('images/logo_upf.png') }}" alt="Logo UPF" onerror="this.src='https://www.upf.ac.ma/images/logo_upf.png'">
+                        @if($logoBase64)
+                            <img src="data:image/png;base64,{{ $logoBase64 }}" alt="Logo UPF">
+                        @else
+                            <img src="{{ public_path('images/logo_upf.png') }}" alt="Logo UPF" onerror="this.src='https://www.upf.ac.ma/images/logo_upf.png'">
+                        @endif
                     </td>
                     <td class="header-right" dir="rtl">
                         المملكة المغربية<br>

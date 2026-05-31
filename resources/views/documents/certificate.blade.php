@@ -37,6 +37,21 @@
             overflow: hidden;
         }
 
+        /* Watermark */
+        .watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-30deg);
+            font-size: 70px;
+            color: rgba(0, 51, 153, 0.035);
+            font-weight: bold;
+            z-index: 0;
+            white-space: nowrap;
+            letter-spacing: 2px;
+            font-family: 'DejaVu Sans', sans-serif;
+        }
+
         /* Magenta accent bar */
         .accent-bar {
             height: 3px;
@@ -292,9 +307,17 @@
     </style>
 </head>
 <body>
+@php
+    $logoPath = public_path('images/logo_upf.png');
+    $logoBase64 = '';
+    if (file_exists($logoPath)) {
+        $logoBase64 = base64_encode(file_get_contents($logoPath));
+    }
+@endphp
 
 <div class="page-wrapper">
     <div class="doc-border">
+        <div class="watermark">UPF SCOLARITÉ</div>
         <div class="accent-bar"></div>
 
         <!-- ===== HEADER ===== -->
@@ -307,7 +330,11 @@
                     et de Technologie de Fès
                 </td>
                 <td class="hdr-center">
-                    <img src="{{ public_path('images/logo_upf.png') }}" alt="Logo UPF">
+                    @if($logoBase64)
+                        <img src="data:image/png;base64,{{ $logoBase64 }}" alt="Logo UPF">
+                    @else
+                        <img src="{{ public_path('images/logo_upf.png') }}" alt="Logo UPF">
+                    @endif
                     <div class="hdr-center-name">UNIVERSITÉ PRIVÉE DE FÈS</div>
                 </td>
                 <td class="hdr-right">
