@@ -20,22 +20,24 @@
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
             background: #ffffff;
             color: #1a1a2e;
-            padding: 12mm 15mm;
             font-size: 13.5px;
             line-height: 1.5;
         }
         .page {
-            width: 100%;
-            height: 250mm;
+            width: 210mm;
+            min-height: 297mm;
+            max-height: 297mm;
             position: relative;
             background: white;
             overflow: hidden;
+            padding: 10mm 15mm;
         }
         .border-container {
             border: 6px double #003399; /* Double royal blue border */
             padding: 20px 25px;
-            height: 100%;
+            height: 265mm;
             position: relative;
+            overflow: hidden;
         }
         .accent-bar {
             height: 4px;
@@ -194,7 +196,7 @@
             </div>
 
             <!-- Signatures Table (Absolutely locked to page bottom in PDF mode) -->
-            <table style="width: 100%; border-collapse: collapse; position: absolute; bottom: 50px; left: 25px; right: 25px;">
+            <table style="width: 100%; border-collapse: collapse; position: absolute; bottom: 50px; left: 0; padding: 0 25px; box-sizing: border-box;">
                 <tr>
                     <td style="width: 33%; text-align: center; vertical-align: top;">
                         <div style="font-size: 9px; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">Signature de l'Intéressé(e)</div>
@@ -215,7 +217,7 @@
             </table>
 
             <!-- Page Footer (Absolutely locked to A4 bottom) -->
-            <div style="position: absolute; bottom: 15px; left: 25px; right: 25px; text-align: center; font-size: 8.5px; color: #94a3b8; font-weight: 600; border-top: 1px solid #e2e8f0; padding-top: 8px; line-height: 1.4;">
+            <div style="position: absolute; bottom: 15px; left: 0; width: 100%; padding: 0 25px; box-sizing: border-box; text-align: center; font-size: 8.5px; color: #94a3b8; font-weight: 600; border-top: 1px solid #e2e8f0; padding-top: 8px; line-height: 1.4;">
                 <strong>Université Privée de Fès</strong> — Route d'Aïn Chkef, B.P. 1357, Fès 30000, Maroc<br>
                 Tél : +212 5 35 61 21 21 &nbsp;|&nbsp; Fax : +212 5 35 61 21 22 &nbsp;|&nbsp; upf.ac.ma &nbsp;|&nbsp; contact@upf.ac.ma
             </div>
