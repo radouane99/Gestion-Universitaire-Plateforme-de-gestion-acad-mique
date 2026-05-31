@@ -25,24 +25,33 @@
         }
         .page {
             width: 210mm;
-            min-height: 297mm;
-            max-height: 297mm;
+            height: 297mm;
             position: relative;
             background: white;
             overflow: hidden;
-            padding: 10mm 15mm;
+            box-sizing: border-box;
         }
         .border-container {
             border: 6px double #003399; /* Double royal blue border */
             padding: 20px 25px;
-            height: 265mm;
-            position: relative;
+            position: absolute;
+            top: 10mm;
+            bottom: 10mm;
+            left: 15mm;
+            right: 15mm;
+            box-sizing: border-box;
             overflow: hidden;
         }
         .accent-bar {
             height: 4px;
             background: #B00D5D; /* Magenta accent line */
             margin-bottom: 18px;
+        }
+        .footer-section {
+            position: absolute;
+            bottom: 12px;
+            left: 25px;
+            right: 25px;
         }
     </style>
     @else
@@ -103,6 +112,12 @@
             height: 4px;
             background: #B00D5D;
             margin-bottom: 18px;
+        }
+        .footer-section {
+            position: absolute;
+            bottom: 12px;
+            left: 25px;
+            right: 25px;
         }
         @media print {
             body { background: white; padding: 0; }
@@ -202,31 +217,34 @@
                 Les autorités locales de la destination et tous représentants des services publics et de la force publique sont priés de faciliter l'accomplissement de la mission de l'intéressé(e) et de lui prêter assistance en cas de besoin.
             </div>
 
-            <!-- Signatures Table (Absolutely locked to page bottom in PDF mode) -->
-            <table style="width: 100%; border-collapse: collapse; position: absolute; bottom: 50px; left: 0; padding: 0 25px; box-sizing: border-box;">
-                <tr>
-                    <td style="width: 33%; text-align: center; vertical-align: top;">
-                        <div style="font-size: 9px; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">Signature de l'Intéressé(e)</div>
-                        <div style="height: 50px;"></div>
-                        <div style="font-size: 11px; font-weight: 700; color: #0f172a;">Prof. {{ $request->user->name }}</div>
-                    </td>
-                    <td style="width: 34%; text-align: center; vertical-align: middle;">
-                        <div style="width: 90px; height: 90px; border: 2px dashed #003399; border-radius: 50%; margin: 0 auto; display: block; color: #003399; opacity: 0.5;">
-                            <div style="padding-top: 25px; font-size: 9px; font-weight: 700; line-height: 1.3;">Sceau<br>Officiel<br>UPF</div>
-                        </div>
-                    </td>
-                    <td style="width: 33%; text-align: center; vertical-align: top;">
-                        <div style="font-size: 9px; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">Fait à Fès, le {{ now()->format('d/m/Y') }}</div>
-                        <div style="height: 50px;"></div>
-                        <div style="font-size: 11px; font-weight: 700; color: #0f172a; text-transform: uppercase; letter-spacing: 0.5px;">Le Secrétaire Général</div>
-                    </td>
-                </tr>
-            </table>
+            <!-- ===== FOOTER / SIGNATURE ===== -->
+            <div class="footer-section">
+                <!-- Signatures Table (Absolutely locked to page bottom in PDF mode) -->
+                <table style="width: 100%; border-collapse: collapse; text-align: center; margin-bottom: 12px;">
+                    <tr>
+                        <td style="width: 33%; text-align: center; vertical-align: top;">
+                            <div style="font-size: 9px; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">Signature de l'Intéressé(e)</div>
+                            <div style="height: 40px;"></div>
+                            <div style="font-size: 11px; font-weight: 700; color: #0f172a;">Prof. {{ $request->user->name }}</div>
+                        </td>
+                        <td style="width: 34%; text-align: center; vertical-align: middle;">
+                            <div style="width: 80px; height: 80px; border: 2px dashed #003399; border-radius: 50%; margin: 0 auto; display: block; color: #003399; opacity: 0.5;">
+                                <div style="padding-top: 20px; font-size: 9px; font-weight: 700; line-height: 1.3;">Sceau<br>Officiel<br>UPF</div>
+                            </div>
+                        </td>
+                        <td style="width: 33%; text-align: center; vertical-align: top;">
+                            <div style="font-size: 9px; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">Fait à Fès, le {{ now()->format('d/m/Y') }}</div>
+                            <div style="height: 40px;"></div>
+                            <div style="font-size: 11px; font-weight: 700; color: #0f172a; text-transform: uppercase; letter-spacing: 0.5px;">Le Secrétaire Général</div>
+                        </td>
+                    </tr>
+                </table>
 
-            <!-- Page Footer (Absolutely locked to A4 bottom) -->
-            <div style="position: absolute; bottom: 15px; left: 0; width: 100%; padding: 0 25px; box-sizing: border-box; text-align: center; font-size: 8.5px; color: #94a3b8; font-weight: 600; border-top: 1px solid #e2e8f0; padding-top: 8px; line-height: 1.4;">
-                <strong>Université Privée de Fès</strong> — Route d'Aïn Chkef, B.P. 1357, Fès 30000, Maroc<br>
-                Tél : +212 5 35 61 21 21 &nbsp;|&nbsp; upf.ac.ma &nbsp;|&nbsp; contact@upf.ac.ma
+                <!-- Page Footer (Absolutely locked to A4 bottom) -->
+                <div style="text-align: center; font-size: 8.5px; color: #94a3b8; font-weight: 600; border-top: 1px solid #e2e8f0; padding-top: 8px; line-height: 1.4;">
+                    <strong>Université Privée de Fès</strong> — Route d'Aïn Chkef, B.P. 1357, Fès 30000, Maroc<br>
+                    Tél : +212 5 35 61 21 21 &nbsp;|&nbsp; upf.ac.ma &nbsp;|&nbsp; contact@upf.ac.ma
+                </div>
             </div>
         </div>
     </div>

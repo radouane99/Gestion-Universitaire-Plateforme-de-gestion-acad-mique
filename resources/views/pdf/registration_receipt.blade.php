@@ -24,20 +24,23 @@
         /* ======================== OUTER WRAPPER ======================== */
         .page-wrapper {
             width: 210mm;
-            min-height: 297mm;
-            max-height: 297mm;
+            height: 297mm;
             position: relative;
             background: white;
             overflow: hidden;
-            padding: 10mm 15mm;
+            box-sizing: border-box;
         }
 
         /* ======================== BORDER ======================== */
         .doc-border {
             border: 7px double #003893;
             padding: 15px 20px;
-            height: 265mm;
-            position: relative;
+            position: absolute;
+            top: 10mm;
+            bottom: 10mm;
+            left: 15mm;
+            right: 15mm;
+            box-sizing: border-box;
             overflow: hidden;
         }
 
@@ -69,7 +72,7 @@
             padding: 0;
         }
         .hdr-left {
-            width: 30%;
+            width: 35%;
             text-align: left;
             font-size: 7.5px;
             font-weight: bold;
@@ -77,7 +80,7 @@
             line-height: 1.5;
         }
         .hdr-center {
-            width: 40%;
+            width: 25%;
             text-align: center;
         }
         .hdr-center img {
@@ -93,12 +96,13 @@
             line-height: 1.3;
         }
         .hdr-right {
-            width: 30%;
+            width: 40%;
             text-align: right;
             font-size: 7.5px;
             font-weight: bold;
             color: #9b1d6e;
             line-height: 1.5;
+            white-space: nowrap;
         }
 
         /* Sub-line under institution names */
@@ -173,11 +177,9 @@
         /* ======================== FOOTER AREA ======================== */
         .footer-section {
             position: absolute;
-            bottom: 15px;
-            left: 0;
-            width: 100%;
-            padding: 0 20px;
-            box-sizing: border-box;
+            bottom: 12px;
+            left: 20px;
+            right: 20px;
         }
 
         /* Signature table */
@@ -288,6 +290,7 @@
             font-size: 6px;
             font-weight: bold;
             color: #003893;
+            white-space: nowrap;
         }
 
         /* Page footer bar */

@@ -25,24 +25,33 @@
         }
         .page {
             width: 210mm;
-            min-height: 297mm;
-            max-height: 297mm;
+            height: 297mm;
             position: relative;
             background: white;
             overflow: hidden;
-            padding: 10mm 15mm;
+            box-sizing: border-box;
         }
         .border-container {
             border: 6px double #003399; /* Double royal blue border */
             padding: 15px 20px;
-            height: 265mm;
-            position: relative;
+            position: absolute;
+            top: 10mm;
+            bottom: 10mm;
+            left: 15mm;
+            right: 15mm;
+            box-sizing: border-box;
             overflow: hidden;
         }
         .accent-bar {
             height: 4px;
             background: #B00D5D; /* Magenta accent line */
             margin-bottom: 12px;
+        }
+        .footer-section {
+            position: absolute;
+            bottom: 12px;
+            left: 20px;
+            right: 20px;
         }
     </style>
     @else
@@ -103,6 +112,12 @@
             height: 4px;
             background: #B00D5D;
             margin-bottom: 12px;
+        }
+        .footer-section {
+            position: absolute;
+            bottom: 12px;
+            left: 20px;
+            right: 20px;
         }
         @media print {
             body { background: white; padding: 0; }
@@ -198,34 +213,37 @@
                 </div>
             </div>
 
-            <!-- Signatures Table (Absolutely locked to page bottom in PDF mode) -->
-            <table style="width: 100%; border-collapse: collapse; position: absolute; bottom: 50px; left: 0; padding: 0 20px; box-sizing: border-box; text-align: center;">
-                <tr>
-                    <td style="width: 33%; vertical-align: top; border-right: 1px dashed #e2e8f0;">
-                        <div style="font-weight: bold; color: #003399; font-size: 11px; text-transform: uppercase; margin-bottom: 6px;">Pour l'UPF</div>
-                        <div style="font-size: 8.5px; color: #94a3b8; margin-top: 35px;">
-                            Sceau &amp; Signature Autorisé
-                        </div>
-                    </td>
-                    <td style="width: 34%; vertical-align: top; border-right: 1px dashed #e2e8f0;">
-                        <div style="font-weight: bold; color: #003399; font-size: 11px; text-transform: uppercase; margin-bottom: 6px;">Pour l'Entreprise</div>
-                        <div style="font-size: 8.5px; color: #94a3b8; margin-top: 35px;">
-                            Sceau &amp; Signature<br>(à compléter)
-                        </div>
-                    </td>
-                    <td style="width: 33%; vertical-align: top;">
-                        <div style="font-weight: bold; color: #003399; font-size: 11px; text-transform: uppercase; margin-bottom: 6px;">L'Étudiant(e)</div>
-                        <div style="font-size: 8.5px; color: #94a3b8; margin-top: 35px;">
-                            Signature précédée de la mention<br>"Lu et approuvé"
-                        </div>
-                    </td>
-                </tr>
-            </table>
+            <!-- ===== FOOTER / SIGNATURE ===== -->
+            <div class="footer-section">
+                <!-- Signatures Table -->
+                <table style="width: 100%; border-collapse: collapse; text-align: center; margin-bottom: 10px;">
+                    <tr>
+                        <td style="width: 33%; vertical-align: top; border-right: 1px dashed #e2e8f0;">
+                            <div style="font-weight: bold; color: #003399; font-size: 11px; text-transform: uppercase; margin-bottom: 6px;">Pour l'UPF</div>
+                            <div style="font-size: 8.5px; color: #94a3b8; margin-top: 30px;">
+                                Sceau &amp; Signature Autorisé
+                            </div>
+                        </td>
+                        <td style="width: 34%; vertical-align: top; border-right: 1px dashed #e2e8f0;">
+                            <div style="font-weight: bold; color: #003399; font-size: 11px; text-transform: uppercase; margin-bottom: 6px;">Pour l'Entreprise</div>
+                            <div style="font-size: 8.5px; color: #94a3b8; margin-top: 30px;">
+                                Sceau &amp; Signature<br>(à compléter)
+                            </div>
+                        </td>
+                        <td style="width: 33%; vertical-align: top;">
+                            <div style="font-weight: bold; color: #003399; font-size: 11px; text-transform: uppercase; margin-bottom: 6px;">L'Étudiant(e)</div>
+                            <div style="font-size: 8.5px; color: #94a3b8; margin-top: 30px;">
+                                Signature précédée de la mention<br>"Lu et approuvé"
+                            </div>
+                        </td>
+                    </tr>
+                </table>
 
-            <!-- Page Footer (Absolutely locked to A4 bottom) -->
-            <div style="position: absolute; bottom: 15px; left: 0; width: 100%; padding: 0 20px; box-sizing: border-box; text-align: center; font-size: 8px; color: #94a3b8; font-weight: 600; border-top: 1px solid #e2e8f0; padding-top: 8px; line-height: 1.4;">
-                Université Privée de Fès — Route d'Aïn Chkef, B.P. 1357, Fès 30000, Maroc<br>
-                Tél : +212 5 35 61 21 21 &nbsp;|&nbsp; Web: upf.ac.ma &nbsp;|&nbsp; Email: contact@upf.ac.ma
+                <!-- Page Footer Bar -->
+                <div style="text-align: center; font-size: 8px; color: #94a3b8; font-weight: 600; border-top: 1px solid #e2e8f0; padding-top: 8px; line-height: 1.4;">
+                    Université Privée de Fès — Route d'Aïn Chkef, B.P. 1357, Fès 30000, Maroc<br>
+                    Tél : +212 5 35 61 21 21 &nbsp;|&nbsp; Web: upf.ac.ma &nbsp;|&nbsp; Email: contact@upf.ac.ma
+                </div>
             </div>
         </div>
     </div>

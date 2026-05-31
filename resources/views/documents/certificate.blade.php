@@ -76,7 +76,7 @@
             padding: 0;
         }
         .hdr-left {
-            width: 30%;
+            width: 35%;
             text-align: left;
             font-size: 7.5px;
             font-weight: bold;
@@ -84,7 +84,7 @@
             line-height: 1.5;
         }
         .hdr-center {
-            width: 40%;
+            width: 25%;
             text-align: center;
         }
         .hdr-center img {
@@ -99,12 +99,13 @@
             letter-spacing: 0.3px;
         }
         .hdr-right {
-            width: 30%;
+            width: 40%;
             text-align: right;
             font-size: 7.5px;
             font-weight: bold;
             color: #B00D5D;
             line-height: 1.5;
+            white-space: nowrap;
         }
 
         /* Reference box */
@@ -286,6 +287,7 @@
             font-size: 6.5px;
             font-weight: bold;
             color: #003399;
+            white-space: nowrap;
         }
         .sig-person {
             font-size: 9.5px;
