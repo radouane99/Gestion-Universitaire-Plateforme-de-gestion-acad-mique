@@ -72,7 +72,7 @@ class AdminTwoFactorController extends Controller
         return response()->json([
             'status' => 'success',
             'secret' => $secret,
-            'qr_code_url' => 'https://chart.googleapis.com/chart?chs=200x200&chld=M|0&cht=qr&chl=' . urlencode($qrCodeUrl)
+            'qr_code_url' => 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' . urlencode($qrCodeUrl)
         ]);
     }
 
