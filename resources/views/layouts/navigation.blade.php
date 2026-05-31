@@ -749,12 +749,16 @@
                     notifications: [],
                     async updateNotifications() {
                         try {
-                            const countRes = await fetch('{{ route('api.notifications.unread_count') }}');
+                            const countRes = await fetch('{{ route('api.notifications.unread_count') }}', {
+                                headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' }
+                            });
                             const countData = await countRes.json();
                             const newCount = countData.unread_count;
 
                             if (newCount > this.unreadCount) {
-                                const listRes = await fetch('{{ route('api.notifications.latest') }}');
+                                const listRes = await fetch('{{ route('api.notifications.latest') }}', {
+                                    headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' }
+                                });
                                 const newList = await listRes.json();
                                 this.notifications = newList;
 
@@ -772,7 +776,9 @@
                                 this.unreadCount = newCount;
                             } else {
                                 this.unreadCount = newCount;
-                                const listRes = await fetch('{{ route('api.notifications.latest') }}');
+                                const listRes = await fetch('{{ route('api.notifications.latest') }}', {
+                                    headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' }
+                                });
                                 this.notifications = await listRes.json();
                             }
                         } catch (e) {
