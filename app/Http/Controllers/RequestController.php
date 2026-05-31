@@ -114,7 +114,7 @@ class RequestController extends Controller
             : "❌ Votre demande [{$request->type}] a été REFUSÉE. Motif : " . ($validated['reason'] ?? 'Non précisé');
 
         $notifUrl = $validated['status'] === 'approved'
-            ? route('documents.download', ['adminRequest' => $request->id])
+            ? route('documents.download', ['documentRequest' => $request->id])
             : route('dashboard');
 
         $request->user->notify(new \App\Notifications\AcademicNotification(
@@ -168,7 +168,7 @@ class RequestController extends Controller
                 : "❌ Votre demande [{$request->type}] a été REFUSÉE. Motif : " . ($validated['reason'] ?? 'Non précisé');
 
             $notifUrl = $validated['status'] === 'approved'
-                ? route('documents.download', ['adminRequest' => $request->id])
+                ? route('documents.download', ['documentRequest' => $request->id])
                 : route('dashboard');
 
             $request->user->notify(new \App\Notifications\AcademicNotification(
