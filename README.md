@@ -41,47 +41,59 @@ Créer un portail SaaS (Software as a Service) 100% digital, centralisé, ultra-
 
 ## 2. Fonctionnalités Principales & Scénarios d'Usage ✨
 
+Le système couvre l'intégralité du cycle de vie universitaire à travers des modules avancés :
+
 ### 🤖 1. IA Caméléon : Assistant Multi-Rôles (LLaMA 3.3 RAG)
-L'intelligence artificielle n'est pas qu'un simple gadget, elle a été programmée pour changer de comportement, de rôle et de contexte de base de données selon la personne connectée (Technique du **RAG : Retrieval-Augmented Generation**).
+L'intelligence artificielle n'est pas qu'un simple gadget, elle a été programmée pour changer de comportement, de rôle et de contexte selon l'utilisateur (Technique du **RAG : Retrieval-Augmented Generation**).
+*   **Étudiant (Conseiller Académique) :** Un widget de chat flottant. L'IA connaît les notes, la filière et les absences de l'étudiant pour lui fournir un conseil ultra-personnalisé.
+*   **Professeur (Assistant Pédagogique) :** L'IA l'assiste dans le panneau des "Réclamations". Un clic sur "✨ Suggérer avec l'IA" rédige un brouillon de réponse diplomatique à l'étudiant.
+*   **Administrateur (Super-Secrétaire & Conseiller) :** L'IA génère des "Bilans Pédagogiques" professionnels pour les étudiants à risque, ou rédige des convocations formelles pour les conseils de discipline.
 
-*   **Scénario Étudiant : Le Conseiller Académique**
-    *   *L'étudiant demande :* "Est-ce que je valide mon année ?"
-    *   *Réponse IA :* Le chatbot analyse discrètement les notes et absences de l'étudiant via la BDD. Il lui répond de façon personnalisée : "Bonjour Ahmed, vous avez actuellement 12/20 en Java mais 3 absences non justifiées. Attention, le règlement stipule que..."
-*   **Scénario Professeur : L'Assistant Pédagogique**
-    *   *Le professeur demande :* "Donne-moi une idée de TP en Python pour mes 1ère année."
-    *   *Réponse IA :* L'IA se met en mode Professeur. Elle connaît la spécialité du professeur et lui génère une suggestion de TP ciblée, ou l'aide à rédiger un e-mail professionnel pour convoquer une classe.
-*   **Scénario Administrateur : Le Super-Secrétaire**
-    *   *L'admin demande :* "Rédige une convocation formelle pour un conseil de discipline."
-    *   *Réponse IA :* Conscient des pouvoirs de l'administrateur, l'IA génère instantanément un modèle officiel d'e-mail ou de lettre adapté au jargon universitaire marocain.
+### 🎓 2. Règles de Délibération Marocaines (Système Apogée)
+Un moteur métier strict (`PVCompilerTrait`) qui automatise la loi universitaire :
+*   **Validation & Compensation :** Validation si Moyenne >= 10. Compensation autorisée si la note du module >= 7/20 (max 2 modules compensés). Une note < 7 entraîne le statut Non Validé (NV).
+*   **Gestion des Crédits Modules :** Les étudiants peuvent passer à l'année supérieure avec des dettes (Admis avec Crédit, max 2 modules).
+*   **Règle Stricte de Licence (3ème année) :** Annulation de la tolérance de crédit. Validation totale requise pour l'obtention du diplôme.
+*   **Affichage Global & Précision des Dates :** Les PV listent tous les étudiants d'une filière, et affichent la précision chronologique avec la balise `Dt. Val./Ex.` (Date de validation ou d'examen).
 
-### 🛡️ 2. Sécurité Militaire : Google 2FA (Double Authentification)
-La plateforme manipule des données sensibles (Notes, Diplômes). Nous avons donc verrouillé l'accès Administrateur.
-*   **Scénario d'Activation :** Lors de sa connexion, l'administrateur est invité à scanner un **QR Code** avec l'application *Google Authenticator*.
-*   **Scénario de Connexion :** À chaque connexion, après avoir entré son mot de passe, un code dynamique à 6 chiffres lui est demandé. Sans son téléphone physique, aucun pirate ne peut accéder au panneau d'administration, même en cas de fuite de mot de passe.
-
-### 📱 3. Expérience Native : PWA (Progressive Web App) 
-*   **Scénario d'Installation :** Un étudiant visite la plateforme depuis son smartphone (Chrome/Safari). Un bouton intelligent apparaît en haut : "Installer l'Application". En un clic, l'application s'ajoute à son écran d'accueil comme une application native (sans passer par l'App Store/Play Store).
-*   **Scénario Hors-Ligne :** Si l'étudiant perd sa connexion (dans un amphi sans réseau), l'application ne plante pas grâce à un *Service Worker* qui prend le relais pour afficher une belle interface hors-ligne de repli.
+### 📄 3. Génération PDF Haute Définition & Documents Officiels
+*   **Relevé de Notes Officiel :** Génération PDF avec le calcul automatique de la Mention (Passable, Assez Bien, Bien...).
+*   **Attestation de Réussite Sécurisée :** Générée pour les étudiants admis (0 dette). Elle contient un **Code QR** scannable qui pointe vers une route publique (`/verify-document`) certifiant l'authenticité du diplôme aux recruteurs.
+*   **Convocations d'Examens & Attestations de Travail :** Numéro de place auto-généré pour les étudiants, et attestations pré-remplies pour les professeurs.
 
 ### 📋 4. Cahier de Textes & Workflow des Absences
-Fini le papier ! Tout le suivi des cours est dématérialisé.
-*   **Scénario de Saisie (Professeur) :** Le professeur clique sur "+ Nouvelle Séance" dans son "Cahier de Textes". Le système détecte automatiquement ses classes assignées (via son emploi du temps). Il remplit l'heure, le type (Cours/TD/TP) et l'objectif pédagogique de la séance.
-*   **Scénario de Pointage (Professeur) :** Il passe au registre d'appel et coche les étudiants absents via des *Toggle Buttons* fluides.
-*   **Scénario de Contrôle (Administrateur) :** L'administration reçoit ces données en temps réel sur le **Registre Global des Absences**. Un système de filtres avancés (par Filière, par Groupe, ou par État de Justification) permet aux surveillants généraux d'approuver ou rejeter les certificats médicaux téléversés.
+*   **Cahier de Textes Numérique :** Le professeur saisit sa séance (Cours/TD/TP, Objectif).
+*   **Pointage Fluide :** Depuis le registre d'appel, le professeur coche les étudiants absents via des *Toggle Buttons*.
+*   **Registre Global (Admin) :** L'administration filtre ces absences par Filière/Groupe, gère et valide les justificatifs médicaux, et déclenche des alertes d'exclusion.
 
-### ⚖️ 5. Moteur de Délibération Automatique
-*   **Scénario :** En fin de semestre, au lieu de calculer sur Excel, le système calcule le PV instantanément. Il applique la règle stricte : *Moyenne = (CC1\*0.2) + (CC2\*0.2) + (Exam\*0.6)*.
-*   Il gère intelligemment la **Compensation** (si moyenne générale > 10, un module à 8/20 passe en "Validé par Compensation") et bloque toute validation s'il y a une **Note éliminatoire (< 5/20)**.
+### 💬 5. Hub Pédagogique (Classroom)
+*   **Devoirs & Soumissions :** Les professeurs publient des devoirs (fichiers PDF/ZIP, consignes, deadline). Les étudiants déposent leurs rendus sécurisés. Le professeur corrige et saisit une appréciation en ligne.
+*   **Salon de Discussion par Module :** Un espace de discussion réactif (style Slack/Discord) exclusif aux étudiants d'un module et leur professeur. Requêtes asynchrones optimisées (Alpine.js) pour une fluidité "Temps Réel" sans surcharger le serveur.
 
-### 📄 6. Génération PDF Haute Définition (DOMPDF)
-Le système s'affranchit du papier en générant à la volée des documents officiels, scellés et prêts à l'impression.
-*   **Les Relevés de Notes :** Générés automatiquement à la fin du semestre avec signature numérique.
-*   **Les Convocations d'Examens :** Chaque étudiant reçoit sa convocation avec un Numéro de Place auto-généré et un **QR Code anti-fraude**.
-*   **Les Attestations de Travail :** Pour les professeurs, l'administration peut générer en un clic une attestation officielle avec en-tête de l'UPF.
+### 📊 6. Dashboard Analytique Avancé (Analytics)
+Un centre de commande visuel pour la direction de la Faculté (Chart.js) :
+*   **Top/Flop Modules :** Bar chart des matières avec le plus fort taux d'échec vs taux de réussite.
+*   **Répartition des Absences :** Graphiques de suivi de l'assiduité (Justifiées vs Injustifiées).
+*   **Projection des Délibérations :** Estimation en temps réel du pourcentage d'étudiants Admis vs Ajournés selon les notes actuelles.
 
-### ☁️ 7. Déploiement Cloud & Communication (Resend)
-*   **Hébergement (Railway) :** L'application est déployée en production sur l'infrastructure Cloud de Railway avec une base de données MySQL distante.
-*   **Serveur d'E-mails (Resend) :** Pour garantir la délivrabilité (éviter le dossier Spam), nous avons configuré `Resend` avec le nom de domaine officiel de l'université. Les emails (réinitialisation de mots de passe, alertes d'absences, convocations) partent instantanément depuis une adresse professionnelle (ex: `contact@upf-portail.com`).
+### 📅 7. Gestion Interactive des Rendez-vous
+*   **Générateur Admin :** Génération en 1 clic d'une journée type de créneaux (de 10h00 à 16h30) pour simplifier le planning.
+*   **Flux Collaboratif :** Un étudiant demande un RDV direct. Le professeur peut *Accepter* ou faire une *Contre-proposition*. Si une autre heure est suggérée, l'étudiant doit *Valider* depuis son portail pour officialiser la rencontre.
+
+### 🏢 8. Gestion Avancée des Stages
+*   **Étudiants :** Dépôt en ligne de la convention de stage (Entreprise, Tuteur) et soumission mensuelle des rapports d'activité.
+*   **Administration & Professeurs :** Approbation de la fiche, assignation d'un encadrant académique, dépôt des retours pédagogiques et attribution de la note finale.
+
+### ⚖️ 9. Module de "Demande de Recours" (Réclamations)
+*   Dépôt d'un recours par l'étudiant en cas de contestation de note post-affichage (délai de 48h). Tableaux de gestion pour le back-office (En attente, Traité, Rejeté).
+
+### ☁️ 10. Notifications, Temps Réel & Déploiement
+*   **Badges Temps Réel (Navbar) :** Une cloche de notification qui vibre via interrogation asynchrone (Alpine.js) lors d'une nouvelle alerte.
+*   **Hébergement (Railway) & E-mails (Resend) :** Déploiement robuste en production. Envoi immédiat d'e-mails professionnels (HTML stylisé) lors de la publication de notes ou l'enregistrement d'une absence via le trait `SendsEmailNotification`.
+
+### 🛡️ 11. Sécurité Militaire & Expérience PWA
+*   **Google 2FA :** Verrouillage de l'accès Administrateur avec code dynamique (QR Code).
+*   **PWA (Progressive Web App) :** Bouton "Installer l'Application" pour les étudiants, accès direct depuis l'écran d'accueil du smartphone et gestion du cache hors-ligne via un *Service Worker*.
 
 ---
 
