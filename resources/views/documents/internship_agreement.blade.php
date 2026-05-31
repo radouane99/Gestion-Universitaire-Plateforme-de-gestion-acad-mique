@@ -49,7 +49,7 @@
         }
         .footer-section {
             position: absolute;
-            bottom: 12px;
+            bottom: 25px;
             left: 20px;
             right: 20px;
         }
@@ -113,8 +113,8 @@
 
         /* Stamp */
         .stamp-circle {
-            width: 95px;
-            height: 95px;
+            width: 78px;
+            height: 78px;
             border: 2px double #003399;
             border-radius: 50%;
             display: inline-block;
@@ -122,20 +122,20 @@
             background: rgba(0,51,153,0.02);
         }
         .stamp-inner {
-            width: 83px;
-            height: 83px;
+            width: 68px;
+            height: 68px;
             border: 1px solid #003399;
             border-radius: 50%;
             position: absolute;
-            top: 5px;
-            left: 5px;
+            top: 4px;
+            left: 4px;
         }
         .stamp-top {
             position: absolute;
-            top: 11px;
-            width: 83px;
+            top: 7px;
+            width: 68px;
             text-align: center;
-            font-size: 5.5px;
+            font-size: 5px;
             font-weight: bold;
             color: #003399;
             text-transform: uppercase;
@@ -143,29 +143,29 @@
         }
         .stamp-mid {
             position: absolute;
-            top: 30px;
-            width: 83px;
+            top: 23px;
+            width: 68px;
             text-align: center;
-            font-size: 14px;
+            font-size: 11px;
             font-weight: bold;
             color: #003399;
             letter-spacing: 1px;
         }
         .stamp-sub {
             position: absolute;
-            top: 52px;
-            width: 83px;
+            top: 40px;
+            width: 68px;
             text-align: center;
-            font-size: 5.5px;
+            font-size: 5px;
             font-weight: bold;
             color: #003399;
         }
         .stamp-arabic {
             position: absolute;
-            bottom: 11px;
-            width: 83px;
+            bottom: 7px;
+            width: 68px;
             text-align: center;
-            font-size: 6.5px;
+            font-size: 6px;
             font-weight: bold;
             color: #003399;
             white-space: nowrap;
@@ -232,7 +232,7 @@
         }
         .footer-section {
             position: absolute;
-            bottom: 12px;
+            bottom: 25px;
             left: 20px;
             right: 20px;
         }
@@ -366,13 +366,13 @@
                         </td>
                         <td style="width: 34%; vertical-align: top; border-right: 1px dashed #e2e8f0; text-align: center;">
                             <div style="font-weight: bold; color: #003399; font-size: 11px; text-transform: uppercase; margin-bottom: 6px;">Pour l'Entreprise</div>
-                            <div style="font-size: 8.5px; color: #94a3b8; margin-top: 40px;">
+                            <div style="font-size: 8.5px; color: #94a3b8; margin-top: 20px;">
                                 Sceau &amp; Signature<br>(à compléter)
                             </div>
                         </td>
                         <td style="width: 33%; vertical-align: top; text-align: center;">
                             <div style="font-weight: bold; color: #003399; font-size: 11px; text-transform: uppercase; margin-bottom: 6px;">L'Étudiant(e)</div>
-                            <div style="font-size: 8.5px; color: #94a3b8; margin-top: 40px;">
+                            <div style="font-size: 8.5px; color: #94a3b8; margin-top: 20px;">
                                 Signature précédée de la mention<br>"Lu et approuvé"
                             </div>
                         </td>

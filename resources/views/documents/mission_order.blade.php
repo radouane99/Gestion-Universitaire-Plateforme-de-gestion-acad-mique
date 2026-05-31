@@ -49,7 +49,7 @@
         }
         .footer-section {
             position: absolute;
-            bottom: 12px;
+            bottom: 25px;
             left: 25px;
             right: 25px;
         }
@@ -113,8 +113,8 @@
 
         /* Stamp */
         .stamp-circle {
-            width: 95px;
-            height: 95px;
+            width: 78px;
+            height: 78px;
             border: 2px double #003399;
             border-radius: 50%;
             display: inline-block;
@@ -122,20 +122,20 @@
             background: rgba(0,51,153,0.02);
         }
         .stamp-inner {
-            width: 83px;
-            height: 83px;
+            width: 68px;
+            height: 68px;
             border: 1px solid #003399;
             border-radius: 50%;
             position: absolute;
-            top: 5px;
-            left: 5px;
+            top: 4px;
+            left: 4px;
         }
         .stamp-top {
             position: absolute;
-            top: 11px;
-            width: 83px;
+            top: 7px;
+            width: 68px;
             text-align: center;
-            font-size: 5.5px;
+            font-size: 5px;
             font-weight: bold;
             color: #003399;
             text-transform: uppercase;
@@ -143,29 +143,29 @@
         }
         .stamp-mid {
             position: absolute;
-            top: 30px;
-            width: 83px;
+            top: 23px;
+            width: 68px;
             text-align: center;
-            font-size: 14px;
+            font-size: 11px;
             font-weight: bold;
             color: #003399;
             letter-spacing: 1px;
         }
         .stamp-sub {
             position: absolute;
-            top: 52px;
-            width: 83px;
+            top: 40px;
+            width: 68px;
             text-align: center;
-            font-size: 5.5px;
+            font-size: 5px;
             font-weight: bold;
             color: #003399;
         }
         .stamp-arabic {
             position: absolute;
-            bottom: 11px;
-            width: 83px;
+            bottom: 7px;
+            width: 68px;
             text-align: center;
-            font-size: 6.5px;
+            font-size: 6px;
             font-weight: bold;
             color: #003399;
             white-space: nowrap;
@@ -232,7 +232,7 @@
         }
         .footer-section {
             position: absolute;
-            bottom: 12px;
+            bottom: 25px;
             left: 25px;
             right: 25px;
         }
@@ -360,7 +360,7 @@
                     <tr>
                         <td style="width: 33%; text-align: center; vertical-align: top;">
                             <div style="font-size: 9px; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">Signature de l'Intéressé(e)</div>
-                            <div style="height: 45px;"></div>
+                            <div style="height: 20px;"></div>
                             <div style="font-size: 11px; font-weight: 700; color: #0f172a;">Prof. {{ $request->user->name }}</div>
                         </td>
                         <td style="width: 34%; text-align: center; vertical-align: middle;">
@@ -375,7 +375,7 @@
                         </td>
                         <td style="width: 33%; text-align: center; vertical-align: top;">
                             <div style="font-size: 9px; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">Fait à Fès, le {{ now()->format('d/m/Y') }}</div>
-                            <div style="height: 45px;"></div>
+                            <div style="height: 20px;"></div>
                             <div style="font-size: 11px; font-weight: 700; color: #0f172a; text-transform: uppercase; letter-spacing: 0.5px;">Le Secrétaire Général</div>
                         </td>
                     </tr>

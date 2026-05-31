@@ -173,7 +173,7 @@
         /* ======================== FOOTER AREA ======================== */
         .footer-section {
             position: absolute;
-            bottom: 10px;
+            bottom: 24px;
             left: 14px;
             right: 14px;
         }
@@ -231,8 +231,8 @@
             text-align: center;
         }
         .stamp-circle {
-            width: 90px;
-            height: 90px;
+            width: 78px;
+            height: 78px;
             border: 2px double #003893;
             border-radius: 50%;
             display: inline-block;
@@ -240,8 +240,8 @@
             background: rgba(0,56,147,0.03);
         }
         .stamp-inner {
-            width: 80px;
-            height: 80px;
+            width: 68px;
+            height: 68px;
             border: 1px solid #003893;
             border-radius: 50%;
             position: absolute;
@@ -250,10 +250,10 @@
         }
         .stamp-top {
             position: absolute;
-            top: 10px;
-            width: 80px;
+            top: 7px;
+            width: 68px;
             text-align: center;
-            font-size: 5.5px;
+            font-size: 5px;
             font-weight: bold;
             color: #003893;
             text-transform: uppercase;
@@ -261,18 +261,18 @@
         }
         .stamp-logo {
             position: absolute;
-            top: 28px;
-            width: 80px;
+            top: 23px;
+            width: 68px;
             text-align: center;
-            font-size: 13px;
+            font-size: 11px;
             font-weight: bold;
             color: #003893;
             letter-spacing: 1px;
         }
         .stamp-name {
             position: absolute;
-            top: 50px;
-            width: 80px;
+            top: 40px;
+            width: 68px;
             text-align: center;
             font-size: 5px;
             font-weight: bold;
@@ -280,8 +280,8 @@
         }
         .stamp-arabic {
             position: absolute;
-            bottom: 10px;
-            width: 80px;
+            bottom: 7px;
+            width: 68px;
             text-align: center;
             font-size: 6px;
             font-weight: bold;
