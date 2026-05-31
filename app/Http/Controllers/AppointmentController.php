@@ -35,7 +35,11 @@ class AppointmentController extends Controller
             ->orderBy('start_time', 'asc')
             ->get();
 
-        return view('student.appointments', compact('myAppointments', 'availableSlots'));
+        $professors = User::whereHas('role', function($q) {
+            $q->where('name', 'professor');
+        })->orderBy('name')->get();
+
+        return view('student.appointments', compact('myAppointments', 'availableSlots', 'professors'));
     }
 
     /**
@@ -49,13 +53,22 @@ class AppointmentController extends Controller
         }
 
         $mySlots = AppointmentSlot::where('host_id', $user->id)
+            ->whereIn('status', ['available', 'booked'])
             ->with(['appointments.student.user'])
             ->orderBy('start_time', 'desc')
             ->get();
 
+        $pendingRequests = Appointment::whereHas('slot', function($q) use ($user) {
+                $q->where('host_id', $user->id);
+            })
+            ->where('status', 'requested')
+            ->with(['student.user', 'slot'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+
         $routePrefix = $user->isAdmin() ? 'admin.' : 'professor.';
 
-        return view('host.appointments', compact('mySlots', 'routePrefix'));
+        return view('host.appointments', compact('mySlots', 'pendingRequests', 'routePrefix'));
     }
 
     /**
@@ -192,5 +205,231 @@ class AppointmentController extends Controller
         $slot->delete();
 
         return back()->with('success', 'Le créneau a été retiré.');
+    }
+
+    /**
+     * Génération automatique de créneaux par défaut pour l'Administration
+     */
+    public function generateDefaultSlots(Request $request)
+    {
+        $user = Auth::user();
+        if (!$user->isAdmin()) {
+            abort(403);
+        }
+
+        $validated = $request->validate([
+            'generation_date' => 'required|date|after_or_equal:today',
+        ]);
+
+        $dateString = $validated['generation_date'];
+        
+        // Define default 30min slot ranges (excluding 13:00 - 14:00 lunch break)
+        $slotsData = [
+            ['10:00', '10:30'],
+            ['10:30', '11:00'],
+            ['11:00', '11:35'],
+            ['11:35', '12:10'],
+            ['12:10', '12:45'],
+            ['12:45', '13:20'], // Adjust slightly to match half hours precisely
+            // Pause 13h00 - 14h00
+            ['14:00', '14:30'],
+            ['14:30', '15:00'],
+            ['15:00', '15:30'],
+            ['15:30', '16:00'],
+            ['16:00', '16:30']
+        ];
+
+        // Let's use clean 30 minutes slots:
+        $slotsData = [
+            ['10:00', '10:30'],
+            ['10:30', '11:00'],
+            ['11:00', '11:30'],
+            ['11:30', '12:00'],
+            ['12:00', '12:30'],
+            ['12:30', '13:00'],
+            // Pause 13h00 - 14h00
+            ['14:00', '14:30'],
+            ['14:30', '15:00'],
+            ['15:00', '15:30'],
+            ['15:30', '16:00'],
+            ['16:00', '16:30']
+        ];
+
+        $createdCount = 0;
+        foreach ($slotsData as $slotTime) {
+            $start = \Carbon\Carbon::createFromFormat('Y-m-d H:i', "{$dateString} {$slotTime[0]}");
+            $end = \Carbon\Carbon::createFromFormat('Y-m-d H:i', "{$dateString} {$slotTime[1]}");
+
+            // Check if slot already exists for this host at start_time
+            $exists = AppointmentSlot::where('host_id', $user->id)
+                ->where('start_time', $start)
+                ->exists();
+
+            if (!$exists) {
+                AppointmentSlot::create([
+                    'host_id' => $user->id,
+                    'start_time' => $start,
+                    'end_time' => $end,
+                    'status' => 'available'
+                ]);
+                $createdCount++;
+            }
+        }
+
+        ActivityLog::log('created', 'AppointmentSlot', "Génération en masse de {$createdCount} créneaux pour le {$dateString} par l'administrateur #{$user->id}.");
+
+        return back()->with('success', "{$createdCount} créneaux de disponibilité ont été générés pour la journée du " . \Carbon\Carbon::parse($dateString)->format('d/m/Y') . ".");
+    }
+
+    /**
+     * Proposer une demande directe de RDV à un Professeur (Étudiant)
+     */
+    public function requestDirect(Request $request)
+    {
+        $student = Auth::user()->student;
+        if (!$student) {
+            abort(403);
+        }
+
+        $validated = $request->validate([
+            'professor_id' => 'required|exists:users,id',
+            'proposed_time' => 'required|date|after:now',
+            'purpose' => 'required|string|max:500',
+        ]);
+
+        $start = \Carbon\Carbon::parse($validated['proposed_time']);
+        $end = (clone $start)->addMinutes(30);
+
+        // Create virtual slot for this direct request
+        $slot = AppointmentSlot::create([
+            'host_id' => $validated['professor_id'],
+            'start_time' => $start,
+            'end_time' => $end,
+            'status' => 'requested',
+        ]);
+
+        $appointment = Appointment::create([
+            'student_id' => $student->id,
+            'appointment_slot_id' => $slot->id,
+            'purpose' => $validated['purpose'],
+            'status' => 'requested',
+        ]);
+
+        // Notify the professor
+        $professorUser = User::find($validated['professor_id']);
+        $professorUser->notify(new AcademicNotification(
+            "📅 Demande directe de rendez-vous de l'étudiant {$student->user->name} le {$start->format('d/m/Y \à H:i')}",
+            'info',
+            route('professor.appointments.index')
+        ));
+
+        ActivityLog::log('created', 'Appointment', "Demande directe de RDV #{$appointment->id} soumise par l'étudiant #{$student->id} au professeur #{$validated['professor_id']}.");
+
+        return back()->with('success', 'Votre proposition de rendez-vous a été envoyée au professeur. Vous serez notifié de sa décision.');
+    }
+
+    /**
+     * Confirmer la demande directe de l'étudiant (Professeur ou Admin)
+     */
+    public function acceptRequest(Appointment $appointment)
+    {
+        $user = Auth::user();
+        $slot = $appointment->slot;
+
+        if ($slot->host_id !== $user->id) {
+            abort(403);
+        }
+
+        $appointment->update(['status' => 'scheduled']);
+        $slot->update(['status' => 'booked']);
+
+        // Notify student
+        $appointment->student->user?->notify(new AcademicNotification(
+            "✓ Votre demande de rendez-vous du {$slot->start_time->format('d/m/Y \à H:i')} a été acceptée par l'intervenant.",
+            'success',
+            route('student.appointments.index')
+        ));
+
+        ActivityLog::log('updated', 'Appointment', "Rendez-vous direct #{$appointment->id} accepté par l'hôte #{$user->id}.");
+
+        return back()->with('success', 'Vous avez accepté et planifié ce rendez-vous.');
+    }
+
+    /**
+     * Décliner et proposer une contre-proposition (Professeur ou Admin)
+     */
+    public function suggestAlternative(Request $request, Appointment $appointment)
+    {
+        $user = Auth::user();
+        $oldSlot = $appointment->slot;
+
+        if ($oldSlot->host_id !== $user->id) {
+            abort(403);
+        }
+
+        $validated = $request->validate([
+            'suggested_time' => 'required|date|after:now',
+        ]);
+
+        $start = \Carbon\Carbon::parse($validated['suggested_time']);
+        $end = (clone $start)->addMinutes(30);
+
+        // Delete old requested slot
+        $oldSlot->delete();
+
+        // Create new suggested slot
+        $newSlot = AppointmentSlot::create([
+            'host_id' => $user->id,
+            'start_time' => $start,
+            'end_time' => $end,
+            'status' => 'suggested',
+        ]);
+
+        $appointment->update([
+            'appointment_slot_id' => $newSlot->id,
+            'status' => 'suggested',
+        ]);
+
+        // Notify student
+        $appointment->student->user?->notify(new AcademicNotification(
+            "🔄 Contre-proposition de rendez-vous reçue le {$start->format('d/m/Y \à H:i')}. Veuillez valider ou décliner.",
+            'warning',
+            route('student.appointments.index')
+        ));
+
+        ActivityLog::log('updated', 'Appointment', "Contre-proposition pour le RDV #{$appointment->id} soumise par l'hôte #{$user->id} pour le {$start}.");
+
+        return back()->with('success', 'Votre contre-proposition a été envoyée à l\'étudiant.');
+    }
+
+    /**
+     * Valider la contre-proposition du Professeur (Étudiant)
+     */
+    public function confirmSuggestion(Appointment $appointment)
+    {
+        $student = Auth::user()->student;
+        if (!$student || $appointment->student_id !== $student->id) {
+            abort(403);
+        }
+
+        $slot = $appointment->slot;
+        if ($appointment->status !== 'suggested') {
+            return back()->with('error', 'Cette action n\'est pas autorisée.');
+        }
+
+        $appointment->update(['status' => 'scheduled']);
+        $slot->update(['status' => 'booked']);
+
+        // Notify host
+        $hostRoute = $slot->host->isProfessor() ? route('professor.appointments.index') : route('admin.appointments.index');
+        $slot->host->notify(new AcademicNotification(
+            "✓ L'étudiant {$student->user->name} a accepté votre contre-proposition de rendez-vous pour le {$slot->start_time->format('d/m/Y \à H:i')}",
+            'success',
+            $hostRoute
+        ));
+
+        ActivityLog::log('updated', 'Appointment', "L'étudiant #{$student->id} a validé la contre-proposition du RDV #{$appointment->id}.");
+
+        return back()->with('success', 'Rendez-vous planifié et confirmé avec succès !');
     }
 }

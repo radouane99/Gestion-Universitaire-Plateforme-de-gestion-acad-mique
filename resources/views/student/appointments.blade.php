@@ -92,8 +92,43 @@
                     </div>
                 </div>
 
-                {{-- Right: My Booked Appointments --}}
+                {{-- Right: Propose direct request & My Booked Appointments --}}
                 <div class="space-y-6">
+                    <div class="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-[2.5rem] p-7 shadow-sm">
+                        <h4 class="text-xs font-black text-slate-900 dark:text-white uppercase tracking-widest border-b border-slate-100 dark:border-slate-800 pb-3 mb-5">💬 Proposer un RDV en Direct</h4>
+                        <p class="text-[10px] text-slate-400 font-bold mb-4 font-sans">Si aucun créneau ne vous convient, proposez directement une date à un enseignant.</p>
+                        
+                        <form action="{{ route('student.appointments.request-direct') }}" method="POST" class="space-y-4">
+                            @csrf
+                            <div class="space-y-1">
+                                <label class="block text-[8px] font-black uppercase text-slate-400 tracking-wider">Professeur</label>
+                                <select name="professor_id" required
+                                    class="w-full border-gray-100 dark:border-slate-800 rounded-xl bg-gray-50 dark:bg-slate-950 p-3 text-xs font-bold text-slate-900 dark:text-white">
+                                    <option value="">-- Choisir un professeur --</option>
+                                    @foreach($professors as $prof)
+                                        <option value="{{ $prof->id }}">{{ $prof->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div class="space-y-1">
+                                <label class="block text-[8px] font-black uppercase text-slate-400 tracking-wider">Date & Heure proposées</label>
+                                <input type="datetime-local" name="proposed_time" required min="{{ date('Y-m-d\TH:i') }}"
+                                    class="w-full border-gray-100 dark:border-slate-800 rounded-xl bg-gray-50 dark:bg-slate-950 p-3 text-xs font-bold text-slate-900 dark:text-white">
+                            </div>
+
+                            <div class="space-y-1">
+                                <label class="block text-[8px] font-black uppercase text-slate-400 tracking-wider">Motif / Sujet</label>
+                                <textarea name="purpose" rows="2" required placeholder="Expliquez le motif..."
+                                    class="w-full border-gray-100 dark:border-slate-800 rounded-xl bg-gray-50 dark:bg-slate-950 p-3 text-xs font-semibold text-slate-900 dark:text-white resize-none"></textarea>
+                            </div>
+
+                            <button type="submit" class="w-full py-3.5 bg-upf-blue hover:bg-upf-navy text-white text-[10px] font-black uppercase tracking-widest rounded-xl transition-all shadow-md">
+                                Envoyer la demande
+                            </button>
+                        </form>
+                    </div>
+
                     <div class="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-[2.5rem] p-7 shadow-sm">
                         <h4 class="text-xs font-black text-slate-900 dark:text-white uppercase tracking-widest border-b border-slate-100 dark:border-slate-800 pb-3 mb-5">📅 Mes Rendez-vous</h4>
                         
@@ -106,8 +141,16 @@
                                             <p class="text-[10px] text-slate-400 font-bold">le {{ $appt->slot->start_time->format('d/m/Y \à H:i') }}</p>
                                         </div>
                                         <span class="px-2 py-0.5 text-[8px] font-black border rounded uppercase tracking-wider
-                                            {{ $appt->status === 'scheduled' ? 'bg-blue-50 text-blue-650 border-blue-100' : ($appt->status === 'cancelled' ? 'bg-rose-50 text-rose-650 border-rose-100' : 'bg-emerald-50 text-emerald-650 border-emerald-100') }}">
-                                            {{ $appt->status === 'scheduled' ? 'Confirmé' : ($appt->status === 'cancelled' ? 'Annulé' : 'Effectué') }}
+                                            {{ $appt->status === 'scheduled' ? 'bg-blue-50 text-blue-650 border-blue-100' : 
+                                               ($appt->status === 'cancelled' ? 'bg-rose-50 text-rose-650 border-rose-100' : 
+                                               ($appt->status === 'requested' ? 'bg-amber-50 text-amber-650 border-amber-100' : 
+                                               ($appt->status === 'suggested' ? 'bg-indigo-50 text-indigo-650 border-indigo-100' : 
+                                               'bg-emerald-50 text-emerald-650 border-emerald-100'))) }}">
+                                            {{ $appt->status === 'scheduled' ? 'Confirmé' : 
+                                               ($appt->status === 'cancelled' ? 'Annulé' : 
+                                               ($appt->status === 'requested' ? 'En attente' : 
+                                               ($appt->status === 'suggested' ? 'A valider' : 
+                                               'Effectué'))) }}
                                         </span>
                                     </div>
                                     <p class="text-[11px] text-slate-600 font-semibold leading-relaxed">
@@ -121,6 +164,33 @@
                                                 🔴 Annuler le Rendez-vous
                                             </button>
                                         </form>
+                                    @elseif($appt->status === 'requested')
+                                        <form action="{{ route('appointments.cancel', $appt) }}" method="POST" class="pt-2 border-t border-slate-100 dark:border-slate-800">
+                                            @csrf
+                                            <button type="submit" class="w-full py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 text-[9px] font-black uppercase tracking-wider rounded-lg transition-all">
+                                                Retirer la demande
+                                            </button>
+                                        </form>
+                                    @elseif($appt->status === 'suggested')
+                                        <div class="mt-3 p-3 bg-amber-50 dark:bg-slate-900 border border-amber-200 dark:border-slate-850 rounded-xl space-y-2">
+                                            <p class="text-[10px] font-black text-amber-700 dark:text-amber-400 uppercase tracking-wider">🔄 Proposition alternative :</p>
+                                            <p class="text-xs text-slate-800 dark:text-slate-200 font-extrabold">🕒 {{ $appt->slot->start_time->format('d/m/Y \à H:i') }}</p>
+                                            
+                                            <div class="flex gap-2 pt-1">
+                                                <form action="{{ route('student.appointments.confirm-suggestion', $appt) }}" method="POST" class="flex-1">
+                                                    @csrf
+                                                    <button type="submit" class="w-full py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-[8px] font-black uppercase tracking-wider rounded transition-all">
+                                                        Valider
+                                                    </button>
+                                                </form>
+                                                <form action="{{ route('appointments.cancel', $appt) }}" method="POST" class="flex-1">
+                                                    @csrf
+                                                    <button type="submit" class="w-full py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-600 text-[8px] font-black uppercase tracking-wider rounded transition-all">
+                                                        Décliner
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
                                     @endif
                                 </div>
                             @empty

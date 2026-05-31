@@ -269,6 +269,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/appointments', [\App\Http\Controllers\AppointmentController::class, 'hostIndex'])->name('appointments.index');
     Route::post('/appointments/slots', [\App\Http\Controllers\AppointmentController::class, 'storeSlot'])->name('appointments.slot.store');
     Route::delete('/appointments/slots/{slot}', [\App\Http\Controllers\AppointmentController::class, 'destroySlot'])->name('appointments.slot.destroy');
+    Route::post('/appointments/generate-slots', [\App\Http\Controllers\AppointmentController::class, 'generateDefaultSlots'])->name('appointments.generate-slots');
 });
 
 Route::middleware(['auth', 'role:professor', 'check.contract'])->prefix('professor')->name('professor.')->group(function () {
@@ -389,6 +390,8 @@ Route::middleware(['auth', 'role:student'])->prefix('student')->name('student.')
     // Appointments (Option 12)
     Route::get('/appointments', [\App\Http\Controllers\AppointmentController::class, 'studentIndex'])->name('appointments.index');
     Route::post('/appointments/book/{slot}', [\App\Http\Controllers\AppointmentController::class, 'book'])->name('appointments.book');
+    Route::post('/appointments/request-direct', [\App\Http\Controllers\AppointmentController::class, 'requestDirect'])->name('appointments.request-direct');
+    Route::post('/appointments/{appointment}/confirm-suggestion', [\App\Http\Controllers\AppointmentController::class, 'confirmSuggestion'])->name('appointments.confirm-suggestion');
 });
 
 // Shared Classroom
@@ -425,6 +428,8 @@ Route::middleware('auth')->group(function () {
 
     // Appointments cancel (Option 12)
     Route::post('/appointments/{appointment}/cancel', [\App\Http\Controllers\AppointmentController::class, 'cancel'])->name('appointments.cancel');
+    Route::post('/appointments/{appointment}/accept-request', [\App\Http\Controllers\AppointmentController::class, 'acceptRequest'])->name('appointments.accept-request');
+    Route::post('/appointments/{appointment}/suggest-alternative', [\App\Http\Controllers\AppointmentController::class, 'suggestAlternative'])->name('appointments.suggest-alternative');
 
     // Notifications
     Route::post('/notifications/{id}/read', function ($id) {
