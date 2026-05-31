@@ -14,15 +14,31 @@ trait SendsEmailNotification
     public function toMail($notifiable): MailMessage
     {
         $dbData = method_exists($this, 'toDatabase') ? $this->toDatabase($notifiable) : $this->toArray($notifiable);
-        $title = $dbData['title'] ?? 'Nouvelle notification académique';
-        $body = $dbData['body'] ?? ($dbData['message'] ?? ($dbData['body_content'] ?? ''));
-        $url = $dbData['url'] ?? '/dashboard';
-        
+
+        $title      = $dbData['title']       ?? 'Nouvelle notification académique';
+        $body       = $dbData['body']        ?? ($dbData['message'] ?? ($dbData['body_content'] ?? ''));
+        $url        = $dbData['url']         ?? url('/dashboard');
+        $icon       = $dbData['icon']        ?? '🔔';
+        $color      = $dbData['color']       ?? 'blue';
+
+        // Map color to a friendly action label
+        $actionText = match ($color) {
+            'green'  => 'Voir le détail',
+            'red'    => 'Vérifier maintenant',
+            'amber'  => 'Régulariser ma situation',
+            'blue'   => 'Accéder à mon espace',
+            default  => 'Accéder à mon espace',
+        };
+
         return (new MailMessage)
-            ->subject('UPF Portail — ' . $title)
-            ->greeting('Bonjour ' . $notifiable->name . ',')
-            ->line($body)
-            ->action('Accéder à mon Espace', url($url))
-            ->line('Merci d\'utiliser la plateforme académique intelligente de l\'Université Privée de Fès.');
+            ->subject('UPF — ' . strip_tags($title))
+            ->view('emails.notification', [
+                'recipientName' => $notifiable->name ?? 'Étudiant(e)',
+                'title'         => $title,
+                'body'          => $body,
+                'icon'          => $icon,
+                'actionUrl'     => $url,
+                'actionText'    => $actionText,
+            ]);
     }
 }

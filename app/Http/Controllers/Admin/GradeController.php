@@ -8,6 +8,8 @@ use App\Models\Group;
 use App\Models\Module;
 use App\Models\Grade;
 use App\Models\ActivityLog;
+use App\Models\Student;
+use App\Notifications\GradePublished;
 use Illuminate\Support\Facades\Auth;
 
 class GradeController extends Controller
@@ -75,6 +77,15 @@ class GradeController extends Controller
                 ]
             );
             $grade->calculateFinalGrade();
+
+            // 🔔 Notifier l'étudiant de sa note
+            if ($grade->final_grade !== null) {
+                $student = Student::find($data['student_id']);
+                $student?->user?->notify(new GradePublished(
+                    $module->name ?? 'Module',
+                    (float) $grade->final_grade
+                ));
+            }
         }
 
         $module = Module::find($validated['module_id']);

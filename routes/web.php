@@ -177,6 +177,13 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/export/students', [\App\Http\Controllers\Admin\ExportController::class, 'students'])->name('export.students');
     Route::get('/export/grades', [\App\Http\Controllers\Admin\ExportController::class, 'grades'])->name('export.grades');
     Route::get('/export/absences', [\App\Http\Controllers\Admin\ExportController::class, 'absences'])->name('export.absences');
+    // Enhanced exports with filters
+    Route::get('/export/grades/group/{group}', [\App\Http\Controllers\Admin\ExportController::class, 'gradesByGroup'])->name('export.grades.group');
+    Route::get('/export/grades/module/{module}', [\App\Http\Controllers\Admin\ExportController::class, 'gradesByModule'])->name('export.grades.module');
+    Route::get('/export/statistics', [\App\Http\Controllers\Admin\ExportController::class, 'statistics'])->name('export.statistics');
+    // Evaluations Routes
+    Route::get('/evaluations', [\App\Http\Controllers\Admin\EvaluationController::class, 'index'])->name('evaluations.index');
+    Route::post('/evaluations/toggle', [\App\Http\Controllers\Admin\EvaluationController::class, 'toggle'])->name('evaluations.toggle');
 
     // Activity Log Route
     Route::get('/activity-logs', [\App\Http\Controllers\Admin\ActivityLogController::class, 'index'])->name('activity-logs.index');
@@ -327,6 +334,10 @@ Route::middleware(['auth', 'role:student'])->prefix('student')->name('student.')
     Route::get('/requests', [\App\Http\Controllers\Student\StudentController::class, 'createRequest'])->name('requests.index');
     Route::get('/requests/create', [\App\Http\Controllers\Student\StudentController::class, 'createRequest'])->name('requests.create');
     Route::post('/requests', [\App\Http\Controllers\RequestController::class, 'store'])->name('requests.store');
+
+    // 🗳️ Anonymous Evaluations (Student)
+    Route::get('/evaluations', [\App\Http\Controllers\Student\EvaluationController::class, 'index'])->name('evaluations.index');
+    Route::post('/evaluations', [\App\Http\Controllers\Student\EvaluationController::class, 'store'])->name('evaluations.store');
 
     // Convocations
     Route::get('/convocations', [\App\Http\Controllers\Student\ConvocationController::class, 'index'])->name('convocations.index');

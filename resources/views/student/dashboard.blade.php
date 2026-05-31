@@ -208,6 +208,24 @@
                     </x-card>
                     @endif
 
+                    {{-- GPA History Line Chart --}}
+                    @if(isset($gpaHistory) && count($gpaHistory) > 0)
+                    <x-card class="p-8">
+                        <div class="flex items-center justify-between mb-6">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-blue-50 dark:bg-blue-950/30 text-blue-600 dark:text-blue-400 rounded-xl flex items-center justify-center shadow-inner">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                                </div>
+                                <h4 class="text-lg font-black text-slate-900 dark:text-white tracking-tight italic">{{ __('Évolution de ma Moyenne') }}</h4>
+                            </div>
+                            <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">{{ __('Par Semestre') }}</span>
+                        </div>
+                        <div class="relative w-full" style="height: 260px;">
+                            <canvas id="gpaHistoryChart"></canvas>
+                        </div>
+                    </x-card>
+                    @endif
+
                     {{-- GPA Target Mention Simulator --}}
                     <x-card class="p-8">
                         <div class="flex items-center justify-between mb-6">
@@ -559,7 +577,92 @@
                     }
                 }
             });
+            @endif
+
+            {{-- Render GPA History Chart --}}
+            @if(isset($gpaHistory) && count($gpaHistory) > 0)
+            const gpaCanvas = document.getElementById('gpaHistoryChart');
+            if (gpaCanvas) {
+                const gpaCtx = gpaCanvas.getContext('2d');
+                const gpaData = @json($gpaHistory);
+                const gpaLabels = gpaData.map(d => d.semester);
+                const gpaValues = gpaData.map(d => d.gpa);
+
+                const gpaGradient = gpaCtx.createLinearGradient(0, 0, 0, 240);
+                if (isDark) {
+                    gpaGradient.addColorStop(0, 'rgba(56, 189, 248, 0.3)');
+                    gpaGradient.addColorStop(1, 'rgba(56, 189, 248, 0)');
+                } else {
+                    gpaGradient.addColorStop(0, 'rgba(0, 51, 153, 0.25)');
+                    gpaGradient.addColorStop(1, 'rgba(0, 51, 153, 0)');
+                }
+
+                new Chart(gpaCtx, {
+                    type: 'line',
+                    data: {
+                        labels: gpaLabels,
+                        datasets: [{
+                            label: '{{ __('Moyenne du Semestre') }}',
+                            data: gpaValues,
+                            fill: true,
+                            backgroundColor: gpaGradient,
+                            borderColor: isDark ? '#38bdf8' : '#003399',
+                            pointBackgroundColor: '#B00D5D',
+                            pointBorderColor: '#fff',
+                            pointHoverBackgroundColor: '#fff',
+                            pointHoverBorderColor: '#B00D5D',
+                            pointRadius: 6,
+                            pointHoverRadius: 8,
+                            borderWidth: 3.5,
+                            tension: 0.35
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        animation: { duration: 1400, easing: 'easeOutElastic' },
+                        scales: {
+                            y: {
+                                min: 0,
+                                max: 20,
+                                ticks: { 
+                                    stepSize: 2, 
+                                    color: isDark ? '#94a3b8' : '#64748b',
+                                    font: { weight: 'bold' }
+                                },
+                                grid: { color: isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)' }
+                            },
+                            x: {
+                                ticks: { 
+                                    color: isDark ? '#f1f5f9' : '#334155',
+                                    font: { weight: 'bold' }
+                                },
+                                grid: { display: false }
+                            }
+                        },
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                backgroundColor: isDark ? '#0f172a' : '#ffffff',
+                                titleColor: isDark ? '#ffffff' : '#0f172a',
+                                bodyColor: isDark ? '#cbd5e1' : '#475569',
+                                titleFont: { weight: 'bold' },
+                                bodyFont: { weight: 'bold' },
+                                borderColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.06)',
+                                borderWidth: 1,
+                                padding: 12,
+                                displayColors: false,
+                                callbacks: {
+                                    label: function(context) {
+                                        return ' Moyenne : ' + context.parsed.y.toFixed(2) + ' / 20';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            @endif
         });
     </script>
-    @endif
 </x-app-layout>

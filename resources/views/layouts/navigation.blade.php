@@ -420,6 +420,9 @@
                         <a href="{{ route('admin.activity-logs.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] transition-all duration-150 {{ request()->routeIs('admin.activity-logs.*') ? 'text-white bg-white/10 font-semibold' : 'text-slate-400 hover:text-white hover:bg-white/[0.05]' }}">
                             <span class="text-sm">📋</span> <span>{{ __("Journal d'Activité") }}</span>
                         </a>
+                        <a href="{{ route('admin.evaluations.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] transition-all duration-150 {{ request()->routeIs('admin.evaluations.*') ? 'text-white bg-white/10 font-semibold' : 'text-slate-400 hover:text-white hover:bg-white/[0.05]' }}">
+                            <span class="text-sm">🗳️</span> <span>{{ __('Qualité & Évaluations') }}</span>
+                        </a>
                         <a href="{{ route('admin.settings.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] transition-all duration-150 {{ request()->routeIs('admin.settings.*') ? 'text-white bg-white/10 font-semibold' : 'text-slate-400 hover:text-white hover:bg-white/[0.05]' }}">
                             <span class="text-sm">⚙️</span> <span>{{ __('Paramètres') }}</span>
                         </a>
@@ -588,6 +591,11 @@
                     <a href="{{ route('student.requests.create') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] transition-all duration-150 {{ request()->routeIs('student.requests.*') ? 'text-white bg-white/10 font-semibold' : 'text-slate-400 hover:text-white hover:bg-white/[0.05]' }}">
                         <span class="text-sm">📬</span> <span>{{ __('Demandes') }}</span>
                     </a>
+                    @if(\App\Models\Setting::get('evaluation_open', false))
+                    <a href="{{ route('student.evaluations.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] transition-all duration-150 {{ request()->routeIs('student.evaluations.*') ? 'text-white bg-white/10 font-semibold' : 'text-slate-400 hover:text-white hover:bg-white/[0.05]' }}">
+                        <span class="text-sm">🗳️</span> <span>{{ __('Évaluer mes Cours') }}</span>
+                    </a>
+                    @endif
                 </div>
             @endif
 

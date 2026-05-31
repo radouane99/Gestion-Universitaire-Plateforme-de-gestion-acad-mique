@@ -43,6 +43,23 @@ class StudentController extends Controller
         $gpaPercent   = round(($gpa / 20) * 100);
         $unjustified  = $absences->where('is_justified', false)->count();
 
+        // 📈 Moyenne par Semestre (GPA History)
+        $gradesForGpa = \App\Models\Grade::where('student_id', $student->id)->with(['module.semester'])->get();
+        $gpaHistory = [];
+        $gradesBySemester = $gradesForGpa->groupBy(function($g) {
+            return $g->module && $g->module->semester ? $g->module->semester->name : 'Autres';
+        })->sortKeys();
+
+        foreach ($gradesBySemester as $semesterName => $semesterGrades) {
+            $count = $semesterGrades->whereNotNull('final_grade')->count();
+            if ($count > 0) {
+                $gpaHistory[] = [
+                    'semester' => $semesterName,
+                    'gpa' => round($semesterGrades->whereNotNull('final_grade')->avg('final_grade'), 2)
+                ];
+            }
+        }
+
         $pendingRetakes = \App\Models\RetakeEligibility::where('student_id', $student->id)
             ->whereIn('admin_decision', ['pending', 'approved'])
             ->count();
@@ -54,7 +71,7 @@ class StudentController extends Controller
         return view('student.dashboard', compact(
             'grades', 'absences', 'requests', 'schedule',
             'gpa', 'gpaPercent', 'nextClass', 'unjustified',
-            'pendingRetakes', 'pendingReclamations'
+            'pendingRetakes', 'pendingReclamations', 'gpaHistory'
         ));
     }
 

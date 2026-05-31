@@ -196,8 +196,48 @@
                                 </div>
                             </div>
 
-                            {{-- Submit --}}
-                            <div class="pt-6 border-t border-gray-100 dark:border-slate-800 flex justify-end">
+                            {{-- Submit with Exports --}}
+                            <div class="pt-6 border-t border-gray-100 dark:border-slate-800 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                                <div class="flex flex-wrap gap-2 items-center">
+                                    <span class="text-xs font-black uppercase tracking-wider text-slate-400 mr-2">Outils d'export :</span>
+                                    
+                                    {{-- Global Stats --}}
+                                    <a
+                                        href="{{ route('admin.export.statistics') }}"
+                                        class="inline-flex items-center gap-1.5 px-4 py-2.5 bg-blue-50/50 hover:bg-blue-100 text-upf-blue text-xs font-bold rounded-xl border border-blue-100/50 transition-all duration-200 transform hover:-translate-y-0.5 shadow-sm"
+                                    >
+                                        📊 Statistiques Globales
+                                    </a>
+
+                                    {{-- All grades --}}
+                                    <a
+                                        href="{{ route('admin.export.grades') }}"
+                                        class="inline-flex items-center gap-1.5 px-4 py-2.5 bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-bold rounded-xl border border-slate-200/60 transition-all duration-200 transform hover:-translate-y-0.5 shadow-sm"
+                                    >
+                                        📁 Toutes les Notes
+                                    </a>
+
+                                    {{-- Group Export (contextual) --}}
+                                    <a
+                                        x-show="groupId"
+                                        :href="'/admin/export/grades/group/' + groupId"
+                                        class="inline-flex items-center gap-1.5 px-4 py-2.5 bg-pink-50 hover:bg-pink-100 text-upf-magenta text-xs font-bold rounded-xl border border-pink-100 transition-all duration-200 transform hover:-translate-y-0.5 shadow-sm"
+                                        style="display:none;"
+                                    >
+                                        👥 Notes du Groupe
+                                    </a>
+
+                                    {{-- Module Export (contextual) --}}
+                                    <a
+                                        x-show="moduleId"
+                                        :href="'/admin/export/grades/module/' + moduleId"
+                                        class="inline-flex items-center gap-1.5 px-4 py-2.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-bold rounded-xl border border-emerald-100 transition-all duration-200 transform hover:-translate-y-0.5 shadow-sm"
+                                        style="display:none;"
+                                    >
+                                        📘 Notes du Module
+                                    </a>
+                                </div>
+
                                 <button
                                     type="submit"
                                     :disabled="!groupId || !moduleId"

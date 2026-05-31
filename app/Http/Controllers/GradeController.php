@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
 use Illuminate\Support\Facades\Auth;
+use App\Notifications\GradePublished;
 
 class GradeController extends Controller
 {
@@ -115,6 +115,14 @@ class GradeController extends Controller
                     ]
                 );
                 $grade->calculateFinalGrade();
+
+                // 🔔 Notifier l'étudiant si une note finale vient d'être calculée
+                if ($grade->final_grade !== null) {
+                    $student->user?->notify(new GradePublished(
+                        $module->name ?? 'Module',
+                        (float) $grade->final_grade
+                    ));
+                }
             }
         });
 
