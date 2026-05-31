@@ -178,8 +178,8 @@
                 </main>
             </div>
 
-            <!-- AI Chat Widget for Students -->
-            @if(Auth::check() && Auth::user()->isStudent())
+            <!-- AI Chat Widget (Llama) for All Users -->
+            @if(Auth::check())
                 <x-ai-chat-widget />
             @endif
         </div>

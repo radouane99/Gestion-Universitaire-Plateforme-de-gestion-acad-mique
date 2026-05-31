@@ -389,8 +389,6 @@ Route::middleware(['auth', 'role:student'])->prefix('student')->name('student.')
     Route::get('/reclamations/create', [\App\Http\Controllers\Student\ReclamationController::class, 'create'])->name('reclamations.create');
     Route::post('/reclamations', [\App\Http\Controllers\Student\ReclamationController::class, 'store'])->name('reclamations.store');
 
-    // Assistant IA (Smart UPF)
-    Route::post('/ai/chat', [\App\Http\Controllers\Student\AiChatController::class, 'chat'])->name('ai.chat');
 
     // Appointments (Option 12)
     Route::get('/appointments', [\App\Http\Controllers\AppointmentController::class, 'studentIndex'])->name('appointments.index');
@@ -451,6 +449,9 @@ Route::middleware('auth')->group(function () {
     })->name('notifications.markAllRead');
     Route::get('/api/notifications/unread-count', [\App\Http\Controllers\NotificationApiController::class, 'unreadCount'])->name('api.notifications.unread_count');
     Route::get('/api/notifications/latest', [\App\Http\Controllers\NotificationApiController::class, 'latest'])->name('api.notifications.latest');
+
+    // Assistant IA (Smart UPF) - Shared across all roles
+    Route::post('/ai/chat', [\App\Http\Controllers\Student\AiChatController::class, 'chat'])->name('ai.chat');
 
     // Chat / Messaging
     Route::get('/chat', [\App\Http\Controllers\MessageController::class, 'index'])->name('chat.index');
