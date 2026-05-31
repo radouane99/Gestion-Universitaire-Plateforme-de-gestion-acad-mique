@@ -74,8 +74,137 @@ Fini le papier ! Tout le suivi des cours est dématérialisé.
 
 ---
 
-## 3. System Architecture 🏗️
+## 3. Architecture du Système & Modélisation UML 🏗️
 
+Afin de garantir une scalabilité et une maintenance optimale, le projet suit une architecture MVC renforcée et est modélisé de manière stricte. Voici les diagrammes de conception (UML) :
+
+### 3.1. Diagramme de Cas d'Utilisation (Use Case)
+Le système gère 3 acteurs principaux avec des niveaux de permissions distincts :
+
+```mermaid
+usecaseDiagram
+    actor "Administrateur" as Admin
+    actor "Professeur" as Prof
+    actor "Étudiant" as Student
+
+    package "UPF Portail" {
+        usecase "Gérer les Utilisateurs & Salles" as UC1
+        usecase "Générer les PV et Délibérations" as UC2
+        usecase "Saisir le Cahier de Textes" as UC3
+        usecase "Pointer les Absences" as UC4
+        usecase "Saisir les Notes" as UC5
+        usecase "Consulter les Notes & Absences" as UC6
+        usecase "Faire une Réclamation" as UC7
+        usecase "Discuter avec l'IA Smart UPF" as UC8
+    }
+
+    Admin --> UC1
+    Admin --> UC2
+    Admin --> UC8
+    
+    Prof --> UC3
+    Prof --> UC4
+    Prof --> UC5
+    Prof --> UC8
+
+    Student --> UC6
+    Student --> UC7
+    Student --> UC8
+```
+
+### 3.2. Diagramme de Classes (Class Diagram)
+Aperçu du schéma relationnel (Base de données) via Eloquent ORM :
+
+```mermaid
+classDiagram
+    class User {
+        +BigInt id
+        +String name
+        +String email
+        +String password
+        +Boolean google2fa_enabled
+        +login()
+    }
+    
+    class Role {
+        +String name
+    }
+
+    class Student {
+        +String cne
+        +String cin
+        +Date date_of_birth
+        +calculateGPA()
+    }
+
+    class Professor {
+        +String specialty
+        +String phone
+    }
+
+    class Grade {
+        +Float grade
+        +Float cc1
+        +Float cc2
+        +Float exam
+        +String status
+    }
+
+    class Absence {
+        +Date date
+        +String justification_status
+        +Boolean is_justified
+    }
+    
+    class Textbook {
+        +Date date
+        +Time start_time
+        +String type
+        +String objective
+    }
+
+    User "1" --> "1" Role : has
+    User "1" -- "1" Student : is a
+    User "1" -- "1" Professor : is a
+    Student "1" -- "*" Grade : has
+    Student "1" -- "*" Absence : has
+    Professor "1" -- "*" Textbook : writes
+```
+
+### 3.3. Flux Séquentiel : Saisie d'une Séance & Pointage (Sequence Diagram)
+Le scénario complet de digitalisation du Cahier de Textes par le professeur, suivi du pointage des étudiants :
+
+```mermaid
+sequenceDiagram
+    actor Prof as Professeur
+    participant UI as Interface Web (Vue)
+    participant Ctrl as TextbookController
+    participant DB as Base de Données
+    actor Admin as Administrateur
+
+    Prof->>UI: Clique sur "+ Nouvelle Séance"
+    UI->>Ctrl: GET /professor/textbook/create
+    Ctrl->>DB: Fetch classes assignées
+    DB-->>Ctrl: Retourne Groupes & Modules
+    Ctrl-->>UI: Affiche Formulaire
+    
+    Prof->>UI: Remplit Heure, Type (TD/TP) et Objectif
+    UI->>Ctrl: POST /professor/textbook
+    Ctrl->>DB: INSERT INTO textbooks
+    DB-->>Ctrl: Success
+    Ctrl-->>UI: Redirige vers la liste des séances
+    
+    Prof->>UI: Clique sur "Pointer les absences"
+    UI->>Ctrl: GET /professor/absences/create
+    Prof->>UI: Coche les étudiants absents
+    UI->>Ctrl: POST /professor/absences
+    Ctrl->>DB: INSERT INTO absences (status = 'pending')
+    DB-->>Ctrl: Success
+    
+    Ctrl-->>Admin: Notification "Nouvelles Absences à Justifier"
+```
+
+### 3.4. Architecture Globale (MVC + Services)
 L'application suit l'architecture classique **MVC (Model-View-Controller)** de Laravel, enrichie par le **Pattern Repository/Service** pour la logique complexe.
 
 ```mermaid
