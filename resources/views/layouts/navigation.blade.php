@@ -423,6 +423,9 @@
                         <a href="{{ route('admin.evaluations.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] transition-all duration-150 {{ request()->routeIs('admin.evaluations.*') ? 'text-white bg-white/10 font-semibold' : 'text-slate-400 hover:text-white hover:bg-white/[0.05]' }}">
                             <span class="text-sm">🗳️</span> <span>{{ __('Qualité & Évaluations') }}</span>
                         </a>
+                        <a href="{{ route('admin.internships.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] transition-all duration-150 {{ request()->routeIs('admin.internships.*') ? 'text-white bg-white/10 font-semibold' : 'text-slate-400 hover:text-white hover:bg-white/[0.05]' }}">
+                            <span class="text-sm">🏛️</span> <span>{{ __('Gestion des Stages') }}</span>
+                        </a>
                         <a href="{{ route('admin.settings.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] transition-all duration-150 {{ request()->routeIs('admin.settings.*') ? 'text-white bg-white/10 font-semibold' : 'text-slate-400 hover:text-white hover:bg-white/[0.05]' }}">
                             <span class="text-sm">⚙️</span> <span>{{ __('Paramètres') }}</span>
                         </a>
@@ -489,6 +492,9 @@
                         </a>
                         <a href="{{ route('professor.reclamations.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] transition-all duration-150 {{ request()->routeIs('professor.reclamations.*') ? 'text-white bg-white/10 font-semibold' : 'text-slate-400 hover:text-white hover:bg-white/[0.05]' }}">
                             <span class="text-sm">💬</span> <span>{{ __('Réclamations') }}</span>
+                        </a>
+                        <a href="{{ route('professor.internships.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] transition-all duration-150 {{ request()->routeIs('professor.internships.*') ? 'text-white bg-white/10 font-semibold' : 'text-slate-400 hover:text-white hover:bg-white/[0.05]' }}">
+                            <span class="text-sm">🏛️</span> <span>{{ __('Mes Encadrements (Stages)') }}</span>
                         </a>
                     </div>
                 </div>
@@ -596,6 +602,9 @@
                         <span class="text-sm">🗳️</span> <span>{{ __('Évaluer mes Cours') }}</span>
                     </a>
                     @endif
+                    <a href="{{ route('student.internships.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] transition-all duration-150 {{ request()->routeIs('student.internships.*') ? 'text-white bg-white/10 font-semibold' : 'text-slate-400 hover:text-white hover:bg-white/[0.05]' }}">
+                        <span class="text-sm">💼</span> <span>{{ __('Mon Stage') }}</span>
+                    </a>
                 </div>
             @endif
 
@@ -726,59 +735,80 @@
                 </x-dropdown>
 
                 {{-- Notifications Bell --}}
-                <x-dropdown align="{{ app()->getLocale() == 'ar' ? 'left' : 'right' }}" width="80" contentClasses="py-1 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl shadow-2xl overflow-hidden">
-                    <x-slot name="trigger">
-                        <button class="relative w-10 h-10 flex items-center justify-center text-slate-400 hover:text-upf-blue transition-colors rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 border border-transparent hover:border-slate-100 dark:hover:border-slate-700/50">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
-                            @php $unreadCount = Auth::user()->unreadNotifications->count(); @endphp
-                            @if($unreadCount > 0)
-                                <span class="absolute top-1.5 right-1.5 w-4 h-4 bg-upf-magenta text-white text-[9px] font-black rounded-full flex items-center justify-center border-2 border-white dark:border-slate-900 animate-pulse">
-                                    {{ $unreadCount }}
+                <div x-data="{
+                    unreadCount: 0,
+                    notifications: [],
+                    async updateNotifications() {
+                        try {
+                            const countRes = await fetch('{{ route('api.notifications.unread_count') }}');
+                            const countData = await countRes.json();
+                            this.unreadCount = countData.unread_count;
+
+                            const listRes = await fetch('{{ route('api.notifications.latest') }}');
+                            this.notifications = await listRes.json();
+                        } catch (e) {
+                            console.error('Error fetching notifications:', e);
+                        }
+                    },
+                    async markRead(id, url) {
+                        try {
+                            await fetch('/notifications/' + id + '/read', {
+                                method: 'POST',
+                                headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}', 'Content-Type': 'application/json' }
+                            });
+                        } catch (e) {}
+                        window.location.href = url;
+                    },
+                    init() {
+                        this.updateNotifications();
+                        // Poll every 5 seconds for a dynamic, real-time feel
+                        setInterval(() => { this.updateNotifications() }, 5000);
+                    }
+                }">
+                    <x-dropdown align="{{ app()->getLocale() == 'ar' ? 'left' : 'right' }}" width="80" contentClasses="py-1 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl shadow-2xl overflow-hidden">
+                        <x-slot name="trigger">
+                            <button class="relative w-10 h-10 flex items-center justify-center text-slate-400 hover:text-upf-blue transition-colors rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 border border-transparent hover:border-slate-100 dark:hover:border-slate-700/50">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+                                <span x-show="unreadCount > 0" x-text="unreadCount"
+                                    class="absolute top-1.5 right-1.5 w-4 h-4 bg-upf-magenta text-white text-[9px] font-black rounded-full flex items-center justify-center border-2 border-white dark:border-slate-900 animate-pulse"
+                                    style="display: none;">
                                 </span>
-                            @endif
-                        </button>
-                    </x-slot>
-                    <x-slot name="content">
-                        <div class="w-80">
-                            <div class="p-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                                <h4 class="text-xs font-black uppercase tracking-widest text-slate-700 dark:text-slate-300">🔔 Notifications</h4>
-                                @if($unreadCount > 0)
-                                    <form action="{{ route('notifications.markAllRead') }}" method="POST">
+                            </button>
+                        </x-slot>
+                        <x-slot name="content">
+                            <div class="w-80">
+                                <div class="p-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                                    <h4 class="text-xs font-black uppercase tracking-widest text-slate-700 dark:text-slate-300">🔔 Notifications</h4>
+                                    <form x-show="unreadCount > 0" action="{{ route('notifications.markAllRead') }}" method="POST" style="display: none;">
                                         @csrf
                                         <button type="submit" class="text-[10px] font-black text-upf-blue hover:text-upf-magenta transition-colors uppercase tracking-wide">Tout lire</button>
                                     </form>
-                                @endif
-                            </div>
-                            <div class="max-h-80 overflow-y-auto divide-y divide-slate-50 dark:divide-slate-800/50">
-                                @forelse(Auth::user()->notifications->take(8) as $notification)
-                                    @php
-                                        $data = $notification->data;
-                                        $isUnread = is_null($notification->read_at);
-                                    @endphp
-                                    <a href="{{ $data['url'] ?? '#' }}"
-                                       onclick="fetch('/notifications/{{ $notification->id }}/read', {method:'POST', headers:{'X-CSRF-TOKEN':'{{ csrf_token() }}','Content-Type':'application/json'}})"
-                                       class="flex items-start gap-3 p-4 hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-all {{ $isUnread ? 'bg-indigo-50/30 dark:bg-indigo-950/10' : '' }}">
-                                        <div class="text-xl flex-shrink-0 mt-0.5">{{ $data['icon'] ?? '🔔' }}</div>
-                                        <div class="flex-1 min-w-0">
-                                            <p class="text-xs font-black text-slate-900 dark:text-white leading-tight {{ $isUnread ? 'text-upf-blue dark:text-blue-400' : '' }} truncate">{{ $data['title'] ?? 'Notification' }}</p>
-                                            <p class="text-[10px] text-slate-500 mt-0.5 leading-snug line-clamp-2">{{ $data['message'] ?? ($data['body'] ?? '') }}</p>
-                                            <p class="text-[9px] text-slate-400 mt-1 font-bold">{{ $notification->created_at->diffForHumans() }}</p>
-                                        </div>
-                                        @if($isUnread)
-                                            <div class="w-2 h-2 rounded-full bg-upf-blue dark:bg-blue-400 flex-shrink-0 mt-2"></div>
-                                        @endif
-                                    </a>
-                                @empty
-                                    <div class="text-center py-10 px-4">
+                                </div>
+                                <div class="max-h-80 overflow-y-auto divide-y divide-slate-50 dark:divide-slate-800/50">
+                                    <template x-for="n in notifications" :key="n.id">
+                                        <a @click.prevent="markRead(n.id, n.url)" href="#"
+                                           :class="n.is_unread ? 'bg-indigo-50/30 dark:bg-indigo-950/10' : ''"
+                                           class="flex items-start gap-3 p-4 hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-all">
+                                            <div class="text-xl flex-shrink-0 mt-0.5" x-text="n.icon"></div>
+                                            <div class="flex-1 min-w-0">
+                                                <p :class="n.is_unread ? 'text-upf-blue dark:text-blue-400 font-black' : 'text-slate-900 dark:text-white'"
+                                                   class="text-xs leading-tight truncate" x-text="n.title"></p>
+                                                <p class="text-[10px] text-slate-500 mt-0.5 leading-snug line-clamp-2" x-text="n.message"></p>
+                                                <p class="text-[9px] text-slate-400 mt-1 font-bold" x-text="n.time"></p>
+                                            </div>
+                                            <div x-show="n.is_unread" class="w-2 h-2 rounded-full bg-upf-blue dark:bg-blue-400 flex-shrink-0 mt-2"></div>
+                                        </a>
+                                    </template>
+                                    <div x-show="notifications.length === 0" class="text-center py-10 px-4">
                                         <div class="text-4xl mb-3">🔕</div>
                                         <p class="text-sm font-black text-slate-400">Tout est calme ici !</p>
                                         <p class="text-xs text-slate-300 mt-1">Vous n'avez aucune notification.</p>
                                     </div>
-                                @endforelse
+                                </div>
                             </div>
-                        </div>
-                    </x-slot>
-                </x-dropdown>
+                        </x-slot>
+                    </x-dropdown>
+                </div>
 
                 {{-- Language Switcher --}}
                 <x-dropdown align="{{ app()->getLocale() == 'ar' ? 'left' : 'right' }}" width="48" contentClasses="py-1 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl shadow-2xl p-1">

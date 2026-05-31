@@ -184,6 +184,10 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     // Evaluations Routes
     Route::get('/evaluations', [\App\Http\Controllers\Admin\EvaluationController::class, 'index'])->name('evaluations.index');
     Route::post('/evaluations/toggle', [\App\Http\Controllers\Admin\EvaluationController::class, 'toggle'])->name('evaluations.toggle');
+    // Internships Admin Routes (Option D)
+    Route::get('/internships', [\App\Http\Controllers\Admin\InternshipController::class, 'index'])->name('internships.index');
+    Route::post('/internships/{internship}/approve', [\App\Http\Controllers\Admin\InternshipController::class, 'approve'])->name('internships.approve');
+    Route::post('/internships/{internship}/reject', [\App\Http\Controllers\Admin\InternshipController::class, 'reject'])->name('internships.reject');
 
     // Activity Log Route
     Route::get('/activity-logs', [\App\Http\Controllers\Admin\ActivityLogController::class, 'index'])->name('activity-logs.index');
@@ -279,6 +283,13 @@ Route::middleware(['auth', 'role:professor', 'check.contract'])->prefix('profess
     Route::get('/reservations/create', [\App\Http\Controllers\ReservationController::class, 'create'])->name('reservations.create');
     Route::post('/reservations', [\App\Http\Controllers\ReservationController::class, 'store'])->name('reservations.store');
 
+    // Internships Professor Routes (Option D)
+    Route::get('/internships', [\App\Http\Controllers\Professor\InternshipController::class, 'index'])->name('internships.index');
+    Route::get('/internships/show/{internship}', [\App\Http\Controllers\Professor\InternshipController::class, 'show'])->name('internships.show');
+    Route::post('/internships/report/{report}/review', [\App\Http\Controllers\Professor\InternshipController::class, 'reviewReport'])->name('internships.report.review');
+    Route::post('/internships/{internship}/grade', [\App\Http\Controllers\Professor\InternshipController::class, 'grade'])->name('internships.grade');
+    Route::get('/internships/report/{report}/download', [\App\Http\Controllers\Professor\InternshipController::class, 'downloadReportFile'])->name('internships.report.download');
+
 
 
     // Cahier de Textes
@@ -339,6 +350,12 @@ Route::middleware(['auth', 'role:student'])->prefix('student')->name('student.')
     Route::get('/evaluations', [\App\Http\Controllers\Student\EvaluationController::class, 'index'])->name('evaluations.index');
     Route::post('/evaluations', [\App\Http\Controllers\Student\EvaluationController::class, 'store'])->name('evaluations.store');
 
+    // Internships Student Routes (Option D)
+    Route::get('/internships', [\App\Http\Controllers\Student\InternshipController::class, 'index'])->name('internships.index');
+    Route::post('/internships', [\App\Http\Controllers\Student\InternshipController::class, 'store'])->name('internships.store');
+    Route::post('/internships/{internship}/report', [\App\Http\Controllers\Student\InternshipController::class, 'storeReport'])->name('internships.report.store');
+    Route::get('/internships/report/{report}/download', [\App\Http\Controllers\Student\InternshipController::class, 'downloadReportFile'])->name('internships.report.download');
+
     // Convocations
     Route::get('/convocations', [\App\Http\Controllers\Student\ConvocationController::class, 'index'])->name('convocations.index');
     Route::get('/convocations/{convocation}/download', [\App\Http\Controllers\Student\ConvocationController::class, 'download'])->name('convocations.download');
@@ -365,6 +382,18 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/classroom/post/{group}/{module}', [\App\Http\Controllers\ClassroomController::class, 'storePost'])->name('classroom.post');
     Route::post('/classroom/comment/{post}', [\App\Http\Controllers\ClassroomController::class, 'storeComment'])->name('classroom.comment');
     Route::get('/classroom/file/{post}', [\App\Http\Controllers\ClassroomController::class, 'downloadFile'])->name('classroom.download_file');
+
+    // Devoirs & Soumissions (Option A)
+    Route::post('/classroom/homework/{group}/{module}', [\App\Http\Controllers\ClassroomController::class, 'storeHomework'])->name('classroom.homework.store');
+    Route::post('/classroom/homework/{homework}/submit', [\App\Http\Controllers\ClassroomController::class, 'storeSubmission'])->name('classroom.submission.store');
+    Route::post('/classroom/submission/{submission}/grade', [\App\Http\Controllers\ClassroomController::class, 'gradeSubmission'])->name('classroom.submission.grade');
+    Route::get('/classroom/homework/{homework}/download', [\App\Http\Controllers\ClassroomController::class, 'downloadHomeworkFile'])->name('classroom.homework.download');
+    Route::get('/classroom/submission/{submission}/download', [\App\Http\Controllers\ClassroomController::class, 'downloadSubmissionFile'])->name('classroom.submission.download');
+
+    // Chat de groupe réactif (Option B)
+    Route::get('/classroom/chat/{group}/{module}/messages', [\App\Http\Controllers\ClassroomController::class, 'getMessages'])->name('classroom.chat.messages');
+    Route::post('/classroom/chat/{group}/{module}/post', [\App\Http\Controllers\ClassroomController::class, 'postMessage'])->name('classroom.chat.post');
+    Route::get('/classroom/chat/download/{message}', [\App\Http\Controllers\ClassroomController::class, 'downloadChatFile'])->name('classroom.chat.download');
 });
 
 Route::middleware('auth')->group(function () {
@@ -388,6 +417,8 @@ Route::middleware('auth')->group(function () {
         Auth::user()->unreadNotifications->markAsRead();
         return back();
     })->name('notifications.markAllRead');
+    Route::get('/api/notifications/unread-count', [\App\Http\Controllers\NotificationApiController::class, 'unreadCount'])->name('api.notifications.unread_count');
+    Route::get('/api/notifications/latest', [\App\Http\Controllers\NotificationApiController::class, 'latest'])->name('api.notifications.latest');
 
     // Chat / Messaging
     Route::get('/chat', [\App\Http\Controllers\MessageController::class, 'index'])->name('chat.index');
