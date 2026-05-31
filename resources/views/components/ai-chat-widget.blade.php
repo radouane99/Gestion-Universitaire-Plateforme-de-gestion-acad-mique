@@ -114,7 +114,7 @@
                 this.scrollToBottom();
 
                 try {
-                    const response = await fetch('{{ route("student.ai.chat") }}', {
+                    const response = await fetch('{{ route("ai.chat") }}', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
