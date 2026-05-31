@@ -53,7 +53,9 @@ class AppointmentController extends Controller
             ->orderBy('start_time', 'desc')
             ->get();
 
-        return view('host.appointments', compact('mySlots'));
+        $routePrefix = $user->isAdmin() ? 'admin.' : 'professor.';
+
+        return view('host.appointments', compact('mySlots', 'routePrefix'));
     }
 
     /**

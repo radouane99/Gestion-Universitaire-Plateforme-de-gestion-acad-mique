@@ -29,7 +29,7 @@
                     <div class="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-[2.5rem] p-7 shadow-sm">
                         <h4 class="text-xs font-black text-slate-900 dark:text-white uppercase tracking-widest border-b border-slate-100 dark:border-slate-800 pb-3 mb-5">➕ Déclarer une Disponibilité</h4>
                         
-                        <form action="{{ route('host.appointments.slot.store') }}" method="POST" class="space-y-4">
+                        <form action="{{ route($routePrefix . 'appointments.slot.store') }}" method="POST" class="space-y-4">
                             @csrf
                             <div class="space-y-1">
                                 <label class="block text-[8px] font-black uppercase text-slate-400 tracking-wider">Date & Heure de Début</label>
@@ -99,7 +99,7 @@
                                                 </button>
                                             </form>
                                         @else
-                                            <form action="{{ route('host.appointments.slot.destroy', $slot) }}" method="POST" class="w-full sm:w-auto">
+                                            <form action="{{ route($routePrefix . 'appointments.slot.destroy', $slot) }}" method="POST" class="w-full sm:w-auto">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="w-full sm:w-auto px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 text-[9px] font-black uppercase tracking-wider rounded-xl transition-all">
