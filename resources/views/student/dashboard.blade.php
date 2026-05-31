@@ -53,7 +53,7 @@
                                 @endif
                             @endif
                             <span class="bg-white/10 dark:bg-white/5 backdrop-blur-xl border border-white/10 dark:border-white/5 px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest">
-                                📅 {{ __('Année') }} 2024/2025
+                                📅 {{ __('Année') }} {{ \App\Models\Setting::first()->academic_year ?? '2025/2026' }}
                             </span>
                         </div>
                     </div>
@@ -323,6 +323,12 @@
                                         ->where('is_validated', true)
                                         ->exists() : false;
                                 @endphp
+
+                                @if($studentObj && $studentObj->registration_status === 'approved')
+                                    <a href="{{ route('student.receipt.download') }}" class="px-5 py-3.5 bg-blue-600 hover:bg-blue-500 text-white font-black rounded-2xl transition-all duration-300 shadow-md hover:scale-105 transform whitespace-nowrap text-xs uppercase tracking-widest flex items-center gap-2">
+                                        📝 {{ __('Reçu d\'Inscription') }}
+                                    </a>
+                                @endif
 
                                 @if($studentObj && $isPvApproved && $studentObj->getYearlyGpa() >= 10 && $studentObj->getFailedModules()->isEmpty())
                                     <a href="{{ route('student.attestation.download') }}" class="px-5 py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-2xl transition-all duration-300 shadow-md hover:scale-105 transform whitespace-nowrap text-xs uppercase tracking-widest flex items-center gap-2">

@@ -345,6 +345,7 @@ Route::middleware(['auth', 'role:student'])->prefix('student')->name('student.')
     // Attestation de Réussite
     Route::get('/attestation/download', [\App\Http\Controllers\Student\StudentController::class, 'downloadAttestation'])->name('attestation.download');
     Route::get('/diplome/download', [\App\Http\Controllers\Student\StudentController::class, 'downloadDiplome'])->name('diplome.download');
+    Route::get('/receipt/download', [\App\Http\Controllers\Student\StudentController::class, 'downloadReceipt'])->name('receipt.download');
 
     // Réinscriptions
     Route::get('/reinscription', [\App\Http\Controllers\Student\StudentController::class, 'showReinscriptionForm'])->name('reinscription.form');

@@ -173,7 +173,7 @@
                         <td style="padding-left: 5px; padding-bottom: 4px;">
                             <strong>L'Étudiant(e) :</strong> Nom et Prénom : <strong>{{ $request->user->name }}</strong><br>
                             N° d'immatriculation : <strong>STU-{{ $request->user->id }}{{ $request->user->id + 200 }}</strong> | 
-                            Inscrit(e) au titre de l'année universitaire <strong>2024 / 2025</strong>.
+                            Inscrit(e) au titre de l'année universitaire <strong>{{ \App\Models\Setting::first()->academic_year ?? '2025/2026' }}</strong>.
                         </td>
                     </tr>
                 </table>

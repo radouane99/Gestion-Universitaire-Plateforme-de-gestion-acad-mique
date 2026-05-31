@@ -212,7 +212,7 @@
             </div>
             
             <div class="max-w-7xl mx-auto px-6 pt-12 flex flex-col md:flex-row justify-between items-center text-xs font-bold text-gray-500 uppercase tracking-widest">
-                <p>&copy; 2024 UPF - Université Privée de Fès. {{ __('All Rights Reserved.') }}</p>
+                <p>&copy; 2026 UPF - Université Privée de Fès. {{ __('All Rights Reserved.') }}</p>
             </div>
         </footer>
 

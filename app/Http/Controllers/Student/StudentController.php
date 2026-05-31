@@ -270,6 +270,29 @@ class StudentController extends Controller
     }
 
     /**
+     * Téléchargement du Reçu d'Inscription.
+     */
+    public function downloadReceipt()
+    {
+        $student = Auth::user()->student;
+        if (!$student) {
+            abort(404);
+        }
+
+        if ($student->registration_status !== 'approved') {
+            return redirect()->route('student.dashboard')->with('error', "Votre reçu d'inscription n'est pas encore disponible. L'administration doit d'abord approuver votre dossier.");
+        }
+
+        $verifyUrl = route('verify.document', $student->document_token);
+        $isPdf = true;
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pdf.registration_receipt', compact('student', 'verifyUrl', 'isPdf'));
+        
+        $nameSlug = \Illuminate\Support\Str::slug($student->user->name, '_');
+        return $pdf->download("recu_inscription_{$nameSlug}.pdf");
+    }
+
+    /**
      * Téléchargement du Diplôme de Réussite officielle en PDF.
      */
     public function downloadDiplome()

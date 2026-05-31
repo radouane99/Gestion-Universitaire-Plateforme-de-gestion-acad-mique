@@ -58,7 +58,7 @@
                     </a>
                 @endif
                 @if(\App\Models\Setting::isReinscriptionOpen())
-                    <a href="{{ route('student.reinscription.form') }}" class="bg-white text-[#b50060] hover:text-[#003893] hover:bg-slate-100 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider transition-all shadow-md transform hover:scale-105">
+                    <a href="{{ route('login') }}" class="bg-white text-[#b50060] hover:text-[#003893] hover:bg-slate-100 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider transition-all shadow-md transform hover:scale-105">
                         🎓 {{ __('Réinscription') }}
                     </a>
                 @endif
@@ -93,7 +93,7 @@
                                 <a href="{{ route('inscription') }}" class="text-sm font-bold text-slate-800 bg-white hover:bg-slate-100 hover:text-upf-pink px-6 py-3 rounded-full transition shadow-md hover:shadow-lg transform hover:-translate-y-0.5 border border-slate-200">{{ __('S\'inscrire en ligne') }}</a>
                             @endif
                             @if(\App\Models\Setting::isReinscriptionOpen())
-                                <a href="{{ route('student.reinscription.form') }}" class="text-sm font-bold text-slate-800 bg-white hover:bg-slate-100 hover:text-upf-pink px-6 py-3 rounded-full transition shadow-md hover:shadow-lg transform hover:-translate-y-0.5 border border-slate-200">{{ __('Se Réinscrire') }}</a>
+                                <a href="{{ route('login') }}" class="text-sm font-bold text-slate-800 bg-white hover:bg-slate-100 hover:text-upf-pink px-6 py-3 rounded-full transition shadow-md hover:shadow-lg transform hover:-translate-y-0.5 border border-slate-200">{{ __('Se Réinscrire') }}</a>
                             @endif
                             <a href="{{ route('login') }}" class="text-sm font-bold text-white bg-upf-pink hover:bg-pink-700 px-6 py-3 rounded-full transition shadow-lg shadow-pink-500/30 hover:shadow-xl transform hover:-translate-y-0.5 border border-pink-600">{{ __('Connexion au Portail') }}</a>
                         @endauth
@@ -159,7 +159,7 @@
                             </a>
                         @endif
                         @if(\App\Models\Setting::isReinscriptionOpen())
-                            <a href="{{ route('student.reinscription.form') }}" class="w-full sm:w-auto px-8 py-4 bg-white text-upf-blue hover:bg-blue-50 font-black rounded-full shadow-2xl transition transform hover:-translate-y-1 text-lg flex justify-center items-center gap-2">
+                            <a href="{{ route('login') }}" class="w-full sm:w-auto px-8 py-4 bg-white text-upf-blue hover:bg-blue-50 font-black rounded-full shadow-2xl transition transform hover:-translate-y-1 text-lg flex justify-center items-center gap-2">
                                 🎓 {{ __('Se Réinscrire en Ligne') }}
                             </a>
                         @endif
@@ -229,7 +229,7 @@
                                 </a>
                             @endif
                             @if(\App\Models\Setting::isReinscriptionOpen())
-                                <a href="{{ route('student.reinscription.form') }}" class="px-6 py-4 bg-upf-pink text-white hover:bg-pink-700 font-black rounded-2xl shadow-xl transition transform hover:-translate-y-0.5 text-center text-sm flex items-center justify-center gap-2 border border-pink-500">
+                                <a href="{{ route('login') }}" class="px-6 py-4 bg-upf-pink text-white hover:bg-pink-700 font-black rounded-2xl shadow-xl transition transform hover:-translate-y-0.5 text-center text-sm flex items-center justify-center gap-2 border border-pink-500">
                                     🎓 {{ __('Faire ma Réinscription') }}
                                 </a>
                             @endif

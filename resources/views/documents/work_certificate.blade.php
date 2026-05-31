@@ -184,7 +184,7 @@
                 </tr>
                 <tr>
                     <td style="padding: 10px 15px; font-size: 9.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; color: #64748b;">Année universitaire</td>
-                    <td style="padding: 10px 15px; font-size: 13px; font-weight: 700; color: #0f172a;">2024 / 2025</td>
+                    <td style="padding: 10px 15px; font-size: 13px; font-weight: 700; color: #0f172a;">{{ \App\Models\Setting::first()->academic_year ?? '2025/2026' }}</td>
                 </tr>
             </table>
 
