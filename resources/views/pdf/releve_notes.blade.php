@@ -27,7 +27,7 @@
         .hdr-center { width: 40%; text-align: center; }
         .hdr-center img { height: 46px; display: block; margin: 0 auto 2px auto; }
         .hdr-center-name { font-size: 8px; font-weight: bold; color: #003399; }
-        .hdr-right { width: 30%; text-align: right; font-size: 7px; font-weight: bold; color: #db2777; line-height: 1.5; direction: rtl; }
+        .hdr-right { width: 30%; text-align: right; font-size: 7px; font-weight: bold; color: #db2777; line-height: 1.5; }
         .logo-text {
             font-size: 16px;
             font-weight: bold;
@@ -166,10 +166,10 @@
                     <div class="hdr-center-name">UNIVERSITÉ PRIVÉE DE FÈS</div>
                 </td>
                 <td class="hdr-right">
-                    المملكة المغربية<br>
-                    الجامعة الخاصة لفاس<br>
-                    المدرسة العليا للهندسة<br>
-                    والتكنولوجيا بفاس
+                    @arabic('المملكة المغربية')<br>
+                    @arabic('الجامعة الخاصة لفاس')<br>
+                    @arabic('المدرسة العليا للهندسة')<br>
+                    @arabic('والتكنولوجيا بفاس')
                 </td>
             </tr>
         </table>
@@ -278,7 +278,7 @@
                             <div class="stamp-top">UNIVERSITE PRIVEE DE FES</div>
                             <div class="stamp-mid">★ UPF ★</div>
                             <div class="stamp-sub">SCOLARITÉ</div>
-                            <div class="stamp-arabic">الجامعة الخاصة لفاس</div>
+                            <div class="stamp-arabic">@arabic('الجامعة الخاصة لفاس')</div>
                         </div>
                     </div>
                     <div style="font-size:9px; font-weight:bold; color:#1e3a8a; margin-top:3px;">Le Doyen</div>

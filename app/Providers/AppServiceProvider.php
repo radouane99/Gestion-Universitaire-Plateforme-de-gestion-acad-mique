@@ -31,5 +31,10 @@ class AppServiceProvider extends ServiceProvider
         RateLimiter::for('api', function (Request $request) {
             return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
         });
+
+        // Register custom Arabic text shaping directive for DomPDF
+        \Illuminate\Support\Facades\Blade::directive('arabic', function ($expression) {
+            return "<?php echo \App\Helpers\ArabicHelper::shape($expression); ?>";
+        });
     }
 }

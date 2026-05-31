@@ -42,7 +42,7 @@
             </td>
             <td style="padding-left: 12px; vertical-align: middle;">
                 <div style="font-size: 20px; font-weight: bold; letter-spacing: 0.5px; color: #000;">UNIVERSITÉ PRIVÉE DE FÈS</div>
-                <div style="font-size: 14px; font-weight: bold; margin-top: 3px; color: #000;">الجامعة الخاصة لفاس</div>
+                <div style="font-size: 14px; font-weight: bold; margin-top: 3px; color: #000;">@arabic('الجامعة الخاصة لفاس')</div>
                 <div style="font-size: 9px; color: #555; margin-top: 3px;">Service de Scolarité et des Affaires Estudiantines</div>
             </td>
             <td style="width: 30%;" align="right" valign="top">
@@ -163,7 +163,7 @@
                             <div style="position: absolute; width: 100%; text-align: center; top: 12px; font-size: 7.5px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.3px;">UNIVERSITE PRIVEE DE FES</div>
                             <div style="position: absolute; width: 100%; text-align: center; top: 40px; font-size: 18px; font-weight: bold; letter-spacing: 1.5px;">★ UPF ★</div>
                             <div style="position: absolute; width: 100%; text-align: center; top: 66px; font-size: 7px; font-weight: bold;">FADOUA KHALOUQ</div>
-                            <div style="position: absolute; width: 100%; text-align: center; bottom: 12px; font-size: 8.5px; font-weight: bold;">الجامعة الخاصة لفاس</div>
+                            <div style="position: absolute; width: 100%; text-align: center; bottom: 12px; font-size: 8.5px; font-weight: bold;">@arabic('الجامعة الخاصة لفاس')</div>
                         </div>
                     </div>
                     <div style="font-size: 11px; font-weight: bold; color: #1d4ed8; margin-top: 5px;">FADOUA KHALOUQ</div>

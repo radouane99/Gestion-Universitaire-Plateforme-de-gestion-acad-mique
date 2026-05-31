@@ -211,11 +211,11 @@
                             <img src="{{ public_path('images/logo_upf.png') }}" alt="Logo UPF" onerror="this.src='https://www.upf.ac.ma/images/logo_upf.png'">
                         @endif
                     </td>
-                    <td class="header-right" dir="rtl">
-                        المملكة المغربية<br>
-                        الجامعة الخاصة لفاس<br>
-                        المدرسة العليا للهندسة<br>
-                        والتكنولوجيا بفاس
+                    <td class="header-right">
+                        @arabic('المملكة المغربية')<br>
+                        @arabic('الجامعة الخاصة لفاس')<br>
+                        @arabic('المدرسة العليا للهندسة')<br>
+                        @arabic('والتكنولوجيا بفاس')
                     </td>
                 </tr>
             </table>

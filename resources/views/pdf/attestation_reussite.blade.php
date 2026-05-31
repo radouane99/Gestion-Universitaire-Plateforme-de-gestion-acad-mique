@@ -77,7 +77,6 @@
             font-weight: bold;
             color: #9b1d6e;
             line-height: 1.5;
-            direction: rtl;
             font-family: 'DejaVu Sans', sans-serif;
         }
 
@@ -313,10 +312,10 @@
                     <div class="hdr-center-title">UNIVERSITÉ PRIVÉE DE FÈS</div>
                 </td>
                 <td class="hdr-right">
-                    المملكة المغربية<br>
-                    الجامعة الخاصة لفاس<br>
-                    المدرسة العليا للهندسة<br>
-                    والتكنولوجيا بفاس
+                    @arabic('المملكة المغربية')<br>
+                    @arabic('الجامعة الخاصة لفاس')<br>
+                    @arabic('المدرسة العليا للهندسة')<br>
+                    @arabic('والتكنولوجيا بفاس')
                 </td>
             </tr>
         </table>
@@ -385,7 +384,7 @@
                                 <div class="stamp-top">UNIVERSITE PRIVEE DE FES</div>
                                 <div class="stamp-mid">★ UPF ★</div>
                                 <div class="stamp-sub">SCOLARITÉ</div>
-                                <div class="stamp-arabic">الجامعة الخاصة لفاس</div>
+                                <div class="stamp-arabic">@arabic('الجامعة الخاصة لفاس')</div>
                             </div>
                         </div>
 
