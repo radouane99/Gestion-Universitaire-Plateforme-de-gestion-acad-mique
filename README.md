@@ -1,13 +1,14 @@
 <div align="center">
   <div style="background-color: #4f46e5; color: white; width: 80px; height: 80px; display: inline-flex; justify-content: center; align-items: center; border-radius: 16px; font-size: 2rem; font-weight: 900; margin-bottom: 20px;">U</div>
-  <h1>🎓 UPF Portail - Plateforme de Gestion Académique IA</h1>
-  <p><strong>Système complet de gestion universitaire propulsé par l'Intelligence Artificielle (LLaMA 3.3).</strong></p>
+  <h1>🎓 UPF Portail - Plateforme de Gestion Académique Intelligente</h1>
+  <p><strong>Système complet de gestion universitaire propulsé par l'Intelligence Artificielle (LLaMA 3.3) et la sécurité avancée.</strong></p>
   
   [![Laravel](https://img.shields.io/badge/Laravel-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)](https://laravel.com)
   [![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
   [![Alpine.js](https://img.shields.io/badge/Alpine.js-8BC0D0?style=for-the-badge&logo=alpine.js&logoColor=white)](https://alpinejs.dev/)
   [![Groq AI](https://img.shields.io/badge/AI-LLaMA_3.3-8B5CF6?style=for-the-badge)](https://groq.com/)
   [![PWA](https://img.shields.io/badge/PWA-Ready-5A0FC8?style=for-the-badge)](https://web.dev/progressive-web-apps/)
+  [![Security](https://img.shields.io/badge/2FA-Google_Authenticator-blue?style=for-the-badge)](https://github.com/antonioribeiro/google2fa-laravel)
 </div>
 
 <br>
@@ -16,7 +17,7 @@
 
 ## 📖 Table des matières
 1. [Problématique & Objectif](#1-problématique--objectif)
-2. [Key Features](#2-key-features)
+2. [Fonctionnalités Principales & Scénarios d'Usage](#2-fonctionnalités-principales--scénarios-dusage)
 3. [System Architecture](#3-system-architecture)
 4. [User Flow / System Flow](#4-user-flow--system-flow)
 5. [Project Structure](#5-project-structure)
@@ -24,37 +25,52 @@
 7. [Core Logic / Business Logic](#7-core-logic--business-logic)
 8. [API & AI Interaction Layer](#8-api--ai-interaction-layer)
 9. [Installation & Run](#9-installation--run)
-10. [Testing Strategy](#10-testing-strategy)
-11. [FAQ](#11-faq)
 
 ---
 
 ## 1. Problématique & Objectif 🎯
 
 **Problématique :**  
-La gestion académique traditionnelle dans les universités marocaines (comme l'UPF) est souvent fragmentée : traitement manuel des absences, calculs complexes et sujets aux erreurs pour les délibérations (système de compensation, notes éliminatoires), gestion lourde des réclamations étudiantes, et un manque cruel de visibilité (Analytics) pour la prise de décision.
+La gestion académique traditionnelle dans les universités marocaines (comme l'UPF) est souvent fragmentée : traitement manuel des absences, calculs complexes et sujets aux erreurs pour les délibérations (système de compensation, notes éliminatoires), gestion lourde des réclamations étudiantes, et un manque cruel de visibilité (Analytics) pour la prise de décision. De plus, la sécurité des accès administrateurs et l'assistance utilisateur sont souvent laissées de côté.
 
 **Objectif :**  
-Créer un portail SaaS (Software as a Service) 100% digital, centralisé et intelligent. Ce projet vise à automatiser le règlement pédagogique marocain strict tout en intégrant des technologies de pointe telles que l'**Intelligence Artificielle (LLaMA 3.3 via Groq)** pour l'assistance en temps réel, et la **PWA (Progressive Web App)** pour l'accessibilité mobile.
+Créer un portail SaaS (Software as a Service) 100% digital, centralisé, ultra-sécurisé et intelligent. Ce projet vise à automatiser le règlement pédagogique marocain strict tout en intégrant des technologies de pointe telles que l'**Intelligence Artificielle (LLaMA 3.3 via Groq)** pour l'assistance en temps réel multi-rôles, une **Authentification à Double Facteur (2FA)** pour les administrateurs, et la **PWA (Progressive Web App)** pour l'accessibilité mobile native.
 
 ---
 
-## 2. Key Features ✨
+## 2. Fonctionnalités Principales & Scénarios d'Usage ✨
 
-*   🤖 **Intégration Intelligence Artificielle (RAG)**
-    *   **Smart UPF Assistant :** Chatbot IA pour les étudiants qui connaît leurs notes et leurs absences.
-    *   **Générateur de Réponses :** L'IA rédige des brouillons diplomatiques pour les professeurs traitant des réclamations.
-    *   **Bilan Pédagogique :** Génération automatique d'un rapport textuel sur la situation académique d'un étudiant pour l'administration.
-*   ⚖️ **Moteur de Délibération Automatique**
-    *   Calcul strict des moyennes, statuts de compensation (ex: compensé si Moyenne > 10, pas de note < 5), et éligibilité aux rattrapages.
-*   📄 **Documents Officiels Sécurisés**
-    *   Génération de Relevés de Notes et Attestations de Réussite en PDF avec un **Code QR** anti-fraude.
-*   📈 **Dashboard Analytics Avancé**
-    *   Top/Flop des modules (Chart.js), taux de réussite, et tracking visuel des absences.
-*   📱 **Progressive Web App (PWA)**
-    *   L'application est installable directement sur smartphone/bureau sans passer par un store (Manifest & Service Worker).
-*   🔄 **Workflow de Réclamations & Convocations**
-    *   Gestion de bout en bout des réclamations de notes (Étudiant -> Professeur) et des convocations aux rattrapages.
+### 🤖 1. IA Caméléon : Assistant Multi-Rôles (LLaMA 3.3 RAG)
+L'intelligence artificielle n'est pas qu'un simple gadget, elle a été programmée pour changer de comportement, de rôle et de contexte de base de données selon la personne connectée (Technique du **RAG : Retrieval-Augmented Generation**).
+
+*   **Scénario Étudiant : Le Conseiller Académique**
+    *   *L'étudiant demande :* "Est-ce que je valide mon année ?"
+    *   *Réponse IA :* Le chatbot analyse discrètement les notes et absences de l'étudiant via la BDD. Il lui répond de façon personnalisée : "Bonjour Ahmed, vous avez actuellement 12/20 en Java mais 3 absences non justifiées. Attention, le règlement stipule que..."
+*   **Scénario Professeur : L'Assistant Pédagogique**
+    *   *Le professeur demande :* "Donne-moi une idée de TP en Python pour mes 1ère année."
+    *   *Réponse IA :* L'IA se met en mode Professeur. Elle connaît la spécialité du professeur et lui génère une suggestion de TP ciblée, ou l'aide à rédiger un e-mail professionnel pour convoquer une classe.
+*   **Scénario Administrateur : Le Super-Secrétaire**
+    *   *L'admin demande :* "Rédige une convocation formelle pour un conseil de discipline."
+    *   *Réponse IA :* Conscient des pouvoirs de l'administrateur, l'IA génère instantanément un modèle officiel d'e-mail ou de lettre adapté au jargon universitaire marocain.
+
+### 🛡️ 2. Sécurité Militaire : Google 2FA (Double Authentification)
+La plateforme manipule des données sensibles (Notes, Diplômes). Nous avons donc verrouillé l'accès Administrateur.
+*   **Scénario d'Activation :** Lors de sa connexion, l'administrateur est invité à scanner un **QR Code** avec l'application *Google Authenticator*.
+*   **Scénario de Connexion :** À chaque connexion, après avoir entré son mot de passe, un code dynamique à 6 chiffres lui est demandé. Sans son téléphone physique, aucun pirate ne peut accéder au panneau d'administration, même en cas de fuite de mot de passe.
+
+### 📱 3. Expérience Native : PWA (Progressive Web App) 
+*   **Scénario d'Installation :** Un étudiant visite la plateforme depuis son smartphone (Chrome/Safari). Un bouton intelligent apparaît en haut : "Installer l'Application". En un clic, l'application s'ajoute à son écran d'accueil comme une application native (sans passer par l'App Store/Play Store).
+*   **Scénario Hors-Ligne :** Si l'étudiant perd sa connexion (dans un amphi sans réseau), l'application ne plante pas grâce à un *Service Worker* qui prend le relais pour afficher une belle interface hors-ligne de repli.
+
+### 📋 4. Cahier de Textes & Workflow des Absences
+Fini le papier ! Tout le suivi des cours est dématérialisé.
+*   **Scénario de Saisie (Professeur) :** Le professeur clique sur "+ Nouvelle Séance" dans son "Cahier de Textes". Le système détecte automatiquement ses classes assignées (via son emploi du temps). Il remplit l'heure, le type (Cours/TD/TP) et l'objectif pédagogique de la séance.
+*   **Scénario de Pointage (Professeur) :** Il passe au registre d'appel et coche les étudiants absents via des *Toggle Buttons* fluides.
+*   **Scénario de Contrôle (Administrateur) :** L'administration reçoit ces données en temps réel sur le **Registre Global des Absences**. Un système de filtres avancés (par Filière, par Groupe, ou par État de Justification) permet aux surveillants généraux d'approuver ou rejeter les certificats médicaux téléversés.
+
+### ⚖️ 5. Moteur de Délibération Automatique
+*   **Scénario :** En fin de semestre, au lieu de calculer sur Excel, le système calcule le PV instantanément. Il applique la règle stricte : *Moyenne = (CC1\*0.2) + (CC2\*0.2) + (Exam\*0.6)*.
+*   Il gère intelligemment la **Compensation** (si moyenne générale > 10, un module à 8/20 passe en "Validé par Compensation") et bloque toute validation s'il y a une **Note éliminatoire (< 5/20)**.
 
 ---
 
@@ -65,11 +81,11 @@ L'application suit l'architecture classique **MVC (Model-View-Controller)** de L
 ```mermaid
 graph TD
     Client[Client Browser / PWA] -->|HTTP/HTTPS| Router[Laravel Router]
-    Router --> Middleware[Auth & Role Middleware]
+    Router --> Middleware[Auth, Role, 2FA Middleware]
     Middleware --> Controller[Controllers]
     
     subgraph Core Application
-        Controller --> Services[Services Layer]
+        Controller --> Services[Services Layer (LlamaAiService)]
         Services --> Traits[PVCompilerTrait]
         Controller --> Models[Eloquent ORM]
     end
@@ -114,25 +130,25 @@ sequenceDiagram
 Architecture des dossiers clés du projet :
 
 ```text
-📦 Examen final laravel
+📦 UPF Portail
  ┣ 📂 app
  ┃ ┣ 📂 Http/Controllers
- ┃ ┃ ┣ 📂 Admin (AnalyticsController, PVGlobalController, AiAdminController...)
- ┃ ┃ ┣ 📂 Professor (ReclamationController, AiProfessorController...)
- ┃ ┃ ┗ 📂 Student (AiChatController...)
- ┃ ┣ 📂 Models (Student, Grade, Absence, Reclamation...)
- ┃ ┣ 📂 Services (LlamaAiService, RetakeEligibilityService...)
+ ┃ ┃ ┣ 📂 Admin (AnalyticsController, AbsenceController, TwoFactorAuthController...)
+ ┃ ┃ ┣ 📂 Professor (ReclamationController, TextbookController...)
+ ┃ ┃ ┗ 📂 Student (AiChatController, ScheduleController...)
+ ┃ ┣ 📂 Models (User, Student, Professor, Textbook, Absence, Grade...)
+ ┃ ┣ 📂 Services (LlamaAiService...)
  ┃ ┗ 📂 Traits (PVCompilerTrait)
  ┣ 📂 database
  ┃ ┣ 📂 migrations (Structuration relationnelle rigoureuse)
- ┃ ┗ 📂 seeders (DatabaseSeeder : Générateur massif de data réaliste)
+ ┃ ┗ 📂 seeders (Générateur massif de data réaliste : 250 Étudiants, Profs, Admins)
  ┣ 📂 public
  ┃ ┣ 📜 manifest.json (Configuration PWA)
  ┃ ┗ 📜 sw.js (Service Worker)
  ┣ 📂 resources
  ┃ ┣ 📂 views
- ┃ ┃ ┣ 📂 pdf (Vues d'exportation avec DOMPDF)
- ┃ ┃ ┣ 📂 components (ai-chat-widget.blade.php)
+ ┃ ┃ ┣ 📂 auth (Login, Google 2FA Setup & Verify)
+ ┃ ┃ ┣ 📂 components (ai-chat-widget.blade.php, primary-button.blade.php)
  ┃ ┃ ┗ ... (Vues structurées par rôle)
  ┗ 📜 routes/web.php (Routage sécurisé par middleware)
 ```
@@ -143,28 +159,18 @@ Architecture des dossiers clés du projet :
 
 Voici un aperçu visuel des différentes interfaces de l'application et des documents officiels générés en haute définition :
 
-### 🌟 Interfaces Portails & Dashboards
-| **Landing Page de l'Université (SaaS & PWA)** | **Portail Étudiant (Pro Max Plus)** |
+### 🌟 Interfaces Portails & Sécurité
+| **Double Authentification (2FA) Admin** | **Assistant IA Multi-Rôles** |
 | :---: | :---: |
-| <img src="public/screenshots/welcome_portal.png" width="100%" alt="Landing Page"> | <img src="public/screenshots/student_dashboard.png" width="100%" alt="Portail Étudiant"> |
-| *Design Premium, Hero Banner glowing, PWA ready* | *GPA Simulator Alpine.js, Accent Theme Switcher, Spotlight Command Center* |
+| <img src="public/screenshots/2fa_setup.png" width="100%" alt="Configuration 2FA" onerror="this.outerHTML='<i>(Capture d\'écran Configuration 2FA)</i>'"> | <img src="public/screenshots/ai_chat_roles.png" width="100%" alt="Chat IA" onerror="this.outerHTML='<i>(Capture d\'écran du Chat IA Contextuel)</i>'"> |
+| *Verrouillage militaire des accès administrateurs avec Google Authenticator.* | *L'IA Smart UPF intégrée de manière globale pour tous les utilisateurs avec contexte RAG.* |
 
 <br>
 
 | **Tableau de Bord Administration (Support RTL Arabe Complet)** |
 | :---: |
-| <img src="public/screenshots/admin_dashboard_ar.png" width="100%" alt="Admin Dashboard Arabe"> |
+| <img src="public/screenshots/admin_dashboard_ar.png" width="100%" alt="Admin Dashboard Arabe" onerror="this.outerHTML='<i>(Capture d\'écran Admin RTL)</i>'"> |
 | *Mise en page RTL native, Traduction complète, Sidebar et Topbar inversés de manière fluide* |
-
-<br>
-
-### 📄 Documents Officiels Générés (Exports PDF Professionnels avec Logo)
-| **Convocation Officielle d'Examen** | **Feuille d'Émargement des Examens** | **Liste d'Affichage des Examens (Places)** |
-| :---: | :---: | :---: |
-| <img src="public/screenshots/exam_convocation_pdf.png" width="100%" alt="Convocation PDF"> | <img src="public/screenshots/attendance_sheet_pdf.png" width="100%" alt="Émargement PDF"> | <img src="public/screenshots/exam_display_list_pdf.png" width="100%" alt="Affichage PDF"> |
-| *En-tête avec logo officiel local, QR Code anti-fraude, signature et cachet circulaire* | *Logo local, Colonne CIN ajoutée pour conformité académique marocaine* | *Logo local, Arqam de Places auto-générés séquentiellement* |
-
----
 
 ---
 
@@ -179,17 +185,6 @@ Au lieu de dupliquer la logique dans chaque contrôleur, ce trait agit comme le 
 *   **Compensation :** Un module < 10 (mais > 5) peut être validé par compensation si la moyenne générale du semestre est >= 10.
 *   **Rattrapage :** Les modules non validés ni compensés sont automatiquement marqués pour la session de rattrapage.
 
-```php
-// Extrait conceptuel de la logique
-if ($moyenne >= 10 && !$hasEliminatoryGrades) {
-    $status = 'Validé';
-} elseif ($moyenneGenerale >= 10 && $moyenne >= 5) {
-    $status = 'Validé par Compensation (VC)';
-} else {
-    $status = 'Rattrapage';
-}
-```
-
 ---
 
 ## 8. API & AI Interaction Layer 🌐
@@ -197,7 +192,7 @@ if ($moyenne >= 10 && !$hasEliminatoryGrades) {
 L'application interagit avec l'API Groq (compatible OpenAI) pour faire tourner les modèles **LLaMA 3.3 (70B)** à une vitesse fulgurante.
 
 Le fichier `App\Services\LlamaAiService.php` centralise les appels HTTP (via la façade `Http` de Laravel).
-Nous utilisons la technique **RAG (Retrieval-Augmented Generation)** : avant d'interroger l'IA, le serveur injecte le contexte de la base de données (Notes, Filière, Motif) dans le `System Prompt` pour forcer l'IA à répondre sur des faits réels de l'étudiant.
+Nous utilisons la technique **RAG (Retrieval-Augmented Generation)** : avant d'interroger l'IA, le serveur injecte le contexte de la base de données (Notes, Filière, Motif, Spécialité du Professeur ou Privilèges Admin) dans le `System Prompt` pour forcer l'IA à répondre sur des faits réels et à s'adapter au profil connecté.
 
 ---
 
@@ -223,6 +218,7 @@ cp .env.example .env
 php artisan key:generate
 
 # 5. Lancer la migration et peupler la base de données (Seeder)
+# Le seeder va générer automatiquement Radouane en tant qu'Admin ainsi que 250 étudiants.
 php artisan migrate:fresh --seed
 
 # 6. Compiler les assets frontend
@@ -231,32 +227,6 @@ npm run dev
 # 7. Lancer le serveur local
 php artisan serve
 ```
-
-> **Comptes de test générés par le Seeder :**
-> - **Admin** : `admin@university.com` / `ChangeMe123!`
-> - **Professeur** : `prof@university.com` / `ChangeMe123!`
-> - **Étudiant** : `student@university.com` / `ChangeMe123!`
-
----
-
-## 10. Testing Strategy 🧪
-
-*   **Pest / PHPUnit :** Tests unitaires pour valider les règles académiques (ex: tester qu'un étudiant avec 4.5/20 part bien en rattrapage même si sa moyenne générale est de 14).
-*   **Tests de Concurrence :** Assurer que les réservations de salles ne se chevauchent pas (`ExamConflictChecker`).
-*   **Validation Frontend :** Validation rigoureuse des formulaires et gestion des erreurs de requêtes réseau pour le chat IA.
-
----
-
-## 11. FAQ ❓
-
-**L'application nécessite-t-elle internet ?**
-Oui, pour l'interaction avec le modèle IA (Groq). Cependant, grâce au Service Worker (PWA), la coquille de l'application peut se charger hors-ligne (page *offline*).
-
-**Peut-on exporter les PV au format Excel ?**
-Absolument. En plus du format PDF, l'administration dispose d'un bouton d'export Excel pour traiter les données globalement.
-
-**Comment les codes QR sont-ils générés ?**
-Nous utilisons le package `simplesoftwareio/simple-qrcode`. Le code pointe vers une URL (fictive dans cette démo) pour vérifier l'authenticité du document crypté.
 
 ---
 <div align="center">
