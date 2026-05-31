@@ -26,7 +26,7 @@ Route::get('/dashboard', function () {
     return view('dashboard', compact('totalUsers', 'activeModules', 'availableRooms'));
 })->middleware(['auth', 'verified', 'check.contract'])->name('dashboard');
 
-Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'role:admin', 'admin.2fa'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [\App\Http\Controllers\Admin\AdminController::class, 'index'])->name('dashboard');
 
     // Importation Excel/CSV pour le Staff
@@ -270,6 +270,11 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::post('/appointments/slots', [\App\Http\Controllers\AppointmentController::class, 'storeSlot'])->name('appointments.slot.store');
     Route::delete('/appointments/slots/{slot}', [\App\Http\Controllers\AppointmentController::class, 'destroySlot'])->name('appointments.slot.destroy');
     Route::post('/appointments/generate-slots', [\App\Http\Controllers\AppointmentController::class, 'generateDefaultSlots'])->name('appointments.generate-slots');
+
+    // Admin 2FA Profile setup
+    Route::post('/profile/2fa/init', [\App\Http\Controllers\Auth\AdminTwoFactorController::class, 'initSetup'])->name('2fa.init');
+    Route::post('/profile/2fa/confirm', [\App\Http\Controllers\Auth\AdminTwoFactorController::class, 'confirmSetup'])->name('2fa.confirm');
+    Route::post('/profile/2fa/disable', [\App\Http\Controllers\Auth\AdminTwoFactorController::class, 'disable'])->name('2fa.disable');
 });
 
 Route::middleware(['auth', 'role:professor', 'check.contract'])->prefix('professor')->name('professor.')->group(function () {
@@ -416,6 +421,9 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
+    Route::get('/login/2fa', [\App\Http\Controllers\Auth\AdminTwoFactorController::class, 'showChallenge'])->name('admin.2fa.challenge');
+    Route::post('/login/2fa', [\App\Http\Controllers\Auth\AdminTwoFactorController::class, 'verifyChallenge'])->name('admin.2fa.verify');
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
